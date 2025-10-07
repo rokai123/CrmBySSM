@@ -43,7 +43,7 @@ parallelStream() 返回并行流 list.parallelStream().forEach(...)
 replaceAll(UnaryOperator o) 对所有元素执行操作并替换 list.replaceAll(s -> s.toUpperCase())
 forEach(Consumer action) 遍历所有元素（Java 8+） list.forEach(System.out::println)
 
-不同 List 实现的特性
+不同 List 实现的特性。。。
 方法 ArrayList LinkedList Vector
 随机访问 快（O(1)） 慢（O(n)） 快（O(1)）
 插入/删除（首尾） 慢（O(n)） 快（O(1)） 慢（O(n)）
