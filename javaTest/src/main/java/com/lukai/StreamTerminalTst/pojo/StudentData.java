@@ -14,6 +14,7 @@ public class StudentData {
         list.add(new Student("王五", 25, "女", "成都"));
         list.add(new Student("赵六", 22, "男", "武汉"));
         list.add(new Student("王麻子", 16, "女", "成都"));
+        list.add(new Student("秀娟", 29, "女", "江苏"));
         return list;
     }
 }
