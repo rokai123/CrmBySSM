@@ -52,7 +52,7 @@ forEach(Consumer action) 遍历所有元素（Java 8+） list.forEach(System.out
 • 增删改查：add/remove/set/get  
 • 遍历：iterator/forEach/ListIterator  
 • 工具类操作：sort/subList/toArray  
-• Java 8+：stream/parallelStream/replaceAll  
+• Java 8+：stream/parallelStream/replaceAll  ...
 根据需求选择合适的 List 实现类（如高频随机访问用 ArrayList，频繁插入删除用 LinkedList）。*/
 
 public class ListMethodTest {
