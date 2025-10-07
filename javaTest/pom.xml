@@ -1,0 +1,41 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.lukai</groupId>
+  <artifactId>javaTest</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <name>javaTest</name>
+  
+  
+  <!--可选依赖-->
+
+	
+    <dependencies>
+		<dependency>
+		    <groupId>org.junit.jupiter</groupId>
+		    <artifactId>junit-jupiter-api</artifactId>
+		    <version>5.13.4</version>
+		    <scope>test</scope>
+		</dependency>
+      
+    </dependencies>
+  
+  <build>
+    <plugins>
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <version>3.13.0</version> <!-- 最新版本 -->
+            <configuration>
+                <!-- 指定源代码使用的JDK版本 -->
+                <source>21</source>
+                <!-- 指定生成的字节码目标版本 -->
+                <target>21</target>
+                <!-- 可选的编译器参数 -->
+                <compilerArgs>
+                    <arg>-Xlint:unchecked</arg>
+                </compilerArgs>
+            </configuration>
+        </plugin>
+    </plugins>
+</build>
+</project>
