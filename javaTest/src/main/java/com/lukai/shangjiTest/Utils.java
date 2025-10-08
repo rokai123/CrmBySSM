@@ -26,7 +26,7 @@ public class Utils {
 	
 	public static List<Student> checkList(List<Student> stuList,List<Integer> numList) {
 		//计算出第二个参数中数字的平均值
-		int ageNum = numList.stream().collect(Collectors.averagingInt(o1->o1)).intValue();
+		Double ageNum= numList.stream().collect(Collectors.averagingInt(o1->o1));
 		//filter过滤出大于该平均值的所有对象
 		List<Student> list = stuList.stream().filter(s->s.getAge()>ageNum).toList();
 		//迭代循环遍历过程中给集合中每个对象年龄+1
