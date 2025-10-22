@@ -1,5 +1,5 @@
 package com.lukai.crm.settings.commons.domain;
-//dsddsa
+//dsddsa阿萨德
 public class ReturnObject {
 	
 }
