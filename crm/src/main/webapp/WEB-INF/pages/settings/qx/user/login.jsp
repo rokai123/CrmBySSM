@@ -10,6 +10,51 @@
 <link href="jquery/bootstrap_3.3.0/css/bootstrap.min.css" type="text/css" rel="stylesheet" />
 <script type="text/javascript" src="jquery/jquery-1.11.1-min.js"></script>
 <script type="text/javascript" src="jquery/bootstrap_3.3.0/js/bootstrap.min.js"></script>
+<script type="text/javascript">
+	//界面加载完成之后，执行函数
+	//画面ロードが完了した後、関数を実行します。
+ $(function(){
+	$("#loginBtn").click(function () {
+		//alert("loginBtn");
+		//ユーザーのログイン情報を取得する
+		var loginAct = $.trim($("#loginAct").val());
+		var loginPwd = $.trim($("#loginPwd").val());
+		var isRemPwd = $("#isRemPwd").prop("checked");
+		//フォーム検証
+		if (loginAct == "") {
+			alert("ユーザー名を入力してください。");
+			return;
+		}
+		if (loginPwd == "") {
+			alert("パスワードを入力してください。");
+			return;
+		}
+		//リクエストを送信する
+		$.ajax({
+			url:"settings/qx/user/Login.do",
+			type:"post",
+			data:{
+				"loginAct":loginAct,
+				"loginPwd":loginPwd,
+				"isRemPwd":isRemPwd
+			},
+			dataType:"json",
+			success:function(data){
+				if (data.code=="1") {
+					//業務画面に遷移する
+					window.location.href="workbench/index.do";
+				}else{
+					//ログインに失敗
+					//エラーメッセージを表示する
+					$("#msg").html(data.message);
+				}
+			}
+
+		})
+	})
+});
+
+</script>
 </head>
 <body>
 	<div style="position: absolute; top: 0px; left: 0px; width: 60%;">
@@ -27,10 +72,10 @@
 			<form action="workbench/index.html" class="form-horizontal" role="form">
 				<div class="form-group form-group-lg">
 					<div style="width: 350px;">
-						<input class="form-control" type="text" placeholder="ユーザー名">
+						<input id="loginAct" class="form-control" type="text" placeholder="ユーザー名">
 					</div>
 					<div style="width: 350px; position: relative;top: 20px;">
-						<input class="form-control" type="password" placeholder="パスワード">
+						<input id="loginPwd" class="form-control" type="password" placeholder="パスワード">
 					</div>
 					<div class="checkbox"  style="position: relative;top: 30px; left: 10px;">
 						<label>
@@ -39,7 +84,7 @@
 						&nbsp;&nbsp;
 						<span id="msg"></span>
 					</div>
-					<button type="submit" class="btn btn-primary btn-lg btn-block"  style="width: 350px; position: relative;top: 45px;">ログイン</button>
+					<button type="button" id="loginBtn" class="btn btn-primary btn-lg btn-block"  style="width: 350px; position: relative;top: 45px;">ログイン</button>
 				</div>
 			</form>
 		</div>

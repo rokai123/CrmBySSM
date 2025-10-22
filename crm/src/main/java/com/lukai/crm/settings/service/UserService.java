@@ -5,5 +5,6 @@ import java.util.Map;
 import com.lukai.crm.settings.domain.User;
 
 public interface UserService {
-	User UserService(Map<String, Object> map);
+
+	User queryUserByLoginActAndPwd(Map<String, Object> map);
 }

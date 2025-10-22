@@ -9,14 +9,14 @@ import com.lukai.crm.settings.domain.User;
 import com.lukai.crm.settings.mapper.UserMapper;
 import com.lukai.crm.settings.service.UserService;
 
-@Service("UserServiceImpl")
+@Service("userService")
 public class UserServiceImpl implements UserService{
 	
 	@Autowired
 	private UserMapper userMapper;
 	
 	@Override
-	public User UserService(Map<String, Object> map) {
+	public User queryUserByLoginActAndPwd(Map<String, Object> map) {
 		return userMapper.queryUserByactAndPwd(map);
 	}
 	
