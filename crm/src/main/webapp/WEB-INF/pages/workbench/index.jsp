@@ -5,10 +5,11 @@
  %>
 <html>
 <head>
+<base href="<%=basePath%>">
 <meta charset="UTF-8">
-<link href="../jquery/bootstrap_3.3.0/css/bootstrap.min.css" type="text/css" rel="stylesheet" />
-<script type="text/javascript" src="../jquery/jquery-1.11.1-min.js"></script>
-<script type="text/javascript" src="../jquery/bootstrap_3.3.0/js/bootstrap.min.js"></script>
+<link href="jquery/bootstrap_3.3.0/css/bootstrap.min.css" type="text/css" rel="stylesheet" />
+<script type="text/javascript" src="jquery/jquery-1.11.1-min.js"></script>
+<script type="text/javascript" src="jquery/bootstrap_3.3.0/js/bootstrap.min.js"></script>
 <script type="text/javascript">
 
 	//页面加载完毕
@@ -53,16 +54,16 @@
 					<button type="button" class="close" data-dismiss="modal">
 						<span aria-hidden="true">×</span>
 					</button>
-					<h4 class="modal-title">我的资料</h4>
+					<h4 class="modal-title">私の資料</h4>
 				</div>
 				<div class="modal-body">
 					<div style="position: relative; left: 40px;">
-						姓名：<b>张三</b><br><br>
-						登录帐号：<b>zhangsan</b><br><br>
-						组织机构：<b>1005，市场部，二级部门</b><br><br>
-						邮箱：<b>zhangsan@bjpowernode.com</b><br><br>
-						失效时间：<b>2017-02-14 10:10:10</b><br><br>
-						允许访问IP：<b>127.0.0.1,192.168.100.2</b>
+						名前：<b>${sessionUser.name}</b><br><br>
+						ﾛｸﾞｲﾝｱｶﾝﾄ：<b>${sessionUser.loginAct}</b><br><br>
+						部署情報：<b>${sessionUser.deptno}，市场部，二级部门</b><br><br>
+						メールアドレス：<b>zhangsan@bjpowernode.com</b><br><br>
+						失効時間：<b>${sessionUser.expireTime}</b><br><br>
+						アクセスを許可するIP：<b>127.0.0.1,192.168.100.2</b>
 					</div>
 				</div>
 				<div class="modal-footer">
@@ -80,26 +81,26 @@
 					<button type="button" class="close" data-dismiss="modal">
 						<span aria-hidden="true">×</span>
 					</button>
-					<h4 class="modal-title">修改密码</h4>
+					<h4 class="modal-title">パスワードを変更する</h4>
 				</div>
 				<div class="modal-body">
 					<form class="form-horizontal" role="form">
 						<div class="form-group">
-							<label for="oldPwd" class="col-sm-2 control-label">原密码</label>
+							<label for="oldPwd" class="col-sm-2 control-label">元のパスワード</label>
 							<div class="col-sm-10" style="width: 300px;">
 								<input type="text" class="form-control" id="oldPwd" style="width: 200%;">
 							</div>
 						</div>
 						
 						<div class="form-group">
-							<label for="newPwd" class="col-sm-2 control-label">新密码</label>
+							<label for="newPwd" class="col-sm-2 control-label">新しいパスワード</label>
 							<div class="col-sm-10" style="width: 300px;">
 								<input type="text" class="form-control" id="newPwd" style="width: 200%;">
 							</div>
 						</div>
 						
 						<div class="form-group">
-							<label for="confirmPwd" class="col-sm-2 control-label">确认密码</label>
+							<label for="confirmPwd" class="col-sm-2 control-label">パスワードを確認する</label>
 							<div class="col-sm-10" style="width: 300px;">
 								<input type="text" class="form-control" id="confirmPwd" style="width: 200%;">
 							</div>
@@ -107,8 +108,8 @@
 					</form>
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-					<button type="button" class="btn btn-primary" data-dismiss="modal" onclick="window.location.href='../login.html';">更新</button>
+					<button type="button" class="btn btn-default" data-dismiss="modal">キャンセル</button>
+					<button type="button" class="btn btn-primary" data-dismiss="modal" onclick="window.location.href='login.html';">更新</button>
 				</div>
 			</div>
 		</div>
@@ -129,7 +130,7 @@
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-					<button type="button" class="btn btn-primary" data-dismiss="modal" onclick="window.location.href='../login.html';">确定</button>
+					<button type="button" class="btn btn-primary" data-dismiss="modal" onclick="window.location.href='login.html';">确定</button>
 				</div>
 			</div>
 		</div>
@@ -137,18 +138,18 @@
 	
 	<!-- 顶部 -->
 	<div id="top" style="height: 50px; background-color: #3C3C3C; width: 100%;">
-		<div style="position: absolute; top: 5px; left: 0px; font-size: 30px; font-weight: 400; color: white; font-family: 'times new roman'">CRM &nbsp;<span style="font-size: 12px;">&copy;2019&nbsp;动力节点</span></div>
-		<div style="position: absolute; top: 15px; right: 15px;">
+		<div style="position: absolute; top: 5px; left: 0px; font-size: 30px; font-weight: 400; color: white; font-family: 'times new roman'">CRM &nbsp;<span style="font-size: 12px;">&copy;2025&nbsp;CRM</span></div>
+		<div style="position: absolute; top: 15px; right: 85px;">
 			<ul>
 				<li class="dropdown user-dropdown">
 					<a href="javascript:void(0)" style="text-decoration: none; color: white;" class="dropdown-toggle" data-toggle="dropdown">
-						<span class="glyphicon glyphicon-user"></span> zhangsan <span class="caret"></span>
+						<span class="glyphicon glyphicon-user"></span> ${sessionUser.name} <span class="caret"></span>
 					</a>
 					<ul class="dropdown-menu">
-						<li><a href="../settings/index.html"><span class="glyphicon glyphicon-wrench"></span> 系统设置</a></li>
-						<li><a href="javascript:void(0)" data-toggle="modal" data-target="#myInformation"><span class="glyphicon glyphicon-file"></span> 我的资料</a></li>
-						<li><a href="javascript:void(0)" data-toggle="modal" data-target="#editPwdModal"><span class="glyphicon glyphicon-edit"></span> 修改密码</a></li>
-						<li><a href="javascript:void(0);" data-toggle="modal" data-target="#exitModal"><span class="glyphicon glyphicon-off"></span> 退出</a></li>
+						<li><a href="settings/index.html"><span class="glyphicon glyphicon-wrench"></span> システム設定</a></li>
+						<li><a href="javascript:void(0)" data-toggle="modal" data-target="#myInformation"><span class="glyphicon glyphicon-file"></span> 私の資料</a></li>
+						<li><a href="javascript:void(0)" data-toggle="modal" data-target="#editPwdModal"><span class="glyphicon glyphicon-edit"></span> パスワードを変更する</a></li>
+						<li><a href="javascript:void(0);" data-toggle="modal" data-target="#exitModal"><span class="glyphicon glyphicon-off"></span> ログアウト</a></li>
 					</ul>
 				</li>
 			</ul>

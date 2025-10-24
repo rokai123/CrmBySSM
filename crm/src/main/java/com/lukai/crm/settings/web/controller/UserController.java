@@ -1,17 +1,20 @@
 package com.lukai.crm.settings.web.controller;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.lukai.crm.commons.contants.Contants;
 import com.lukai.crm.commons.domain.ReturnObject;
+import com.lukai.crm.commons.utils.DateUtils;
+import com.lukai.crm.commons.utils.IpUtils;
 import com.lukai.crm.settings.domain.User;
 import com.lukai.crm.settings.service.UserService;
 
@@ -33,7 +36,7 @@ public class UserController {
 	//ログイン機能を実装する。
 	@RequestMapping("/settings/qx/user/Login.do")
 	@ResponseBody
-	public Object Login(String loginPwd,String loginAct,String isRemPwd,HttpServletRequest request) {
+	public Object Login(String loginPwd,String loginAct,String isRemPwd,HttpServletRequest request,HttpSession session) {
 		//HashMapオブジェクトを作成して、フロントからのソースを入れる。
 		HashMap<String, Object> hashMap = new HashMap<String, Object>();
 		hashMap.put("loginPwd", loginPwd);
@@ -44,30 +47,36 @@ public class UserController {
 		
 		if (user==null) {
 			//パスワードかユーザー名が存在しない。
-			returnObject.setCode("0");
+			//returnObject.setCode("0");
+			returnObject.setCode(Contants.RETURN_OBJECT_CODE_FAIL);
 			returnObject.setMessage("パスワードかユーザー名が存在しない");
 		}else{
 			//有効期限を獲得し、まだ有効期限内であるか検証する
-			String expireTime = user.getExpireTime();
-			SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-			String formatDate = simpleDateFormat.format(new Date());
-			if (formatDate.compareTo(expireTime)>0) {
+			/*SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			String formatDate = simpleDateFormat.format(new Date());*/
+			//日付形式をユーティリティクラスにカプセル化して返すことで
+			//拡張性を向上させます。
+			if (DateUtils.formateDateTime(new Date()).compareTo(user.getExpireTime())>0) {
 				//有効期間外のユーザー。
-				returnObject.setCode("0");
+				//コードを直接固定値で記述することは推奨されません。
+				//後からの修正と保守が不便になります。最もよいのは定数としてカプセル化することです
+				//returnObject.setCode("0");
+				returnObject.setCode(Contants.RETURN_OBJECT_CODE_FAIL);
 				returnObject.setMessage("アカウントは有効なアクセス期間外となっており、アクセスできません。");
 			}else if ("0".equals(user.getLockState())) {
 				//アカウントがロックされてる
-				returnObject.setCode("0");
+				returnObject.setCode(Contants.RETURN_OBJECT_CODE_FAIL);
 				returnObject.setMessage("アカウントがロックされてる");
-			}else if (user.getAllowIps().contains(request.getRemoteAddr())) {
+			}else if (!user.getAllowIps().contains(IpUtils.getClientIp(request))) {
 				//アクセスできるIPではない
-				//System.out.println(getClientIp(request));
-				returnObject.setCode("0");
+				returnObject.setCode(Contants.RETURN_OBJECT_CODE_FAIL);
 				returnObject.setMessage("アクセスできるIPではない");}
 			else {
 				//条件を満たす、ログイン許可する。
-				returnObject.setCode("1");
+				returnObject.setCode(Contants.RETURN_OBJECT_CODE_SUCCESS);
 				//returnObject.setResultData(user);
+				//ユーザーをセッションスコープに配置し、各画面でユーザー名を表示する機能を実現します。
+				session.setAttribute(Contants.SESSION_USER, user);
 			}
 		}
 		return returnObject;
