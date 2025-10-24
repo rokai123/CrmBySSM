@@ -1,0 +1,155 @@
+/* ===============================
+   login.css
+   Author: ChatGPT Design
+   Style: Modern Corporate Login
+   =============================== */
+
+/* 页面整体 */
+body {
+  background: linear-gradient(135deg, #eef2f3, #8e9eab);
+  font-family: "Hiragino Kaku Gothic ProN", "Meiryo", sans-serif;
+  color: #333;
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* 顶部导航条 */
+#top {
+  background-color: #2c3e50;
+  height: 60px;
+  line-height: 60px;
+  width: 100%;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+#top div {
+  margin-left: 30px;
+  font-size: 28px;
+  font-weight: 500;
+  color: #ecf0f1;
+}
+
+/* 左侧图片区域 */
+body > div:first-of-type img {
+  border-radius: 16px;
+  object-fit: cover;
+  width: 110%;
+  height: 90%;
+  position: relative;
+  top: 100px;
+
+  /* 调整融合感 */
+  border: 1px solid rgba(255, 255, 255, 0.3); /* 柔和边框，半透明白 */
+  box-shadow: 0 0 25px rgba(255, 255, 255, 0.2); /* 柔光阴影，淡淡发亮 */
+  filter: brightness(0.95) saturate(1.05); /* 微调亮度与色彩饱和 */
+  transition: all 0.6s ease;
+  opacity: 0.92;
+}
+
+.login-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(to right, rgba(238,242,243,0.6), rgba(142,158,171,0));
+  overflow: hidden;
+}
+
+
+
+body > div:first-of-type img:hover {
+  opacity: 1;
+  box-shadow: 0 0 35px rgba(255, 255, 255, 0.35);
+  filter: brightness(1) saturate(1.1);
+}
+
+/* 登录框容器 */
+.login-container {
+  position: absolute;
+  top: 120px;
+  right: 120px;
+  width: 420px;
+  height: 430px;
+  background-color: #ffffffcc;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  padding: 30px 40px;
+  backdrop-filter: blur(8px);
+}
+
+/* 标题 */
+.login-container h1 {
+  font-size: 26px;
+  color: #2c3e50;
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 30px;
+  border-bottom: 2px solid #3498db;
+  display: inline-block;
+  padding-bottom: 5px;
+}
+
+/* 输入框 */
+.login-container .form-control {
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  transition: all 0.3s ease;
+}
+
+.login-container .form-control:focus {
+  border-color: #3498db;
+  box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
+}
+
+/* 复选框区域 */
+.login-container .checkbox {
+  margin-top: 20px;
+  font-size: 14px;
+  color: #555;
+}
+
+/* 错误消息 */
+#msg {
+  display: block;
+  margin-top: 8px;
+  color: #e74c3c;
+  font-weight: 500;
+}
+
+/* 登录按钮 */
+#loginBtn {
+  margin-top: 30px;
+  width: 100%;
+  background: linear-gradient(90deg, #3498db, #2980b9);
+  border: none;
+  border-radius: 8px;
+  color: #fff;
+  font-size: 18px;
+  font-weight: 600;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+#loginBtn:hover {
+  background: linear-gradient(90deg, #2980b9, #1c5980);
+  transform: translateY(-2px);
+}
+
+#loginBtn:active {
+  transform: translateY(0);
+}
+
+/* 响应式优化 */
+@media (max-width: 992px) {
+  body > div:first-of-type {
+    display: none;
+  }
+  .login-container {
+    position: relative;
+    margin: 80px auto;
+    right: auto;
+    left: auto;
+  }
+}
