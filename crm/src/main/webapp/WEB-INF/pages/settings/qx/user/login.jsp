@@ -17,6 +17,15 @@
 	//画面ロードが完了した後、関数を実行します。..
  $(function(){
 
+	//ブラウザウィンドウにキーボードのエンターキーイベントをバインドする
+	    $(window).keydown(function(event) {
+	        if (event.keyCode == 13) {
+	            //エンターキーのキーコードは13です
+	            $("#loginBtn").click();//​ログインボタンをクリックする​
+	        }
+	    });
+	    
+		
 	$("#loginBtn").click(function () {
 		//alert("loginBtn");
 		//ユーザーのログイン情報を取得する
