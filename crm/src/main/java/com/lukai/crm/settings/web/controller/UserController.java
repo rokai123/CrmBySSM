@@ -26,7 +26,7 @@ public class UserController {
 	@Autowired
 	UserService userService;
 	
-	//返回到那个资源，写哪个资源的路径
+	//返回到哪个资源，写哪个资源的路径
 	@RequestMapping("/settings/qx/user/toLogin.do")
 	public String toLogin() {
 		
