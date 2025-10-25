@@ -19,12 +19,19 @@ import com.lukai.crm.commons.utils.DateUtils;
 import com.lukai.crm.commons.utils.IpUtils;
 import com.lukai.crm.settings.domain.User;
 import com.lukai.crm.settings.service.UserService;
+import com.lukai.crm.workbench.web.controller.WorkbenchIndexController;
 
 @Controller
 public class UserController {
+
+    private final WorkbenchIndexController workbenchIndexController;
 	//注意：必ず service クラスのインターフェースを注入し、実装クラスではないようにしてください！
 	@Autowired
 	UserService userService;
+
+    UserController(WorkbenchIndexController workbenchIndexController) {
+        this.workbenchIndexController = workbenchIndexController;
+    }
 	
 	//返回到哪个资源，写哪个资源的路径
 	@RequestMapping("/settings/qx/user/toLogin.do")
@@ -43,7 +50,7 @@ public class UserController {
 		HashMap<String, Object> hashMap = new HashMap<String, Object>();
 		hashMap.put("loginPwd", loginPwd);
 		hashMap.put("loginAct", loginAct);
-		
+		System.out.println("dasdasdasd");
 		User user = userService.queryUserByLoginActAndPwd(hashMap);
 		ReturnObject returnObject = new com.lukai.crm.commons.domain.ReturnObject();
 		
@@ -72,8 +79,8 @@ public class UserController {
 			}else if (!user.getAllowIps().contains(IpUtils.getClientIp(request))) {
 				//アクセスできるIPではない
 				returnObject.setCode(Contants.RETURN_OBJECT_CODE_FAIL);
-				returnObject.setMessage("アクセスできるIPではない");}
-			else {
+				returnObject.setMessage("アクセスできるIPではない");
+			}else {
 				//条件を満たす、ログイン許可する。
 				returnObject.setCode(Contants.RETURN_OBJECT_CODE_SUCCESS);
 				//returnObject.setResultData(user);
@@ -85,12 +92,14 @@ public class UserController {
 					Cookie cookie = new Cookie("loginAct", user.getLoginAct());
 					cookie.setMaxAge(60*60*24*10);
 					//将cookie返回浏览器
+					System.out.println("cookie="+cookie);
 					response.addCookie(cookie);
 					Cookie cookie2 = new Cookie("loginPwd", user.getLoginPwd());
 					cookie2.setMaxAge(60*60*24*10);
 					response.addCookie(cookie2);
 				}else {
 					//ユーザーがログイン情報を記憶するチェックボックスをオフにしている。！！！
+					System.out.println("取消记住密码");
 					Cookie cookie = new Cookie("loginAct", "");
 					cookie.setMaxAge(0);
 					response.addCookie(cookie);
