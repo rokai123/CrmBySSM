@@ -3,7 +3,9 @@ package com.lukai.crm.settings.web.controller;
 import java.util.Date;
 import java.util.HashMap;
 
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +38,7 @@ public class UserController {
 	//ログイン機能を実装する。
 	@RequestMapping("/settings/qx/user/Login.do")
 	@ResponseBody
-	public Object Login(String loginPwd,String loginAct,String isRemPwd,HttpServletRequest request,HttpSession session) {
+	public Object Login(String loginPwd,String loginAct,String isRemPwd,HttpServletRequest request,HttpServletResponse response,HttpSession session) {
 		//HashMapオブジェクトを作成して、フロントからのソースを入れる。
 		HashMap<String, Object> hashMap = new HashMap<String, Object>();
 		hashMap.put("loginPwd", loginPwd);
@@ -77,6 +79,25 @@ public class UserController {
 				//returnObject.setResultData(user);
 				//ユーザーをセッションスコープに配置し、各画面でユーザー名を表示する機能を実現します。
 				session.setAttribute(Contants.SESSION_USER, user);
+				if ("true".equals(isRemPwd)) {
+					//ユーザーがログイン情報を記憶するチェックボックスをオンにしている。
+					//Cookieオブジェクトを作成する。
+					Cookie cookie = new Cookie("loginAct", user.getLoginAct());
+					cookie.setMaxAge(60*60*24*10);
+					//将cookie返回浏览器
+					response.addCookie(cookie);
+					Cookie cookie2 = new Cookie("loginPwd", user.getLoginPwd());
+					cookie2.setMaxAge(60*60*24*10);
+					response.addCookie(cookie2);
+				}else {
+					//ユーザーがログイン情報を記憶するチェックボックスをオフにしている。
+					Cookie cookie = new Cookie("loginAct", "");
+					cookie.setMaxAge(0);
+					response.addCookie(cookie);
+					Cookie cookie2 = new Cookie("loginPwd", "");
+					cookie2.setMaxAge(0);
+					response.addCookie(cookie2);
+				}
 			}
 		}
 		return returnObject;
