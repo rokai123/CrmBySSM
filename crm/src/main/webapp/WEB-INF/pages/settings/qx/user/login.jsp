@@ -14,7 +14,7 @@
 <script type="text/javascript" src="jquery/bootstrap_3.3.0/js/bootstrap.min.js"></script>
 <script type="text/javascript">
 	//界面加载完成之后，执行函数
-	//画面ロードが完了した後、関数を実行します。
+	//画面ロードが完了した後、関数を実行します。..
  $(function(){
 
 	$("#loginBtn").click(function () {
