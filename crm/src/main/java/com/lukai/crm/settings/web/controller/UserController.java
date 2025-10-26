@@ -31,7 +31,6 @@ public class UserController {
 	@RequestMapping("/settings/qx/user/toLogin.do")
 	public String toLogin() {
 		
-		
 		//リクエスト転送の方式でログインページにジャンプする
 		return "settings/qx/user/login";
 	}
@@ -44,9 +43,8 @@ public class UserController {
 		HashMap<String, Object> hashMap = new HashMap<String, Object>();
 		hashMap.put("loginPwd", loginPwd);
 		hashMap.put("loginAct", loginAct);
-		System.out.println("dasdasdasd");
 		User user = userService.queryUserByLoginActAndPwd(hashMap);
-		ReturnObject returnObject = new com.lukai.crm.commons.domain.ReturnObject();
+		ReturnObject returnObject = new ReturnObject();
 		
 		if (user==null) {
 			//パスワードかユーザー名が存在しない。
