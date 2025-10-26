@@ -19,19 +19,13 @@ import com.lukai.crm.commons.utils.DateUtils;
 import com.lukai.crm.commons.utils.IpUtils;
 import com.lukai.crm.settings.domain.User;
 import com.lukai.crm.settings.service.UserService;
-import com.lukai.crm.workbench.web.controller.WorkbenchIndexController;
 
 @Controller
 public class UserController {
 
-    private final WorkbenchIndexController workbenchIndexController;
 	//注意：必ず service クラスのインターフェースを注入し、実装クラスではないようにしてください！
 	@Autowired
 	UserService userService;
-
-    UserController(WorkbenchIndexController workbenchIndexController) {
-        this.workbenchIndexController = workbenchIndexController;
-    }
 	
 	//返回到哪个资源，写哪个资源的路径
 	@RequestMapping("/settings/qx/user/toLogin.do")
