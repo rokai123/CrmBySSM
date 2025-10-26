@@ -3,18 +3,21 @@
 		String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
                 + request.getContextPath() + "/";
  %>
+ <!-- jstlをインポートする -->
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
 <head>
 	<base href="<%=basePath%>">
 <meta charset="UTF-8">
 <link href="jquery/bootstrap_3.3.0/css/bootstrap.min.css" type="text/css" rel="stylesheet" />
+
 <!-- 引入外部 CSS 文件 -->
   <!-- <link rel="stylesheet" href="CSS/login.css" type="text/css" /> -->
 <script type="text/javascript" src="jquery/jquery-1.11.1-min.js"></script>
 <script type="text/javascript" src="jquery/bootstrap_3.3.0/js/bootstrap.min.js"></script>
 <script type="text/javascript">
 	//界面加载完成之后，执行函数
-	//画面ロードが完了した後、関数を実行します。
+	//画面ロードが完了した後、関数を実行します。..
  $(function(){
 
 	//ブラウザウィンドウにキーボードのエンターキーイベントをバインドする
@@ -97,17 +100,24 @@
 			<div class="page-header">
 				<h1>社員ログイン</h1>
 			</div>
-			<form action="workbench/index.html" class="form-horizontal" role="form">
+			<form class="form-horizontal" role="form">
 				<div class="form-group form-group-lg">
 					<div style="width: 350px;">
-						<input id="loginAct" class="form-control" type="text" placeholder="ユーザー名">
+						
+						<input id="loginAct" class="form-control" type="text" value="${cookie.loginAct.value}" placeholder="ユーザー名">
 					</div>
 					<div style="width: 350px; position: relative;top: 20px;">
-						<input id="loginPwd" class="form-control" type="password" placeholder="パスワード">
+						<input id="loginPwd" class="form-control" type="password" value="${cookie.loginPwd.value}" placeholder="パスワード">
 					</div>
 					<div class="checkbox"  style="position: relative;top: 30px; left: 10px;">
 						<label>
-							<input type="checkbox"> ​10日間ログイン状態を保持​
+							<c:if test="${not empty cookie.loginAct and not empty cookie.loginPwd}">
+								<input type="checkbox" id="isRemPwd" checked>
+							</c:if>
+							<c:if test="${empty cookie.loginAct or empty cookie.loginPwd}">
+								<input type="checkbox" id="isRemPwd">
+							</c:if> ​
+							10日間ログイン状態を保持​
 						</label>
 						&nbsp;&nbsp;
 						<br/><span id="msg" style="color: red;"></span>
