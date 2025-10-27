@@ -134,7 +134,7 @@
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">キャンセル</button>
-					<button type="button" class="btn btn-primary" data-dismiss="modal" id="logOutBtn">確定</button>
+					<button type="button" class="btn btn-primary" data-dismiss="modal" id="logOutBtn">実行</button>
 				</div>
 			</div>
 		</div>
