@@ -39,6 +39,10 @@
 		
 		window.open("main/index.html","workareaFrame");
 		
+
+		$("#logOutBtn").click(function(){
+			window.location.href="settings/qx/user/logout.do";
+		});
 	});
 	
 </script>
@@ -126,11 +130,11 @@
 					<h4 class="modal-title">离开</h4>
 				</div>
 				<div class="modal-body">
-					<p>您确定要退出系统吗？</p>
+					<p>システムからログアウトしてもよろしいですか</p>
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-					<button type="button" class="btn btn-primary" data-dismiss="modal" onclick="window.location.href='login.html';">确定</button>
+					<button type="button" class="btn btn-default" data-dismiss="modal">キャンセル</button>
+					<button type="button" class="btn btn-primary" data-dismiss="modal" id="logOutBtn">確定</button>
 				</div>
 			</div>
 		</div>
