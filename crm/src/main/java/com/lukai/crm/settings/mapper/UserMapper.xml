@@ -235,4 +235,10 @@
   			</where>
   </select>
   
+  <select id="queryAllUsers" resultMap="BaseResultMap">
+  		select
+  			<include refid="Base_Column_List" />
+  			from tbl_user
+        where lock_state='1'
+  </select> 
 </mapper>

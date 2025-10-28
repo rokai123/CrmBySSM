@@ -50,7 +50,7 @@ public class UserController {
 			//パスワードかユーザー名が存在しない。
 			//returnObject.setCode("0");
 			returnObject.setCode(Contants.RETURN_OBJECT_CODE_FAIL);
-			returnObject.setMessage("パスワードかユーザー名が存在しない");
+			returnObject.setMessage("パスワードかユーザー名のご入力が間違っています");
 		}else{
 			//有効期限を獲得し、まだ有効期限内であるか検証する
 			/*SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -90,7 +90,7 @@ public class UserController {
 					cookie2.setMaxAge(60*60*24*10);
 					response.addCookie(cookie2);
 				}else {
-					//ユーザーがログイン情報を記憶するチェックボックスをオフにしている。！！！
+					//ユーザーがログイン情報を記憶するチェックボックスをオフにしている。
 					Cookie cookie = new Cookie("loginAct", "");
 					cookie.setMaxAge(0);
 					response.addCookie(cookie);
