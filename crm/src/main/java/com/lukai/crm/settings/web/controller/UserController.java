@@ -117,6 +117,7 @@ public class UserController {
 		//セッションを破棄する
 		session.invalidate();
 		//リダイレクトでログインページに戻る
+		// Redirecting with the help of SpringMVC, the underlying response.sendRedirect("/crm") includes the project name
 		return "redirect:/";
 				
 	}
