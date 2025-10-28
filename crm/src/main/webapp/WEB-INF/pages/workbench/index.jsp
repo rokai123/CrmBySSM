@@ -37,9 +37,9 @@
 		});
 		
 		
-		window.open("main/index.html","workareaFrame");
+		window.open("workbench/main/index.do","workareaFrame");
 		
-
+		
 		$("#logOutBtn").click(function(){
 			window.location.href="settings/qx/user/logout.do";
 		});
