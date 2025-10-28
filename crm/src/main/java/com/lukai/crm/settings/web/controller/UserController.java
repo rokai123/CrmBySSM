@@ -90,7 +90,7 @@ public class UserController {
 					cookie2.setMaxAge(60*60*24*10);
 					response.addCookie(cookie2);
 				}else {
-					//ユーザーがログイン情報を記憶するチェックボックスをオフにしている。！！！
+					//ユーザーがログイン情報を記憶するチェックボックスをオフにしている。
 					Cookie cookie = new Cookie("loginAct", "");
 					cookie.setMaxAge(0);
 					response.addCookie(cookie);
