@@ -84,6 +84,7 @@ public class UserController {
 					Cookie cookie = new Cookie("loginAct", user.getLoginAct());
 					cookie.setMaxAge(60*60*24*10);
 					//将cookie返回浏览器
+					//ブラウザは指定された有効期間内でcookieを保存する。
 					response.addCookie(cookie);
 					Cookie cookie2 = new Cookie("loginPwd", user.getLoginPwd());
 					cookie2.setMaxAge(60*60*24*10);
@@ -116,6 +117,7 @@ public class UserController {
 		//セッションを破棄する
 		session.invalidate();
 		//リダイレクトでログインページに戻る
+		// Redirecting with the help of SpringMVC, the underlying response.sendRedirect("/crm") includes the project name
 		return "redirect:/";
 				
 	}
