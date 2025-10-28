@@ -1,5 +1,6 @@
 package com.lukai.crm.settings.mapper;
 
+import java.util.List;
 import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
@@ -59,4 +60,6 @@ public interface UserMapper {
      * アカウントとパスワードを元に、ユーザーが存在するかどうかを検索します。
      * */
     User queryUserByactAndPwd(Map<String, Object> map);
+    
+    List<User> queryAllUsers();
 }

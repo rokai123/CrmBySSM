@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 public class MainController {
-	//メインページにジャンプした後、モーダルウィンドウ内のindexページを表示します。
+	//メインページにジャンプした後、ウィンドウ内のindexページを表示します。
 	@RequestMapping("/workbench/main/index.do")
 	public String index() {
 		
