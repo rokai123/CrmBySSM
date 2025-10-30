@@ -18,11 +18,47 @@
 <script type="text/javascript" src="jquery/bootstrap-datetimepicker-master/locale/bootstrap-datetimepicker.zh-CN.js"></script>
 
 <script type="text/javascript">
-
+	//页面加载完毕后运行
 	$(function(){
-		
-		
-		
+
+		$("#createActivityBtn").click(function(){
+			//模态窗口弹出控制：需通过JS代码而非HTML属性实现，以便在弹出前执行初始化操作
+			
+				
+            $("#createActivityModal").modal("show");
+        });
+
+		//为保存按钮添加点击事件,保存成功关闭，失败则不关闭
+		$("#saveBtn").click(function(){ 
+			//获取参数
+			var owner = $("#create-marketActivityOwner").val();
+			var marketName = $.trim($("#create-marketActivityName").val());
+			var startTime = $("#create-startTime").val();
+			var endTime = $("#create-endTime").val();
+			var cost = $.trim($("#create-cost").val());
+			var description = $.trim($("#create-describe").val());
+			//表单验证：所有者和名称不能为空
+			if(owner == ""){
+				alert("所有者不能为空");
+				return;
+			}
+			if(marketName == ""){
+				alert("市场活动名称不能为空");
+				return;
+			}
+			//若结束日期早于开始日期，提示“结束日期不能比开始日期小”并终止执行。
+			if(startTime != "" && endTime != "" && endTime < startTime){
+				alert("结束日期不能比开始日期小");
+				return;
+			}
+			//成本只能为非负整数
+			if(!/^(([1-9]\d*)|0)$/.test(cost)){
+				alert("成本只能为非负整数");
+				return;
+			}
+			
+        });
+
 	});
 	
 </script>
@@ -87,7 +123,7 @@
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-					<button type="button" class="btn btn-primary" data-dismiss="modal">保存</button>
+					<button type="button" class="btn btn-primary" id="saveBtn">保存</button>
 				</div>
 			</div>
 		</div>
@@ -244,7 +280,7 @@
 			</div>
 			<div class="btn-toolbar" role="toolbar" style="background-color: #F7F7F7; height: 50px; position: relative;top: 5px;">
 				<div class="btn-group" style="position: relative; top: 18%;">
-				  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createActivityModal"><span class="glyphicon glyphicon-plus"></span> 新規</button>
+				  <button type="button" class="btn btn-primary" id="createActivityBtn"><span class="glyphicon glyphicon-plus"></span> 新規</button>
 				  <button type="button" class="btn btn-default" data-toggle="modal" data-target="#editActivityModal"><span class="glyphicon glyphicon-pencil"></span> 編集</button>
 				  <button type="button" class="btn btn-danger"><span class="glyphicon glyphicon-minus"></span> 削除</button>
 				</div>
