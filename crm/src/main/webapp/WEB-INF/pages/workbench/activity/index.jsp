@@ -15,51 +15,54 @@
 <script type="text/javascript" src="jquery/jquery-1.11.1-min.js"></script>
 <script type="text/javascript" src="jquery/bootstrap_3.3.0/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="jquery/bootstrap-datetimepicker-master/js/bootstrap-datetimepicker.js"></script>
-<script type="text/javascript" src="jquery/bootstrap-datetimepicker-master/locale/bootstrap-datetimepicker.zh-CN.js"></script>
+<script type="text/javascript" src="jquery/bootstrap-datetimepicker-master/locale/bootstrap-datetimepicker.ja.js"></script>
 
 <script type="text/javascript">
-	//页面加载完毕后运行
+	//ページ読み込み完了で実行
 	$(function(){
 
 		$("#createActivityBtn").click(function(){
 			//模态窗口弹出控制：需通过JS代码而非HTML属性实现，以便在弹出前执行初始化操作
+			//モーダル表示制御は、表示前の初期化処理を可能にするため、JSコードで実装すること（HTML属性不可）。
+			//フォームのreset()メソッドを利用して、入力情報をリセット（クリア）する
+            $("#createActivityForm")[0].reset();
 			
-				
             $("#createActivityModal").modal("show");
         });
 
-		//为保存按钮添加点击事件,保存成功关闭，失败则不关闭
+		//保存ボタンクリック時、成功時のみ閉じる処理を実装（失敗時は閉じない）。
 		$("#saveBtn").click(function(){ 
-			//获取参数
+			//パラメータの取得
 			var owner = $("#create-marketActivityOwner").val();
 			var name = $.trim($("#create-marketActivityName").val());
 			var startDate = $("#create-startTime").val();
 			var endDate = $("#create-endTime").val();
 			var cost = $.trim($("#create-cost").val());
 			var description = $.trim($("#create-describe").val());
-			//表单验证：所有者和名称不能为空
+			//フォーム検証：所有者と名称は空であってはなりません。
 			if(owner == ""){
-				alert("所有者不能为空");
+				alert("所有者は必須入力です");
 				return;
 			}
 			if(name == ""){
-				alert("市场活动名称不能为空");
+				alert("キャンペーン名は必須入力です");
 				return;
 			}
 			//若结束日期早于开始日期，提示“结束日期不能比开始日期小”并终止执行。
+			//終了日は開始日以降の日付を設定する
 			if(startDate == "" || endDate == "" ){
-				alert("日期不能为空");
+				alert("日付を入力してください​");
 				return;
 			}else if(endDate < startDate){
-				alert("结束日期不能比开始日期小");
+				alert("終了日は開始日より前の日付には設定できません");
 				return;
 			}
-			//成本只能为非负整数，利用正则表达式匹配
+			//コストは0以上の整数であること（正規表現でチェック）。
 			if(!/^(([1-9]\d*)|0)$/.test(cost)){
-				alert("成本只能为非负整数");
+				alert("​コストは0以上の整数で入力してください​​");
 				return;
 			}
-            //验证全部通过后，通过Ajax发送创建请求
+            //すべての検証が成功した後、Ajaxを通じて作成リクエストを送信します。
             $.ajax({
                 url:"workbench/activity/saveCreateActivity.do",
                 type:"post",
@@ -74,24 +77,32 @@
                 },
                 success:function (data) {
                     if(data.code == "1"){
-                        //添加成功
-                        //关闭模态窗口
+                        //追加成功、モーダルウィンドウを閉じる。
                         $("#createActivityModal").modal("hide");
                         //刷新市场活动列表，显示第一页数据，保持每页显示的记录数不变(后面再完善)
 						
                     }else{
-                        //添加失败,提示信息
+                        //追加失敗、エラーメッセージを表示
                         alert(data.message);
-                        //不关闭模态窗口
+                        //モーダルウィンドウを閉じない
                         $("#createActivityModal").modal("show");
                     }
                 }
 
             })
-
-			
         });
 
+		// ページの読み込み完了後、コンテナに対してカレンダーツール関数を呼び出す
+		$(".myDate").datetimepicker({
+		    language: "ja",          // 言語（日本語に設定）
+		    format: "yyyy-mm-dd",    // 日付フォーマット
+		    minView: "month",        // 月単位で表示
+		    initialDate: new Date(), // デフォルトで現在の日付を表示
+		    autoclose: true,         // 日付選択後にカレンダーを自動閉じる
+		    todayBtn: true,          // 「今日」ボタンを表示
+		    clearBtn: true           // 「クリア」ボタンを表示
+		});
+		
 	});
 	
 </script>
@@ -99,6 +110,7 @@
 <body>
 
 	<!-- 创建市场活动的模态窗口 -->
+	<!-- マーケティングキャンペーン作成モーダルウィンドウ -->
 	<div class="modal fade" id="createActivityModal" role="dialog">
 		<div class="modal-dialog" role="document" style="width: 85%;">
 			<div class="modal-content">
@@ -106,11 +118,11 @@
 					<button type="button" class="close" data-dismiss="modal">
 						<span aria-hidden="true">×</span>
 					</button>
-					<h4 class="modal-title" id="myModalLabel1">创建市场活动</h4>
+					<h4 class="modal-title" id="myModalLabel1">マーケティングキャンペーン作成</h4>
 				</div>
 				<div class="modal-body">
 				
-					<form class="form-horizontal" role="form">
+					<form class="form-horizontal" role="form" id="createActivityForm">
 					
 						<div class="form-group">
 							<label for="create-marketActivityOwner" class="col-sm-2 control-label">所有者<span style="font-size: 15px; color: red;">*</span></label>
@@ -121,31 +133,31 @@
 									</c:forEach>
 								</select>
 							</div>
-                            <label for="create-marketActivityName" class="col-sm-2 control-label">名称<span style="font-size: 15px; color: red;">*</span></label>
+                            <label for="create-marketActivityName" class="col-sm-2 control-label">キャンペーン名<span style="font-size: 15px; color: red;">*</span></label>
                             <div class="col-sm-10" style="width: 300px;">
                                 <input type="text" class="form-control" id="create-marketActivityName">
                             </div>
 						</div>
 						
 						<div class="form-group">
-							<label for="create-startTime" class="col-sm-2 control-label">开始日期</label>
+							<label for="create-startTime" class="col-sm-2 control-label">開始日</label>
 							<div class="col-sm-10" style="width: 300px;">
-								<input type="text" class="form-control" id="create-startTime">
+								<input type="text" class="form-control myDate" id="create-startTime" readonly>
 							</div>
-							<label for="create-endTime" class="col-sm-2 control-label">结束日期</label>
+							<label for="create-endTime" class="col-sm-2 control-label">終了日</label>
 							<div class="col-sm-10" style="width: 300px;">
-								<input type="text" class="form-control" id="create-endTime">
+								<input type="text" class="form-control myDate" id="create-endTime" readonly>
 							</div>
 						</div>
                         <div class="form-group">
 
-                            <label for="create-cost" class="col-sm-2 control-label">成本</label>
+                            <label for="create-cost" class="col-sm-2 control-label">コスト</label>
                             <div class="col-sm-10" style="width: 300px;">
                                 <input type="text" class="form-control" id="create-cost">
                             </div>
                         </div>
 						<div class="form-group">
-							<label for="create-describe" class="col-sm-2 control-label">描述</label>
+							<label for="create-describe" class="col-sm-2 control-label">説明</label>
 							<div class="col-sm-10" style="width: 81%;">
 								<textarea class="form-control" rows="3" id="create-describe"></textarea>
 							</div>
@@ -155,8 +167,8 @@
 					
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-					<button type="button" class="btn btn-primary" id="saveBtn">保存</button>
+					<button type="button" class="btn btn-default" data-dismiss="modal">閉じる</button>
+					<button type="button" class="btn btn-primary" id="saveBtn">送信</button>
 				</div>
 			</div>
 		</div>
