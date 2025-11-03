@@ -32,9 +32,9 @@
 		$("#saveBtn").click(function(){ 
 			//获取参数
 			var owner = $("#create-marketActivityOwner").val();
-			var marketName = $.trim($("#create-marketActivityName").val());
-			var startTime = $("#create-startTime").val();
-			var endTime = $("#create-endTime").val();
+			var name = $.trim($("#create-marketActivityName").val());
+			var startDate = $("#create-startTime").val();
+			var endDate = $("#create-endTime").val();
 			var cost = $.trim($("#create-cost").val());
 			var description = $.trim($("#create-describe").val());
 			//表单验证：所有者和名称不能为空
@@ -42,20 +42,53 @@
 				alert("所有者不能为空");
 				return;
 			}
-			if(marketName == ""){
+			if(name == ""){
 				alert("市场活动名称不能为空");
 				return;
 			}
 			//若结束日期早于开始日期，提示“结束日期不能比开始日期小”并终止执行。
-			if(startTime != "" && endTime != "" && endTime < startTime){
+			if(startDate == "" || endDate == "" ){
+				alert("日期不能为空");
+				return;
+			}else if(endDate < startDate){
 				alert("结束日期不能比开始日期小");
 				return;
 			}
-			//成本只能为非负整数
+			//成本只能为非负整数，利用正则表达式匹配
 			if(!/^(([1-9]\d*)|0)$/.test(cost)){
 				alert("成本只能为非负整数");
 				return;
 			}
+            //验证全部通过后，通过Ajax发送创建请求
+            $.ajax({
+                url:"workbench/activity/saveCreateActivity.do",
+                type:"post",
+                dataType:"json",
+                data:{
+                    owner:owner,
+                    name:name,
+                    startDate:startDate,
+                    endDate:endDate,
+                    cost:cost,
+                    description:description
+                },
+                success:function (data) {
+                    if(data.code == "1"){
+                        //添加成功
+                        //关闭模态窗口
+                        $("#createActivityModal").modal("hide");
+                        //刷新市场活动列表，显示第一页数据，保持每页显示的记录数不变(后面再完善)
+						
+                    }else{
+                        //添加失败,提示信息
+                        alert(data.message);
+                        //不关闭模态窗口
+                        $("#createActivityModal").modal("show");
+                    }
+                }
+
+            })
+
 			
         });
 
