@@ -1,5 +1,9 @@
 package com.lukai.crm.commons.contants;
-
+/**
+ * 定数を保存するクラス
+ * @author rokai123
+ *
+ */
 public class Contants {
 
 	//ReturnObjectクラスのCode値を保存する。

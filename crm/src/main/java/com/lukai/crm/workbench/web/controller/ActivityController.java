@@ -36,7 +36,6 @@ public class ActivityController {
 	@RequestMapping("/workbench/activity/index.do")
 	public String index(HttpServletRequest request) {
 		List<User> users = userService.queryAllUsers();
-		users.stream().forEach(System.out::println);
 		request.setAttribute("userList", users);
 		
 		return "workbench/activity/index";
