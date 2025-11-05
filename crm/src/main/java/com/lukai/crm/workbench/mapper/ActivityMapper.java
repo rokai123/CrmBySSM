@@ -1,5 +1,8 @@
 package com.lukai.crm.workbench.mapper;
 
+import java.util.List;
+import java.util.Map;
+
 import org.apache.ibatis.annotations.Mapper;
 
 import com.lukai.crm.workbench.domain.Activity;
@@ -55,4 +58,8 @@ public interface ActivityMapper {
      * @mbg.generated Tue Oct 28 18:06:02 JST 2025
      */
     int insertActivity(Activity row);
+    
+    List<Activity> selectActivityByConditionForPage(Map<String, Object> map);
+    
+    int selectCountOfActivityByCondition(Map<String, Object> map);
 }
