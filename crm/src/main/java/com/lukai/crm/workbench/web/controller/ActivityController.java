@@ -98,7 +98,7 @@ public class ActivityController {
 	@ResponseBody
 	public Object queryActivityByConditionForPage(String name,String owner,String startDate,String endDate,
 																			   Integer pageNo,Integer pageSize) {
-		//封装参数到Map中
+		//パラメータをMapオブジェクトに格納する。
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("name", name);
 		map.put("owner", owner);
