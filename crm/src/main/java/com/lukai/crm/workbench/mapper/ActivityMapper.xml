@@ -222,7 +222,7 @@
         and a.end_date &lt;= #{endDate}
       </if>
     </where>
-    order by a.edit_time desc
+    order by a.create_time desc
     limit #{beginNo},#{pageSize}
   </select>
    <!-- 条件に基づくマーケティングキャンペーン一覧の総件数を取得 -->
