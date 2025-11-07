@@ -11,61 +11,190 @@
 
 <link href="jquery/bootstrap_3.3.0/css/bootstrap.min.css" type="text/css" rel="stylesheet" />
 <link href="jquery/bootstrap-datetimepicker-master/css/bootstrap-datetimepicker.min.css" type="text/css" rel="stylesheet" />
+<link href="jquery/bs_pagination-master/css/jquery.bs_pagination.min.css" type="text/css" rel="stylesheet" />
 
 <script type="text/javascript" src="jquery/jquery-1.11.1-min.js"></script>
 <script type="text/javascript" src="jquery/bootstrap_3.3.0/js/bootstrap.min.js"></script>
+<!-- 時間選択のためのJSファイルの読み込み -->
 <script type="text/javascript" src="jquery/bootstrap-datetimepicker-master/js/bootstrap-datetimepicker.js"></script>
-<script type="text/javascript" src="jquery/bootstrap-datetimepicker-master/locale/bootstrap-datetimepicker.zh-CN.js"></script>
+<script type="text/javascript" src="jquery/bootstrap-datetimepicker-master/locale/bootstrap-datetimepicker.ja.js"></script>
+<!-- ページングのためのJSファイルの読み込み -->
+<script type="text/javascript" src="jquery/bs_pagination-master/js/jquery.bs_pagination.min.js"></script>
+<script type="text/javascript" src="jquery/bs_pagination-master/localization/ja.js"></script>
 
 <script type="text/javascript">
-	//页面加载完毕后运行
+	//ページ読み込み完了で実行
 	$(function(){
 
 		$("#createActivityBtn").click(function(){
 			//模态窗口弹出控制：需通过JS代码而非HTML属性实现，以便在弹出前执行初始化操作
+			//モーダル表示制御は、表示前の初期化処理を可能にするため、JSコードで実装すること（HTML属性不可）。
+			//フォームのreset()メソッドを利用して、入力情報をリセット（クリア）する
+            $("#createActivityForm")[0].reset();
 			
-				
             $("#createActivityModal").modal("show");
         });
 
-		//为保存按钮添加点击事件,保存成功关闭，失败则不关闭
+		//保存ボタンクリック時、成功時のみ閉じる処理を実装（失敗時は閉じない）。
 		$("#saveBtn").click(function(){ 
-			//获取参数
+			//パラメータの取得
 			var owner = $("#create-marketActivityOwner").val();
-			var marketName = $.trim($("#create-marketActivityName").val());
-			var startTime = $("#create-startTime").val();
-			var endTime = $("#create-endTime").val();
+			var name = $.trim($("#create-marketActivityName").val());
+			var startDate = $("#create-startTime").val();
+			var endDate = $("#create-endTime").val();
 			var cost = $.trim($("#create-cost").val());
 			var description = $.trim($("#create-describe").val());
-			//表单验证：所有者和名称不能为空
+			//フォーム検証：所有者と名称は空であってはなりません。
 			if(owner == ""){
-				alert("所有者不能为空");
+				alert("所有者は必須入力です");
 				return;
 			}
-			if(marketName == ""){
-				alert("市场活动名称不能为空");
+			if(name == ""){
+				alert("キャンペーン名は必須入力です");
 				return;
 			}
 			//若结束日期早于开始日期，提示“结束日期不能比开始日期小”并终止执行。
-			if(startTime != "" && endTime != "" && endTime < startTime){
-				alert("结束日期不能比开始日期小");
+			//終了日は開始日以降の日付を設定する
+			if(startDate == "" || endDate == "" ){
+				alert("日付を入力してください​");
+				return;
+			}else if(endDate < startDate){
+				alert("終了日は開始日より前の日付には設定できません");
 				return;
 			}
-			//成本只能为非负整数
+			//コストは0以上の整数であること（正規表現でチェック）。
 			if(!/^(([1-9]\d*)|0)$/.test(cost)){
-				alert("成本只能为非负整数");
+				alert("​コストは0以上の整数で入力してください​​");
 				return;
 			}
-			
+            //すべての検証が成功した後、Ajaxを通じて作成リクエストを送信します。
+            $.ajax({
+                url:"workbench/activity/saveCreateActivity.do",
+                type:"post",
+                dataType:"json",
+                data:{
+                    owner:owner,
+                    name:name,
+                    startDate:startDate,
+                    endDate:endDate,
+                    cost:cost,
+                    description:description
+                },
+                success:function (data) {
+                    if(data.code == "1"){
+                        //追加成功、モーダルウィンドウを閉じる。
+                        $("#createActivityModal").modal("hide");
+                        //刷新市场活动列表，显示第一页数据，保持每页显示的记录数不变(后面再完善)
+												//$("#activityPage") .bs_pagination("getOption","rowsPerPage")：ページングのオプションを取得する。
+                        queryActivityByConditionForPage(1,$("#activityPage") .bs_pagination("getOption","rowsPerPage"))
+                    }else{
+                        //追加失敗、エラーメッセージを表示
+                        alert(data.message);
+                        //モーダルウィンドウを閉じない
+                        $("#createActivityModal").modal("show");
+                    }
+                }
+
+            })
         });
 
+		// ページの読み込み完了後、コンテナに対してカレンダーツール関数を呼び出す
+		$(".myDate").datetimepicker({
+		    language: "ja",          // 言語（日本語に設定）
+		    format: "yyyy-mm-dd",    // 日付フォーマット
+		    minView: "month",        // 月単位で表示
+		    initialDate: new Date(), // デフォルトで現在の日付を表示
+		    autoclose: true,         // 日付選択後にカレンダーを自動閉じる
+		    todayBtn: true,          // 「今日」ボタンを表示
+		    clearBtn: true           // 「クリア」ボタンを表示
+		});
+		// マーケティングキャンペーン一覧ページの読み込み完了時、全データの最初のページと総件数を取得
+		queryActivityByConditionForPage(1,10);
+
+		//検索ボタンにクリックイベントをバインドする。
+		$("#researchBtn").click(function () {
+			//调用查询函数
+			queryActivityByConditionForPage(1,$("#activityPage") .bs_pagination("getOption","rowsPerPage"));
+		});
 	});
 	
+	//在页面入口函数外面封装市场活动列表的查询显示的函数
+	// ページのエントリ関数外に、マーケティングキャンペーン一覧の検索表示機能をカプセル化
+	function queryActivityByConditionForPage(pageNo,pageSize) { 
+		
+		// パラメータを収集
+		let name = $("#query-name").val();
+		let owner = $("#query-owner").val();
+		let startDate = $("#query-startDate").val();
+		let endDate = $("#query-endDate").val();
+
+		$.ajax({
+		    url: "workbench/activity/queryActivityByConditionForPage.do",
+		    type: "post",
+		    data: {
+		        pageNo: pageNo,
+		        pageSize: pageSize,
+		        name: name,
+		        owner: owner,
+		        startDate: startDate,
+		        endDate: endDate
+		    },
+		    dataType: "json",
+		    success: function(data) {
+		        // data：サーバーから返されたレスポンスデータ
+		        // data.activities：レスポンスデータから取得した検索結果リスト
+		        // data.totalRows：レスポンスデータから取得した総レコード数
+		        
+		        // data.activitiesをループ処理し、すべての行データ（trタグ）を連結
+		        //$("#totalRowsB").text(data.totalRows);
+
+		        let html = "";
+		        $.each(data.activities, function(i, n) {
+		            html += "<tr class=\"active\">";
+		            html += "<td><input type=\"checkbox\" value=\"" + n.id + "\" /></td>";
+		            html += "<td><a style=\"text-decoration: none; cursor: pointer;\" onclick=\"window.location.href='detail.html';\">" + n.name + "</a></td>";
+		            html += "<td>" + n.owner + "</td>";
+		            html += "<td>" + n.startDate + "</td>";
+		            html += "<td>" + n.endDate + "</td>";
+		            html += "</tr>";
+		        });
+		        
+		        $("#activityBody").html(html);
+						//総ページ数を計算する
+						let totalPages;
+						if(data.totalRows % pageSize == 0) {
+							totalPages = data.totalRows / pageSize;
+						} else {
+							//切り上げ関数 Math.ceil()
+							totalPages = Math.ceil(data.totalRows / pageSize);
+						}
+
+						//在此处设置分页组件的函数（因为在这里才能读取到后台返回的总件数)
+						// ここでページネーションコンポーネントの関数を設定（バックエンドから返されたdataを取得できるため）
+						$("#activityPage") .bs_pagination({
+							currentPage: pageNo, // ページ番号
+							rowsPerPage: pageSize, // 1ページあたりの行数
+							totalRows: data.totalRows, // 総レコード数
+							totalPages: totalPages, // 総ページ数
+							visiblePageLinks: 10, // 表示するページリンク数
+							showGoToPage: true, // Go to pageリンクを表示
+							showRowsPerPage: true, // 1ページあたりの行数リンクを表示
+							showRowsInfo: true, // ページ情報を表示
+							onChangePage: function(event, pageObj) { 
+								
+								queryActivityByConditionForPage(pageObj.currentPage,pageObj.rowsPerPage);
+							}
+
+						})
+		    }
+		});
+	}
 </script>
 </head>
 <body>
 
 	<!-- 创建市场活动的模态窗口 -->
+	<!-- マーケティングキャンペーン作成モーダルウィンドウ -->
 	<div class="modal fade" id="createActivityModal" role="dialog">
 		<div class="modal-dialog" role="document" style="width: 85%;">
 			<div class="modal-content">
@@ -73,11 +202,11 @@
 					<button type="button" class="close" data-dismiss="modal">
 						<span aria-hidden="true">×</span>
 					</button>
-					<h4 class="modal-title" id="myModalLabel1">创建市场活动</h4>
+					<h4 class="modal-title" id="myModalLabel1">マーケティングキャンペーン作成</h4>
 				</div>
 				<div class="modal-body">
 				
-					<form class="form-horizontal" role="form">
+					<form class="form-horizontal" role="form" id="createActivityForm">
 					
 						<div class="form-group">
 							<label for="create-marketActivityOwner" class="col-sm-2 control-label">所有者<span style="font-size: 15px; color: red;">*</span></label>
@@ -88,31 +217,31 @@
 									</c:forEach>
 								</select>
 							</div>
-                            <label for="create-marketActivityName" class="col-sm-2 control-label">名称<span style="font-size: 15px; color: red;">*</span></label>
+                            <label for="create-marketActivityName" class="col-sm-2 control-label">キャンペーン名<span style="font-size: 15px; color: red;">*</span></label>
                             <div class="col-sm-10" style="width: 300px;">
                                 <input type="text" class="form-control" id="create-marketActivityName">
                             </div>
 						</div>
 						
 						<div class="form-group">
-							<label for="create-startTime" class="col-sm-2 control-label">开始日期</label>
+							<label for="create-startTime" class="col-sm-2 control-label">開始日</label>
 							<div class="col-sm-10" style="width: 300px;">
-								<input type="text" class="form-control" id="create-startTime">
+								<input type="text" class="form-control myDate" id="create-startTime" readonly>
 							</div>
-							<label for="create-endTime" class="col-sm-2 control-label">结束日期</label>
+							<label for="create-endTime" class="col-sm-2 control-label">終了日</label>
 							<div class="col-sm-10" style="width: 300px;">
-								<input type="text" class="form-control" id="create-endTime">
+								<input type="text" class="form-control myDate" id="create-endTime" readonly>
 							</div>
 						</div>
                         <div class="form-group">
 
-                            <label for="create-cost" class="col-sm-2 control-label">成本</label>
+                            <label for="create-cost" class="col-sm-2 control-label">コスト</label>
                             <div class="col-sm-10" style="width: 300px;">
                                 <input type="text" class="form-control" id="create-cost">
                             </div>
                         </div>
 						<div class="form-group">
-							<label for="create-describe" class="col-sm-2 control-label">描述</label>
+							<label for="create-describe" class="col-sm-2 control-label">説明</label>
 							<div class="col-sm-10" style="width: 81%;">
 								<textarea class="form-control" rows="3" id="create-describe"></textarea>
 							</div>
@@ -122,8 +251,8 @@
 					
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-					<button type="button" class="btn btn-primary" id="saveBtn">保存</button>
+					<button type="button" class="btn btn-default" data-dismiss="modal">閉じる</button>
+					<button type="button" class="btn btn-primary" id="saveBtn">送信</button>
 				</div>
 			</div>
 		</div>
@@ -152,7 +281,7 @@
 									</c:forEach>
 								</select>
 							</div>
-                            <label for="edit-marketActivityName" class="col-sm-2 control-label">名称<span style="font-size: 15px; color: red;">*</span></label>
+                            <label for="edit-marketActivityName" class="col-sm-2 control-label">キャンペーン名<span style="font-size: 15px; color: red;">*</span></label>
                             <div class="col-sm-10" style="width: 300px;">
                                 <input type="text" class="form-control" id="edit-marketActivityName" value="发传单">
                             </div>
@@ -236,7 +365,7 @@
 	<div>
 		<div style="position: relative; left: 10px; top: -10px;">
 			<div class="page-header">
-				<h3>市场活动列表</h3>
+				<h3>マーケティングキャンペーン一覧</h3>
 			</div>
 		</div>
 	</div>
@@ -248,33 +377,33 @@
 				  
 				  <div class="form-group">
 				    <div class="input-group">
-				      <div class="input-group-addon">名称</div>
-				      <input class="form-control" type="text">
+				      <div class="input-group-addon">キャンペーン名</div>
+				      <input class="form-control" type="text" id="query-name"/>
 				    </div>
 				  </div>
 				  
 				  <div class="form-group">
 				    <div class="input-group">
 				      <div class="input-group-addon">所有者</div>
-				      <input class="form-control" type="text">
+				      <input class="form-control" type="text" id="query-owner"/>
 				    </div>
 				  </div>
 
 
 				  <div class="form-group">
 				    <div class="input-group">
-				      <div class="input-group-addon">开始日期</div>
-					  <input class="form-control" type="text" id="startTime" />
+				      <div class="input-group-addon">開始日</div>
+					  <input class="form-control myDate" type="text" id="query-startDate"/>
 				    </div>
 				  </div>
 				  <div class="form-group">
 				    <div class="input-group">
-				      <div class="input-group-addon">结束日期</div>
-					  <input class="form-control" type="text" id="endTime">
+				      <div class="input-group-addon">終了日</div>
+					  <input class="form-control myDate" type="text" id="query-endDate"/>
 				    </div>
 				  </div>
 				  
-				  <button type="submit" class="btn btn-default">查询</button>
+				  <button type="button" class="btn btn-default" id="researchBtn">検索</button>
 				  
 				</form>
 			</div>
@@ -291,38 +420,34 @@
                 </div>
 			</div>
 			<div style="position: relative;top: 10px;">
-				<table class="table table-hover">
+				<table class="table table-hover" style="width: 100%; border-collapse: collapse;">
 					<thead>
 						<tr style="color: #B3B3B3;">
 							<td><input type="checkbox" /></td>
-							<td>名称</td>
-                            <td>所有者</td>
-							<td>开始日期</td>
-							<td>结束日期</td>
+							<td>ｷｬﾝﾍﾟｰﾝ名</td>
+              				<td>所有者</td>
+							<td>開始日</td>
+							<td>終了日</td>
 						</tr>
 					</thead>
-					<tbody>
-						<tr class="active">
+					<tbody id="activityBody">
+						<!-- <tr class="active">
 							<td><input type="checkbox" /></td>
 							<td><a style="text-decoration: none; cursor: pointer;" onclick="window.location.href='detail.html';">发传单</a></td>
                             <td>zhangsan</td>
 							<td>2020-10-10</td>
 							<td>2020-10-20</td>
-						</tr>
-                        <tr class="active">
-                            <td><input type="checkbox" /></td>
-                            <td><a style="text-decoration: none; cursor: pointer;" onclick="window.location.href='detail.html';">发传单</a></td>
-                            <td>zhangsan</td>
-                            <td>2020-10-10</td>
-                            <td>2020-10-20</td>
-                        </tr>
+						</tr> -->
 					</tbody>
 				</table>
+				<!-- <div id="activityPage"></div> -->
 			</div>
-			
-			<div style="height: 50px; position: relative;top: 30px;">
+			<!-- 分页组件挂载处-->
+			<!-- ページネーションコンポーネントマウント位置 -->
+			<div id="activityPage"></div>
+			<!-- <div style="height: 50px; position: relative;top: 30px;">
 				<div>
-					<button type="button" class="btn btn-default" style="cursor: default;">共<b>50</b>条记录</button>
+					<button type="button" class="btn btn-default" style="cursor: default;">共<b id="totalRowsB">50</b>条记录</button>
 				</div>
 				<div class="btn-group" style="position: relative;top: -34px; left: 110px;">
 					<button type="button" class="btn btn-default" style="cursor: default;">显示</button>
@@ -353,7 +478,7 @@
 						</ul>
 					</nav>
 				</div>
-			</div>
+			</div> -->
 			
 		</div>
 		

@@ -1,7 +1,9 @@
 package com.lukai.crm.workbench.web.controller;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -36,7 +38,6 @@ public class ActivityController {
 	@RequestMapping("/workbench/activity/index.do")
 	public String index(HttpServletRequest request) {
 		List<User> users = userService.queryAllUsers();
-		users.stream().forEach(System.out::println);
 		request.setAttribute("userList", users);
 		
 		return "workbench/activity/index";
@@ -80,5 +81,36 @@ public class ActivityController {
 		return returnObject;
 		
 		
+	}
+	
+	/**
+	 * 検索条件を元にマーケティングキャンペーン及び総件数を検索する
+	 * @param name
+	 * @param owner
+	 * @param startDate
+	 * @param endDate
+	 * @param pageNo
+	 * @param pageSize
+	 * @return
+	 * 検索結果をJson Objectで返す
+	 */
+	@RequestMapping("/workbench/activity/queryActivityByConditionForPage.do")
+	@ResponseBody
+	public Object queryActivityByConditionForPage(String name,String owner,String startDate,String endDate,
+																			   Integer pageNo,Integer pageSize) {
+		//パラメータをMapオブジェクトに格納する。
+		Map<String,Object> map = new HashMap<String,Object>();
+		map.put("name", name);
+		map.put("owner", owner);
+		map.put("startDate", startDate);
+		map.put("endDate", endDate);
+		map.put("beginNo", (pageNo-1)*pageSize);
+		map.put("pageSize", pageSize);
+		List<Activity> activities = activityService.queryActivityByConditionForPage(map);
+		int totalRows = activityService.queryCountOfActivityByCondition(map);
+		Map<String,Object> retMap = new HashMap<String,Object>();
+		retMap.put("activities", activities);
+		retMap.put("totalRows", totalRows);
+		return retMap;
 	}
 }
