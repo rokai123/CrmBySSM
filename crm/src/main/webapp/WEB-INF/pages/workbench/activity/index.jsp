@@ -113,9 +113,28 @@
 
 		//検索ボタンにクリックイベントをバインドする。
 		$("#researchBtn").click(function () {
-			//调用查询函数
+			//调用市场活动查询函数
 			queryActivityByConditionForPage(1,$("#activityPage") .bs_pagination("getOption","rowsPerPage"));
 		});
+
+		//为全选按钮添加点击事件
+		$("#checkAll").click(function () { 
+			//将当前全选按钮的选中状态，赋值给表格中的所有复选框
+			$("#activityBody input[type='checkbox']").prop("checked",this.checked);
+		});
+
+		//全選択以外のチェックボックスにクリックイベントをバインド
+		/* 既存の静的元素にのみ直接イベントバインド可能（動的に追加される要素には無効） $("#activityBody input[type='checkbox']").click(function(){}); */
+
+		//xxx.on() メソッド：静的と動的に追加される要素にはイベントバインド可能
+		$("#activityBody").on("click","input[type='checkbox']",function () { 
+			//全てのチェックボックスがチェックされているかどうかを判断
+			if($("#activityBody input[type='checkbox']:checked").size() == $("#activityBody input[type='checkbox']").size()){
+				$("#checkAll").prop("checked",true);	
+			} else{
+				$("#checkAll").prop("checked",false);
+			}
+		})
 	});
 	
 	//在页面入口函数外面封装市场活动列表的查询显示的函数
@@ -151,7 +170,7 @@
 		        let html = "";
 		        $.each(data.activities, function(i, n) {
 		            html += "<tr class=\"active\">";
-		            html += "<td><input type=\"checkbox\" value=\"" + n.id + "\" /></td>";
+		            html += "<td><input type=\"checkbox\" value=\"" + n.id + "\" id=\" \"/></td>";
 		            html += "<td><a style=\"text-decoration: none; cursor: pointer;\" onclick=\"window.location.href='detail.html';\">" + n.name + "</a></td>";
 		            html += "<td>" + n.owner + "</td>";
 		            html += "<td>" + n.startDate + "</td>";
@@ -160,32 +179,36 @@
 		        });
 		        
 		        $("#activityBody").html(html);
-						//総ページ数を計算する
-						let totalPages;
-						if(data.totalRows % pageSize == 0) {
-							totalPages = data.totalRows / pageSize;
-						} else {
-							//切り上げ関数 Math.ceil()
-							totalPages = Math.ceil(data.totalRows / pageSize);
-						}
+				//総ページ数を計算する
+				let totalPages;
+				if(data.totalRows % pageSize == 0) {
+					totalPages = data.totalRows / pageSize;
+				} else {
+					//切り上げ関数 Math.ceil()
+					totalPages = Math.ceil(data.totalRows / pageSize);
+				}
 
-						//在此处设置分页组件的函数（因为在这里才能读取到后台返回的总件数)
-						// ここでページネーションコンポーネントの関数を設定（バックエンドから返されたdataを取得できるため）
-						$("#activityPage") .bs_pagination({
-							currentPage: pageNo, // ページ番号
-							rowsPerPage: pageSize, // 1ページあたりの行数
-							totalRows: data.totalRows, // 総レコード数
-							totalPages: totalPages, // 総ページ数
-							visiblePageLinks: 10, // 表示するページリンク数
-							showGoToPage: true, // Go to pageリンクを表示
-							showRowsPerPage: true, // 1ページあたりの行数リンクを表示
-							showRowsInfo: true, // ページ情報を表示
-							onChangePage: function(event, pageObj) { 
-								
-								queryActivityByConditionForPage(pageObj.currentPage,pageObj.rowsPerPage);
-							}
+				//在此处设置分页组件的函数（因为在这里才能读取到后台返回的总件数)
+				// ここでページネーションコンポーネントの関数を設定（バックエンドから返されたdataを取得できるため）
+				$("#activityPage") .bs_pagination({
+					currentPage: pageNo, // ページ番号
+					rowsPerPage: pageSize, // 1ページあたりの行数
+					totalRows: data.totalRows, // 総レコード数
+					totalPages: totalPages, // 総ページ数
+					visiblePageLinks: 10, // 表示するページリンク数
+					showGoToPage: true, // Go to pageリンクを表示
+					showRowsPerPage: true, // 1ページあたりの行数リンクを表示
+					showRowsInfo: true, // ページ情報を表示
+					// ページリンクがクリックされたときに呼び出される関数
+					onChangePage: function(event, pageObj) { 
+						// ページリンクがクリックされたら、マーケティングキャンペーン一覧を表示
+						queryActivityByConditionForPage(pageObj.currentPage,pageObj.rowsPerPage);
+						//全選択チェックボックスをデフォルトの未選択状態に設定
+						$("#checkAll").prop("checked",false);
+						
+					}
 
-						})
+				})
 		    }
 		});
 	}
@@ -423,7 +446,7 @@
 				<table class="table table-hover" style="width: 100%; border-collapse: collapse;">
 					<thead>
 						<tr style="color: #B3B3B3;">
-							<td><input type="checkbox" /></td>
+							<td><input type="checkbox" id="checkAll"/></td>
 							<td>ｷｬﾝﾍﾟｰﾝ名</td>
               				<td>所有者</td>
 							<td>開始日</td>
