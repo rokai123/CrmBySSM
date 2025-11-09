@@ -246,4 +246,12 @@
       </if>
     </where>
   </select>
+  
+  <!-- IDに基づいて該当するマーケティングキャンペーンを削除 -->
+  <delete id="deleteActivityByIds" parameterType="String">
+	    delete from tbl_activity where id in
+	    <foreach collection="array" item="id" open="(" close=")" separator=",">
+	      #{id}
+	    </foreach>
+  </delete>
 </mapper>

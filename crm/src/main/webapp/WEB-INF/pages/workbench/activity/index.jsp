@@ -113,14 +113,14 @@
 
 		//検索ボタンにクリックイベントをバインドする。
 		$("#researchBtn").click(function () {
-			//调用市场活动查询函数
+			
 			queryActivityByConditionForPage(1,$("#activityPage") .bs_pagination("getOption","rowsPerPage"));
 		});
 
-		//为全选按钮添加点击事件
+		// 全選択ボタンにクリックイベントを設定
 		$("#checkAll").click(function () { 
-			//将当前全选按钮的选中状态，赋值给表格中的所有复选框
-			$("#activityBody input[type='checkbox']").prop("checked",this.checked);
+			// 全選択ボタンのチェック状態をテーブル内の全チェックボックスに反映
+			$("#activityBody input[type='checkbox']").prop("checked", this.checked);
 		});
 
 		//全選択以外のチェックボックスにクリックイベントをバインド
@@ -135,6 +135,42 @@
 				$("#checkAll").prop("checked",false);
 			}
 		})
+
+		//削除ボタンにクリックイベントをバインド
+		$("#deleteBtn").click(function () { 
+			
+				//取得チェックボックス
+				let checkedIds = $("#activityBody input[type='checkbox']:checked");
+				//判断
+				if(checkedIds.size() == 0){
+					alert("削除するキャンペーンを選択してください");
+				}else{
+					if(confirm("削除は取り消せません。削除してもよろしいですか？")){
+						// ids = "id=xxx&id=xxx&id=xxx"
+						let ids = "";
+						for(let i = 0; i < checkedIds.size(); i++){
+							ids += "id=" + $(checkedIds[i]).val();
+							if(i < checkedIds.size() - 1){
+								ids += "&";
+							}
+						}
+						$.ajax({
+							url:"workbench/activity/deleteActivityByIds.do",
+							type:"post",
+							data:ids,
+							dataType:"json",
+							success:function (data) {
+								if(data.code == "1"){
+									// 削除成功
+									//alert(data.message);
+									// マーケティングキャンペーン一覧を更新し、1ページ目のデータを表示、ページあたりの表示件数を維持
+									queryActivityByConditionForPage(1,$("#activityPage").bs_pagination("getOption","rowsPerPage"));
+								}
+							}
+						})
+					}
+				}
+		});
 	});
 	
 	//在页面入口函数外面封装市场活动列表的查询显示的函数
@@ -434,7 +470,7 @@
 				<div class="btn-group" style="position: relative; top: 18%;">
 				  <button type="button" class="btn btn-primary" id="createActivityBtn"><span class="glyphicon glyphicon-plus"></span> 新規</button>
 				  <button type="button" class="btn btn-default" data-toggle="modal" data-target="#editActivityModal"><span class="glyphicon glyphicon-pencil"></span> 編集</button>
-				  <button type="button" class="btn btn-danger"><span class="glyphicon glyphicon-minus"></span> 削除</button>
+				  <button type="button" class="btn btn-danger" id="deleteBtn"><span class="glyphicon glyphicon-minus"></span> 削除</button>
 				</div>
 				<div class="btn-group" style="position: relative; top: 18%;">
                     <button type="button" class="btn btn-default" data-toggle="modal" data-target="#importActivityModal" ><span class="glyphicon glyphicon-import"></span> 上传列表数据（导入）</button>

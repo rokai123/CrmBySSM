@@ -113,4 +113,31 @@ public class ActivityController {
 		retMap.put("totalRows", totalRows);
 		return retMap;
 	}
+	
+	/**
+	 * マーケティングキャンペーンを削除する
+	 * @param id
+	 * @return
+	 * 削除結果をJson Objectで返す
+	 */
+	@RequestMapping("/workbench/activity/deleteActivityByIds.do")
+	@ResponseBody
+	public Object deleteActivityByIds(String[] id) {
+		ReturnObject returnObject= new ReturnObject();
+		try {
+			int resultInt = activityService.deleteActivityByIds(id);
+			if (resultInt>0) {
+				returnObject.setCode(Contants.RETURN_OBJECT_CODE_SUCCESS);
+			}else {
+				returnObject.setCode(Contants.RETURN_OBJECT_CODE_FAIL);
+				returnObject.setMessage("システムが混雑中です、しばらくしてから再度お試しください");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			returnObject.setCode(Contants.RETURN_OBJECT_CODE_FAIL);
+			returnObject.setMessage("システムが混雑中です、しばらくしてから再度お試しください");
+		}
+		return returnObject;
+		
+	}
 }

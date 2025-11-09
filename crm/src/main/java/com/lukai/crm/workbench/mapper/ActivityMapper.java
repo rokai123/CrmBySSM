@@ -62,4 +62,7 @@ public interface ActivityMapper {
     List<Activity> selectActivityByConditionForPage(Map<String, Object> map);
     
     int selectCountOfActivityByCondition(Map<String, Object> map);
+    
+    //IDに基づいて該当するマーケティングキャンペーンを削除
+    int deleteActivityByIds(String[] ids);
 }
