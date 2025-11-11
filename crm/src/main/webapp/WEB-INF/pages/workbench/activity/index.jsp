@@ -113,8 +113,165 @@
 
 		//検索ボタンにクリックイベントをバインドする。
 		$("#researchBtn").click(function () {
-			//调用查询函数
+			
 			queryActivityByConditionForPage(1,$("#activityPage") .bs_pagination("getOption","rowsPerPage"));
+		});
+
+		// 全選択ボタンにクリックイベントを設定
+		$("#checkAll").click(function () { 
+			// 全選択ボタンのチェック状態をテーブル内の全チェックボックスに反映
+			$("#activityBody input[type='checkbox']").prop("checked", this.checked);
+		});
+
+		//全選択以外のチェックボックスにクリックイベントをバインド
+		/* 既存の静的元素にのみ直接イベントバインド可能（動的に追加される要素には無効） $("#activityBody input[type='checkbox']").click(function(){}); */
+
+		//xxx.on() メソッド：静的と動的に追加される要素にはイベントバインド可能
+		$("#activityBody").on("click","input[type='checkbox']",function () { 
+			//全てのチェックボックスがチェックされているかどうかを判断
+			if($("#activityBody input[type='checkbox']:checked").size() == $("#activityBody input[type='checkbox']").size()){
+				$("#checkAll").prop("checked",true);	
+			} else{
+				$("#checkAll").prop("checked",false);
+			}
+		})
+
+		//削除ボタンにクリックイベントをバインド
+		$("#deleteBtn").click(function () { 
+			
+				//取得チェックボックス
+				let checkedIds = $("#activityBody input[type='checkbox']:checked");
+				//判断
+				if(checkedIds.size() == 0){
+					alert("削除するキャンペーンを選択してください");
+					return;
+				}else{
+					if(confirm("削除は取り消せません。削除してもよろしいですか？")){
+						// ids = "id=xxx&id=xxx&id=xxx"
+						let ids = "";
+						$.each(checkedIds,function () { 
+							ids += "id=" + $(this).val() + "&";
+						});
+						ids = ids.substring(0,ids.length - 1);
+						/* for(let i = 0; i < checkedIds.size(); i++){
+							ids += "id=" + $(checkedIds[i]).val();
+							if(i < checkedIds.size() - 1){
+								ids += "&";
+							}
+						} */
+						$.ajax({
+							url:"workbench/activity/deleteActivityByIds.do",
+							type:"post",
+							data:ids,
+							dataType:"json",
+							success:function (data) {
+								if(data.code == "1"){
+									// 削除成功
+									//alert(data.message);
+									// マーケティングキャンペーン一覧を更新し、1ページ目のデータを表示、ページあたりの表示件数を維持
+									queryActivityByConditionForPage(1,$("#activityPage").bs_pagination("getOption","rowsPerPage"));
+								}
+							}
+						})
+					}
+				}
+		});
+
+		// 編集ボタンにクリックイベントをバインド
+		$("#editActivityBtn").click(function () {
+			//選択されたキャンペーンを取得
+			let checkedId = $("#activityBody input[type='checkbox']:checked");
+			if(checkedId.size() == 0){
+				alert("編集するキャンペーンを選択してください");
+				return;
+			} else if(checkedId.size() > 1){
+				alert("編集は1件のみ可能です");
+				return;
+			} else{
+				// 選択したキャンペーンを取得
+				let id = checkedId.val();
+				//コントロールにIDを送信し、選択されたマーケティングキャンペーン情報を取得し、モーダルウィンドウに反映する
+				$.ajax({
+					url:"workbench/activity/queryActivityById.do",
+					type:"get",
+					data:{
+						id:id
+					},
+					dataType:"json",
+					success:function (data) {
+						// モーダルウィンドウに取得したキャンペーン情報を表示
+						//$("#edit-id").val(data.id);
+						$("#edit-id").val(data.id);
+						$("#edit-marketActivityOwner").val(data.owner);
+						$("#edit-marketActivityName").val(data.name);
+						$("#edit-startTime").val(data.startDate);
+						$("#edit-endTime").val(data.endDate);
+						$("#edit-cost").val(data.cost);
+						$("#edit-describe").val(data.description);
+						
+						$("#hidden-owner").val(data.owner);
+						$("#hidden-name").val(data.name);
+						$("#hidden-startTime").val(data.startDate);
+						$("#hidden-endTime").val(data.endDate);
+						$("#hidden-cost").val(data.cost);
+						$("#hidden-describe").val(data.description);
+						// モーダルウィンドウを表示
+						$("#editActivityModal").modal("show");
+					}
+				})
+				
+			}
+
+		});
+
+		//更新ボタンにクリックイベントをバインド
+		$("#updateActivityBtn").click(function () {
+			// モーダルウィンドウの必須入力項目を取得
+			let owner = $("#edit-marketActivityOwner").val();
+			let name = $("#edit-marketActivityName").val();
+			if(owner =="" || owner==null){
+				alert("マーケティングキャンペーンの担当者を入力してください");
+				return;
+			}
+			if(name =="" || name==null){
+				alert("キャンペーン名を入力してください");
+				return;
+			}
+			// 変更があるかどうかを判定。変更がない場合はリクエストを送信しない
+			if(owner == $("#hidden-owner").val() && name == $("#hidden-name").val() && $("#edit-startTime").val() == $("#hidden-startTime").val() && $("#edit-endTime").val() == $("#hidden-endTime").val() && $("#edit-cost").val() == $("#hidden-cost").val() && $("#edit-describe").val() == $("#hidden-describe").val()){
+				alert("キャンペーン情報未変更");
+				return;
+			}
+			let activity={
+				id:$("#edit-id").val(),
+				owner:owner,
+				name:name,
+				startDate:$("#edit-startTime").val(),
+				endDate:$("#edit-endTime").val(),
+				cost:$("#edit-cost").val(),
+				description:$("#edit-describe").val()
+
+			}
+			$.ajax({
+				url:"workbench/activity/saveEditActivity.do",
+				type:"post",
+				data:activity,
+				dataType:"json",
+				success:function (data) {
+					if(data.code == "1"){
+						// キャンペーン更新成功
+						//alert(data.message);
+						// モーダルウィンドウを閉じる
+						$("#editActivityModal").modal("hide");
+						// マーケティングキャンペーン一覧を更新し、1ページ目のデータを表示、ページあたりの表示件数を維持
+						queryActivityByConditionForPage(1,$("#activityPage").bs_pagination("getOption","rowsPerPage"));
+					}else{
+						// キャンペーン更新失敗
+						alert(data.message);
+						$("#editActivityModal").modal("show");
+					}
+				}
+			})
 		});
 	});
 	
@@ -151,7 +308,7 @@
 		        let html = "";
 		        $.each(data.activities, function(i, n) {
 		            html += "<tr class=\"active\">";
-		            html += "<td><input type=\"checkbox\" value=\"" + n.id + "\" /></td>";
+		            html += "<td><input type=\"checkbox\" value=\"" + n.id + "\" id=\" \"/></td>";
 		            html += "<td><a style=\"text-decoration: none; cursor: pointer;\" onclick=\"window.location.href='detail.html';\">" + n.name + "</a></td>";
 		            html += "<td>" + n.owner + "</td>";
 		            html += "<td>" + n.startDate + "</td>";
@@ -160,32 +317,36 @@
 		        });
 		        
 		        $("#activityBody").html(html);
-						//総ページ数を計算する
-						let totalPages;
-						if(data.totalRows % pageSize == 0) {
-							totalPages = data.totalRows / pageSize;
-						} else {
-							//切り上げ関数 Math.ceil()
-							totalPages = Math.ceil(data.totalRows / pageSize);
-						}
+				//総ページ数を計算する
+				let totalPages;
+				if(data.totalRows % pageSize == 0) {
+					totalPages = data.totalRows / pageSize;
+				} else {
+					//切り上げ関数 Math.ceil()
+					totalPages = Math.ceil(data.totalRows / pageSize);
+				}
 
-						//在此处设置分页组件的函数（因为在这里才能读取到后台返回的总件数)
-						// ここでページネーションコンポーネントの関数を設定（バックエンドから返されたdataを取得できるため）
-						$("#activityPage") .bs_pagination({
-							currentPage: pageNo, // ページ番号
-							rowsPerPage: pageSize, // 1ページあたりの行数
-							totalRows: data.totalRows, // 総レコード数
-							totalPages: totalPages, // 総ページ数
-							visiblePageLinks: 10, // 表示するページリンク数
-							showGoToPage: true, // Go to pageリンクを表示
-							showRowsPerPage: true, // 1ページあたりの行数リンクを表示
-							showRowsInfo: true, // ページ情報を表示
-							onChangePage: function(event, pageObj) { 
-								
-								queryActivityByConditionForPage(pageObj.currentPage,pageObj.rowsPerPage);
-							}
+				//在此处设置分页组件的函数（因为在这里才能读取到后台返回的总件数)
+				// ここでページネーションコンポーネントの関数を設定（バックエンドから返されたdataを取得できるため）
+				$("#activityPage") .bs_pagination({
+					currentPage: pageNo, // ページ番号
+					rowsPerPage: pageSize, // 1ページあたりの行数
+					totalRows: data.totalRows, // 総レコード数
+					totalPages: totalPages, // 総ページ数
+					visiblePageLinks: 10, // 表示するページリンク数
+					showGoToPage: true, // Go to pageリンクを表示
+					showRowsPerPage: true, // 1ページあたりの行数リンクを表示
+					showRowsInfo: true, // ページ情報を表示
+					// ページリンクがクリックされたときに呼び出される関数
+					onChangePage: function(event, pageObj) { 
+						// ページリンクがクリックされたら、マーケティングキャンペーン一覧を表示
+						queryActivityByConditionForPage(pageObj.currentPage,pageObj.rowsPerPage);
+						//全選択チェックボックスをデフォルトの未選択状態に設定
+						$("#checkAll").prop("checked",false);
+						
+					}
 
-						})
+				})
 		    }
 		});
 	}
@@ -205,7 +366,6 @@
 					<h4 class="modal-title" id="myModalLabel1">マーケティングキャンペーン作成</h4>
 				</div>
 				<div class="modal-body">
-				
 					<form class="form-horizontal" role="form" id="createActivityForm">
 					
 						<div class="form-group">
@@ -271,30 +431,35 @@
 				<div class="modal-body">
 				
 					<form class="form-horizontal" role="form">
-					
 						<div class="form-group">
+							<!-- 編集するマーケティングキャンペーンのidを保存するhidden inputタグ-->
+							<input type="hidden" id="edit-id"></input>
 							<label for="edit-marketActivityOwner" class="col-sm-2 control-label">所有者<span style="font-size: 15px; color: red;">*</span></label>
 							<div class="col-sm-10" style="width: 300px;">
 								<select class="form-control" id="edit-marketActivityOwner">
-								  <c:forEach items="${userList}" var="user">
+									<c:forEach items="${userList}" var="user">
 								 		<option value="${user.id}">${user.name}</option>
 									</c:forEach>
 								</select>
+								<input type="hidden" id="hidden-owner"></input>
 							</div>
                             <label for="edit-marketActivityName" class="col-sm-2 control-label">キャンペーン名<span style="font-size: 15px; color: red;">*</span></label>
                             <div class="col-sm-10" style="width: 300px;">
-                                <input type="text" class="form-control" id="edit-marketActivityName" value="发传单">
+                                <input type="text" class="form-control" id="edit-marketActivityName">
+								<input type="hidden" id="hidden-name"></input>
                             </div>
 						</div>
 
 						<div class="form-group">
 							<label for="edit-startTime" class="col-sm-2 control-label">开始日期</label>
 							<div class="col-sm-10" style="width: 300px;">
-								<input type="text" class="form-control" id="edit-startTime" value="2020-10-10">
+								<input type="text" class="form-control myDate" id="edit-startTime" value="2020-10-10">
+								<input type="hidden" id="hidden-startTime"></input>
 							</div>
 							<label for="edit-endTime" class="col-sm-2 control-label">结束日期</label>
 							<div class="col-sm-10" style="width: 300px;">
-								<input type="text" class="form-control" id="edit-endTime" value="2020-10-20">
+								<input type="text" class="form-control myDate" id="edit-endTime" value="2020-10-20">
+								<input type="hidden" id="hidden-endTime"></input>
 							</div>
 						</div>
 						
@@ -302,12 +467,14 @@
 							<label for="edit-cost" class="col-sm-2 control-label">成本</label>
 							<div class="col-sm-10" style="width: 300px;">
 								<input type="text" class="form-control" id="edit-cost" value="5,000">
+								<input type="hidden" id="hidden-cost"></input>
 							</div>
 						</div>
 						
 						<div class="form-group">
 							<label for="edit-describe" class="col-sm-2 control-label">描述</label>
 							<div class="col-sm-10" style="width: 81%;">
+								<input type="hidden" id="hidden-describe"></input>
 								<textarea class="form-control" rows="3" id="edit-describe">市场活动Marketing，是指品牌主办或参与的展览会议与公关市场活动，包括自行主办的各类研讨会、客户交流会、演示会、新产品发布会、体验会、答谢会、年会和出席参加并布展或演讲的展览会、研讨会、行业交流会、颁奖典礼等</textarea>
 							</div>
 						</div>
@@ -317,7 +484,7 @@
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-					<button type="button" class="btn btn-primary" data-dismiss="modal">更新</button>
+					<button type="button" class="btn btn-primary" id="updateActivityBtn">更新</button>
 				</div>
 			</div>
 		</div>
@@ -410,8 +577,8 @@
 			<div class="btn-toolbar" role="toolbar" style="background-color: #F7F7F7; height: 50px; position: relative;top: 5px;">
 				<div class="btn-group" style="position: relative; top: 18%;">
 				  <button type="button" class="btn btn-primary" id="createActivityBtn"><span class="glyphicon glyphicon-plus"></span> 新規</button>
-				  <button type="button" class="btn btn-default" data-toggle="modal" data-target="#editActivityModal"><span class="glyphicon glyphicon-pencil"></span> 編集</button>
-				  <button type="button" class="btn btn-danger"><span class="glyphicon glyphicon-minus"></span> 削除</button>
+				  <button type="button" class="btn btn-default" id="editActivityBtn"><span class="glyphicon glyphicon-pencil"></span> 編集</button>
+				  <button type="button" class="btn btn-danger" id="deleteBtn"><span class="glyphicon glyphicon-minus"></span> 削除</button>
 				</div>
 				<div class="btn-group" style="position: relative; top: 18%;">
                     <button type="button" class="btn btn-default" data-toggle="modal" data-target="#importActivityModal" ><span class="glyphicon glyphicon-import"></span> 上传列表数据（导入）</button>
@@ -423,7 +590,7 @@
 				<table class="table table-hover" style="width: 100%; border-collapse: collapse;">
 					<thead>
 						<tr style="color: #B3B3B3;">
-							<td><input type="checkbox" /></td>
+							<td><input type="checkbox" id="checkAll"/></td>
 							<td>ｷｬﾝﾍﾟｰﾝ名</td>
               				<td>所有者</td>
 							<td>開始日</td>
