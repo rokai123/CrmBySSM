@@ -63,11 +63,14 @@
 				return;
 			}
 			//コストは0以上の整数であること（正規表現でチェック）。
-			if(!/^(([1-9]\d*)|0)$/.test(cost)){
-				alert("​コストは0以上の整数で入力してください​​");
-				return;
-			}
-            //すべての検証が成功した後、Ajaxを通じて作成リクエストを送信します。
+			if(cost != ""){
+				if(!/^(([1-9]\d*)|0)$/.test(cost)){
+					alert("​コストは0以上の整数で入力してください​​");
+					return;
+				}
+          return;
+      }
+			            //すべての検証が成功した後、Ajaxを通じて作成リクエストを送信します。
             $.ajax({
                 url:"workbench/activity/saveCreateActivity.do",
                 type:"post",
@@ -227,8 +230,18 @@
 		//更新ボタンにクリックイベントをバインド
 		$("#updateActivityBtn").click(function () {
 			// モーダルウィンドウの必須入力項目を取得
-			let owner = $("#edit-marketActivityOwner").val();
-			let name = $("#edit-marketActivityName").val();
+			let owner = $.trim($("#edit-marketActivityOwner").val());
+			let name = $.trim($("#edit-marketActivityName").val());
+			let startDate = $.trim($("#edit-startTime").val());
+			let endDate = $.trim($("#edit-endTime").val());
+			let cost = $.trim($("#edit-cost").val());
+			let description = $.trim($("#edit-describe").val());
+
+			// 変更があるかどうかを判定。変更がない場合はリクエストを送信しない
+			if(owner == $("#hidden-owner").val() && name == $("#hidden-name").val() && $("#edit-startTime").val() == $("#hidden-startTime").val() && $("#edit-endTime").val() == $("#hidden-endTime").val() && $("#edit-cost").val() == $("#hidden-cost").val() && $("#edit-describe").val() == $("#hidden-describe").val()){
+				alert("キャンペーン情報未変更");
+				return;
+			}
 			if(owner =="" || owner==null){
 				alert("マーケティングキャンペーンの担当者を入力してください");
 				return;
@@ -237,19 +250,31 @@
 				alert("キャンペーン名を入力してください");
 				return;
 			}
-			// 変更があるかどうかを判定。変更がない場合はリクエストを送信しない
-			if(owner == $("#hidden-owner").val() && name == $("#hidden-name").val() && $("#edit-startTime").val() == $("#hidden-startTime").val() && $("#edit-endTime").val() == $("#hidden-endTime").val() && $("#edit-cost").val() == $("#hidden-cost").val() && $("#edit-describe").val() == $("#hidden-describe").val()){
-				alert("キャンペーン情報未変更");
+			//若结束日期早于开始日期，提示“结束日期不能比开始日期小”并终止执行。
+			//終了日は開始日以降の日付を設定する
+			if(startDate == "" || endDate == "" ){
+				alert("日付を入力してください​");
+				return;
+			}else if(endDate < startDate){
+				alert("終了日は開始日より前の日付には設定できません");
 				return;
 			}
+			//コストは0以上の整数であること（正規表現でチェック）。
+			if(cost != ""){
+				if(!/^(([1-9]\d*)|0)$/.test(cost)){
+					alert("​コストは0以上の整数で入力してください​​");
+					return;
+				}
+      		}
+			
 			let activity={
 				id:$("#edit-id").val(),
 				owner:owner,
 				name:name,
-				startDate:$("#edit-startTime").val(),
-				endDate:$("#edit-endTime").val(),
-				cost:$("#edit-cost").val(),
-				description:$("#edit-describe").val()
+				startDate:startDate,
+				endDate:endDate,
+				cost:cost,
+				description:description
 
 			}
 			$.ajax({
@@ -264,7 +289,7 @@
 						// モーダルウィンドウを閉じる
 						$("#editActivityModal").modal("hide");
 						// マーケティングキャンペーン一覧を更新し、1ページ目のデータを表示、ページあたりの表示件数を維持
-						queryActivityByConditionForPage(1,$("#activityPage").bs_pagination("getOption","rowsPerPage"));
+						queryActivityByConditionForPage($("#activityPage").bs_pagination("getOption","currentPage"),$("#activityPage").bs_pagination("getOption","rowsPerPage"));
 					}else{
 						// キャンペーン更新失敗
 						alert(data.message);
