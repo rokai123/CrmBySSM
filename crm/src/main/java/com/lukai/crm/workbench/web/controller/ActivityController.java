@@ -24,13 +24,12 @@ import com.lukai.crm.workbench.service.ActivityService;
 
 @Controller
 public class ActivityController {
-	
 	@Autowired
 	UserService userService;
 	
 	@Autowired
 	ActivityService activityService;
-	
+
 	/*
 	 * by rokai123 
 	 * 
@@ -118,6 +117,7 @@ public class ActivityController {
 	 * マーケティングキャンペーンを削除する
 	 * @param id
 	 * @return
+	 * created by rokai123
 	 * 削除結果をJson Objectで返す
 	 */
 	@RequestMapping("/workbench/activity/deleteActivityByIds.do")
@@ -139,5 +139,49 @@ public class ActivityController {
 		}
 		return returnObject;
 		
+	}
+	
+	/**
+	 * IDに基づいて該当するマーケティングキャンペーンをリサーチ
+	 * created by 102106
+	 * 
+	 */
+	@RequestMapping("/workbench/activity/queryActivityById.do")
+	@ResponseBody
+	public Object queryActivityById(String id) {
+		
+		Activity activity = activityService.queryActivityById(id);
+		return activity;
+	}
+	
+	/**
+	 * IDに基づいて該当するマーケティングキャンペーンを更新する
+	 * 
+	 * @param activity
+	 * @return Json Object
+	 * created by 102106
+	 * 検索結果をJson Objectで返す
+	 */
+	@RequestMapping("/workbench/activity/saveEditActivity.do")
+	@ResponseBody
+	public Object saveEditActivity(Activity activity,HttpSession session) {
+		ReturnObject returnObject = new ReturnObject();
+		User user = (User)session.getAttribute(Contants.SESSION_USER);
+		activity.setEditTime(DateUtils.formateDateTime(new Date()));
+		activity.setEditBy(user.getId());
+		try {
+			int resultInt = activityService.saveActivity(activity);
+			if (resultInt>0) {
+				returnObject.setCode(Contants.RETURN_OBJECT_CODE_SUCCESS);
+			}else {
+				returnObject.setCode(Contants.RETURN_OBJECT_CODE_FAIL);
+				returnObject.setMessage("システムが混雑中です、しばらくしてから再度お試しください");
+			}
+		}catch (Exception e) {
+			e.printStackTrace();
+			returnObject.setCode(Contants.RETURN_OBJECT_CODE_FAIL);
+			returnObject.setMessage("システムが混雑中です、しばらくしてから再度お試しください");
+		}
+		return returnObject;
 	}
 }

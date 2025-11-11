@@ -41,5 +41,18 @@ public class ActivityServiceImpl implements ActivityService{
 		
 		return activityMapper.deleteActivityByIds(ids);
 	}
+	
+	//IDに基づいて該当するマーケティングキャンペーンをリサーチ
+	@Override
+	public Activity queryActivityById(String id) {
+		
+		return activityMapper.selectActivityById(id);
+	}
+
+	@Override
+	public int saveActivity(Activity activity) {
+		
+		return activityMapper.updateActivity(activity);
+	}
 
 }

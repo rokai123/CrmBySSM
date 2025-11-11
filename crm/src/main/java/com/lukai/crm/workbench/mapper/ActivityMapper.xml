@@ -254,4 +254,26 @@
 	      #{id}
 	    </foreach>
   </delete>
+
+  <!-- IDに基づいて該当するマーケティングキャンペーンを取得 -->
+  <select id="selectActivityById" resultMap="BaseResultMap" parameterType="String">
+    select 
+     <include refid="Base_Column_List"/>
+     from tbl_activity
+     where id = #{id}
+  </select>
+
+  <!--修改市场活动-->
+  <update id="updateActivity" parameterType="com.lukai.crm.workbench.domain.Activity">
+    update tbl_activity
+    set owner = #{owner,jdbcType=CHAR},
+      name = #{name,jdbcType=VARCHAR},
+      start_date = #{startDate,jdbcType=CHAR},
+      end_date = #{endDate,jdbcType=CHAR},
+      cost = #{cost,jdbcType=VARCHAR},
+      edit_time = #{editTime,jdbcType=CHAR},
+      edit_by = #{editBy,jdbcType=VARCHAR},
+      description = #{description,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=CHAR}
+  </update>
 </mapper>

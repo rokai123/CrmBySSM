@@ -65,4 +65,10 @@ public interface ActivityMapper {
     
     //IDに基づいて該当するマーケティングキャンペーンを削除
     int deleteActivityByIds(String[] ids);
+    
+    //IDに基づいて該当するマーケティングキャンペーンをリサーチ
+    Activity selectActivityById(String id);
+    
+    //IDに基づいて該当するマーケティングキャンペーンを更新
+    int updateActivity(Activity activity);
 }

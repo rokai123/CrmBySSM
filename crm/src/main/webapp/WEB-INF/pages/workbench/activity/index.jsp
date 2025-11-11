@@ -144,16 +144,21 @@
 				//判断
 				if(checkedIds.size() == 0){
 					alert("削除するキャンペーンを選択してください");
+					return;
 				}else{
 					if(confirm("削除は取り消せません。削除してもよろしいですか？")){
 						// ids = "id=xxx&id=xxx&id=xxx"
 						let ids = "";
-						for(let i = 0; i < checkedIds.size(); i++){
+						$.each(checkedIds,function () { 
+							ids += "id=" + $(this).val() + "&";
+						});
+						ids = ids.substring(0,ids.length - 1);
+						/* for(let i = 0; i < checkedIds.size(); i++){
 							ids += "id=" + $(checkedIds[i]).val();
 							if(i < checkedIds.size() - 1){
 								ids += "&";
 							}
-						}
+						} */
 						$.ajax({
 							url:"workbench/activity/deleteActivityByIds.do",
 							type:"post",
@@ -170,6 +175,103 @@
 						})
 					}
 				}
+		});
+
+		// 編集ボタンにクリックイベントをバインド
+		$("#editActivityBtn").click(function () {
+			//選択されたキャンペーンを取得
+			let checkedId = $("#activityBody input[type='checkbox']:checked");
+			if(checkedId.size() == 0){
+				alert("編集するキャンペーンを選択してください");
+				return;
+			} else if(checkedId.size() > 1){
+				alert("編集は1件のみ可能です");
+				return;
+			} else{
+				// 選択したキャンペーンを取得
+				let id = checkedId.val();
+				//コントロールにIDを送信し、選択されたマーケティングキャンペーン情報を取得し、モーダルウィンドウに反映する
+				$.ajax({
+					url:"workbench/activity/queryActivityById.do",
+					type:"get",
+					data:{
+						id:id
+					},
+					dataType:"json",
+					success:function (data) {
+						// モーダルウィンドウに取得したキャンペーン情報を表示
+						//$("#edit-id").val(data.id);
+						$("#edit-id").val(data.id);
+						$("#edit-marketActivityOwner").val(data.owner);
+						$("#edit-marketActivityName").val(data.name);
+						$("#edit-startTime").val(data.startDate);
+						$("#edit-endTime").val(data.endDate);
+						$("#edit-cost").val(data.cost);
+						$("#edit-describe").val(data.description);
+						
+						$("#hidden-owner").val(data.owner);
+						$("#hidden-name").val(data.name);
+						$("#hidden-startTime").val(data.startDate);
+						$("#hidden-endTime").val(data.endDate);
+						$("#hidden-cost").val(data.cost);
+						$("#hidden-describe").val(data.description);
+						// モーダルウィンドウを表示
+						$("#editActivityModal").modal("show");
+					}
+				})
+				
+			}
+
+		});
+
+		//更新ボタンにクリックイベントをバインド
+		$("#updateActivityBtn").click(function () {
+			// モーダルウィンドウの必須入力項目を取得
+			let owner = $("#edit-marketActivityOwner").val();
+			let name = $("#edit-marketActivityName").val();
+			if(owner =="" || owner==null){
+				alert("マーケティングキャンペーンの担当者を入力してください");
+				return;
+			}
+			if(name =="" || name==null){
+				alert("キャンペーン名を入力してください");
+				return;
+			}
+			// 変更があるかどうかを判定。変更がない場合はリクエストを送信しない
+			if(owner == $("#hidden-owner").val() && name == $("#hidden-name").val() && $("#edit-startTime").val() == $("#hidden-startTime").val() && $("#edit-endTime").val() == $("#hidden-endTime").val() && $("#edit-cost").val() == $("#hidden-cost").val() && $("#edit-describe").val() == $("#hidden-describe").val()){
+				alert("キャンペーン情報未変更");
+				return;
+			}
+			let activity={
+				id:$("#edit-id").val(),
+				owner:owner,
+				name:name,
+				startDate:$("#edit-startTime").val(),
+				endDate:$("#edit-endTime").val(),
+				cost:$("#edit-cost").val(),
+				description:$("#edit-describe").val()
+
+			}
+			$.ajax({
+				url:"workbench/activity/saveEditActivity.do",
+				type:"post",
+				data:activity,
+				dataType:"json",
+				success:function (data) {
+					if(data.code == "1"){
+						// キャンペーン更新成功
+						//alert(data.message);
+						// モーダルウィンドウを閉じる
+						$("#editActivityModal").modal("hide");
+						// マーケティングキャンペーン一覧を更新し、1ページ目のデータを表示、ページあたりの表示件数を維持
+						queryActivityByConditionForPage(1,$("#activityPage").bs_pagination("getOption","rowsPerPage"));
+					}else{
+						// キャンペーン更新失敗
+						alert(data.message);
+						$("#editActivityModal").modal("show");
+					}
+				}
+			})
 		});
 	});
 	
@@ -264,7 +366,6 @@
 					<h4 class="modal-title" id="myModalLabel1">マーケティングキャンペーン作成</h4>
 				</div>
 				<div class="modal-body">
-				
 					<form class="form-horizontal" role="form" id="createActivityForm">
 					
 						<div class="form-group">
@@ -330,30 +431,35 @@
 				<div class="modal-body">
 				
 					<form class="form-horizontal" role="form">
-					
 						<div class="form-group">
+							<!-- 編集するマーケティングキャンペーンのidを保存するhidden inputタグ-->
+							<input type="hidden" id="edit-id"></input>
 							<label for="edit-marketActivityOwner" class="col-sm-2 control-label">所有者<span style="font-size: 15px; color: red;">*</span></label>
 							<div class="col-sm-10" style="width: 300px;">
 								<select class="form-control" id="edit-marketActivityOwner">
-								  <c:forEach items="${userList}" var="user">
+									<c:forEach items="${userList}" var="user">
 								 		<option value="${user.id}">${user.name}</option>
 									</c:forEach>
 								</select>
+								<input type="hidden" id="hidden-owner"></input>
 							</div>
                             <label for="edit-marketActivityName" class="col-sm-2 control-label">キャンペーン名<span style="font-size: 15px; color: red;">*</span></label>
                             <div class="col-sm-10" style="width: 300px;">
-                                <input type="text" class="form-control" id="edit-marketActivityName" value="发传单">
+                                <input type="text" class="form-control" id="edit-marketActivityName">
+								<input type="hidden" id="hidden-name"></input>
                             </div>
 						</div>
 
 						<div class="form-group">
 							<label for="edit-startTime" class="col-sm-2 control-label">开始日期</label>
 							<div class="col-sm-10" style="width: 300px;">
-								<input type="text" class="form-control" id="edit-startTime" value="2020-10-10">
+								<input type="text" class="form-control myDate" id="edit-startTime" value="2020-10-10">
+								<input type="hidden" id="hidden-startTime"></input>
 							</div>
 							<label for="edit-endTime" class="col-sm-2 control-label">结束日期</label>
 							<div class="col-sm-10" style="width: 300px;">
-								<input type="text" class="form-control" id="edit-endTime" value="2020-10-20">
+								<input type="text" class="form-control myDate" id="edit-endTime" value="2020-10-20">
+								<input type="hidden" id="hidden-endTime"></input>
 							</div>
 						</div>
 						
@@ -361,12 +467,14 @@
 							<label for="edit-cost" class="col-sm-2 control-label">成本</label>
 							<div class="col-sm-10" style="width: 300px;">
 								<input type="text" class="form-control" id="edit-cost" value="5,000">
+								<input type="hidden" id="hidden-cost"></input>
 							</div>
 						</div>
 						
 						<div class="form-group">
 							<label for="edit-describe" class="col-sm-2 control-label">描述</label>
 							<div class="col-sm-10" style="width: 81%;">
+								<input type="hidden" id="hidden-describe"></input>
 								<textarea class="form-control" rows="3" id="edit-describe">市场活动Marketing，是指品牌主办或参与的展览会议与公关市场活动，包括自行主办的各类研讨会、客户交流会、演示会、新产品发布会、体验会、答谢会、年会和出席参加并布展或演讲的展览会、研讨会、行业交流会、颁奖典礼等</textarea>
 							</div>
 						</div>
@@ -376,7 +484,7 @@
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-					<button type="button" class="btn btn-primary" data-dismiss="modal">更新</button>
+					<button type="button" class="btn btn-primary" id="updateActivityBtn">更新</button>
 				</div>
 			</div>
 		</div>
@@ -469,7 +577,7 @@
 			<div class="btn-toolbar" role="toolbar" style="background-color: #F7F7F7; height: 50px; position: relative;top: 5px;">
 				<div class="btn-group" style="position: relative; top: 18%;">
 				  <button type="button" class="btn btn-primary" id="createActivityBtn"><span class="glyphicon glyphicon-plus"></span> 新規</button>
-				  <button type="button" class="btn btn-default" data-toggle="modal" data-target="#editActivityModal"><span class="glyphicon glyphicon-pencil"></span> 編集</button>
+				  <button type="button" class="btn btn-default" id="editActivityBtn"><span class="glyphicon glyphicon-pencil"></span> 編集</button>
 				  <button type="button" class="btn btn-danger" id="deleteBtn"><span class="glyphicon glyphicon-minus"></span> 削除</button>
 				</div>
 				<div class="btn-group" style="position: relative; top: 18%;">
