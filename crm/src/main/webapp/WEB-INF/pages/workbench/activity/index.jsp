@@ -277,26 +277,30 @@
 				description:description
 
 			}
-			$.ajax({
-				url:"workbench/activity/saveEditActivity.do",
-				type:"post",
-				data:activity,
-				dataType:"json",
-				success:function (data) {
-					if(data.code == "1"){
-						// キャンペーン更新成功
-						//alert(data.message);
-						// モーダルウィンドウを閉じる
-						$("#editActivityModal").modal("hide");
-						// マーケティングキャンペーン一覧を更新し、1ページ目のデータを表示、ページあたりの表示件数を維持
-						queryActivityByConditionForPage($("#activityPage").bs_pagination("getOption","currentPage"),$("#activityPage").bs_pagination("getOption","rowsPerPage"));
-					}else{
-						// キャンペーン更新失敗
-						alert(data.message);
-						$("#editActivityModal").modal("show");
+			if(confirm("変更された内容を送信して大丈夫ですか")){
+				$.ajax({
+					url:"workbench/activity/saveEditActivity.do",
+					type:"post",
+					data:activity,
+					dataType:"json",
+					success:function (data) {
+						if(data.code == "1"){
+							// キャンペーン更新成功
+							//alert(data.message);
+							// モーダルウィンドウを閉じる
+							$("#editActivityModal").modal("hide");
+							// マーケティングキャンペーン一覧を更新し、1ページ目のデータを表示、ページあたりの表示件数を維持
+							queryActivityByConditionForPage($("#activityPage").bs_pagination("getOption","currentPage"),$("#activityPage").bs_pagination("getOption","rowsPerPage"));
+							alert("内容変更を成功した")
+						}else{
+							// キャンペーン更新失敗
+							alert(data.message);
+							$("#editActivityModal").modal("show");
+						}
 					}
-				}
-			})
+				})
+			}
+			
 		});
 	});
 	
@@ -334,7 +338,7 @@
 		        $.each(data.activities, function(i, n) {
 		            html += "<tr class=\"active\">";
 		            html += "<td><input type=\"checkbox\" value=\"" + n.id + "\" id=\" \"/></td>";
-		            html += "<td><a style=\"text-decoration: none; cursor: pointer;\" onclick=\"window.location.href='detail.html';\">" + n.name + "</a></td>";
+		            html += "<td><a style=\"text-decoration: none; cursor: pointer;\" onclick=\"window.location.href='workbench/activity/detailActivity.do';\">" + n.name + "</a></td>";
 		            html += "<td>" + n.owner + "</td>";
 		            html += "<td>" + n.startDate + "</td>";
 		            html += "<td>" + n.endDate + "</td>";
@@ -476,12 +480,12 @@
 						</div>
 
 						<div class="form-group">
-							<label for="edit-startTime" class="col-sm-2 control-label">开始日期</label>
+							<label for="edit-startTime" class="col-sm-2 control-label">開始日</label>
 							<div class="col-sm-10" style="width: 300px;">
 								<input type="text" class="form-control myDate" id="edit-startTime" value="2020-10-10">
 								<input type="hidden" id="hidden-startTime"></input>
 							</div>
-							<label for="edit-endTime" class="col-sm-2 control-label">结束日期</label>
+							<label for="edit-endTime" class="col-sm-2 control-label">終了日</label>
 							<div class="col-sm-10" style="width: 300px;">
 								<input type="text" class="form-control myDate" id="edit-endTime" value="2020-10-20">
 								<input type="hidden" id="hidden-endTime"></input>
@@ -489,7 +493,7 @@
 						</div>
 						
 						<div class="form-group">
-							<label for="edit-cost" class="col-sm-2 control-label">成本</label>
+							<label for="edit-cost" class="col-sm-2 control-label">コスト</label>
 							<div class="col-sm-10" style="width: 300px;">
 								<input type="text" class="form-control" id="edit-cost" value="5,000">
 								<input type="hidden" id="hidden-cost"></input>
@@ -497,10 +501,10 @@
 						</div>
 						
 						<div class="form-group">
-							<label for="edit-describe" class="col-sm-2 control-label">描述</label>
+							<label for="edit-describe" class="col-sm-2 control-label">コメント</label>
 							<div class="col-sm-10" style="width: 81%;">
 								<input type="hidden" id="hidden-describe"></input>
-								<textarea class="form-control" rows="3" id="edit-describe">市场活动Marketing，是指品牌主办或参与的展览会议与公关市场活动，包括自行主办的各类研讨会、客户交流会、演示会、新产品发布会、体验会、答谢会、年会和出席参加并布展或演讲的展览会、研讨会、行业交流会、颁奖典礼等</textarea>
+								<textarea class="form-control" rows="3" id="edit-describe"></textarea>
 							</div>
 						</div>
 						
@@ -508,8 +512,8 @@
 					
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-					<button type="button" class="btn btn-primary" id="updateActivityBtn">更新</button>
+					<button type="button" class="btn btn-default" data-dismiss="modal">閉じる</button>
+					<button type="button" class="btn btn-primary" id="updateActivityBtn">送信する</button>
 				</div>
 			</div>
 		</div>

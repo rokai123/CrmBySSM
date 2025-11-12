@@ -184,4 +184,18 @@ public class ActivityController {
 		}
 		return returnObject;
 	}
+	
+	/**
+	 * 跳转到某条市场活动的详情页面
+	 * 
+	 */
+	@RequestMapping("/workbench/activity/detailActivity.do")
+	public String detailActivity() { 
+		// Activity activity = activityService.queryActivityForDetailById(id);
+		// List<ActivityRemark> remarkList = activityService.queryActivityRemarkForDetailByActivityId(id);
+		// request.setAttribute("activity", activity);
+		// request.setAttribute("remarkList", remarkList);
+		return "workbench/activity/detail";
+	}
+
 }
