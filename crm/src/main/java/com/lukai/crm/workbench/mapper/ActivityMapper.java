@@ -71,4 +71,6 @@ public interface ActivityMapper {
     
     //IDに基づいて該当するマーケティングキャンペーンを更新
     int updateActivity(Activity activity);
+    
+    List<Activity> selectAllActivities();
 }

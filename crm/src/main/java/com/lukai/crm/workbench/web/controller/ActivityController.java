@@ -1,13 +1,21 @@
 package com.lukai.crm.workbench.web.controller;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -184,6 +192,101 @@ public class ActivityController {
 		}
 		return returnObject;
 	}
+	
+	@SuppressWarnings("resource")
+	@RequestMapping("/workbench/activity/exportAllActivitys.do")
+	public void exportAllActivitys(HttpServletResponse response) throws Exception {
+		//获取所有市场活动
+		List<Activity> activities = activityService.queryAllActivitys();
+		
+		//在服务器生成Excel文件
+		HSSFWorkbook wb = new HSSFWorkbook();
+		HSSFSheet sheet = wb.createSheet("マーケティングキャンペーン");
+		HSSFRow row = sheet.createRow(0);
+		HSSFCell cell = row.createCell(0);
+		cell.setCellValue("ID");
+		cell = row.createCell(1);
+		cell.setCellValue("所有者");
+		cell = row.createCell(2);
+		cell.setCellValue("キャンペーン名");
+		cell=row.createCell(3);
+		cell.setCellValue("開始日");
+		cell=row.createCell(4);
+		cell.setCellValue("終了日");
+		cell=row.createCell(5);
+		cell.setCellValue("コスト");
+		cell=row.createCell(6);
+		cell.setCellValue("コメント");
+		cell=row.createCell(7);
+		cell.setCellValue("作成日時");
+		cell=row.createCell(8);
+		cell.setCellValue("作成者");
+		cell=row.createCell(9);
+		cell.setCellValue("更新日時");
+		cell=row.createCell(10);
+		cell.setCellValue("更新者");
+		
+		//遍历activities，创建HSSFRow对象，生成所有的数据行
+		Activity activity;
+		if (activities!=null && activities.size()>0) {
+			for(int i=0;i<activities.size();i++){
+				row = sheet.createRow(i+1);
+				activity = activities.get(i);
+				cell = row.createCell(0);
+				cell.setCellValue(activity.getId());
+				cell = row.createCell(1);
+				cell.setCellValue(activity.getOwner());
+				cell = row.createCell(2);
+				cell.setCellValue(activity.getName());
+				cell = row.createCell(3);
+				cell.setCellValue(activity.getStartDate());
+				cell = row.createCell(4);
+				cell.setCellValue(activity.getEndDate());
+				cell = row.createCell(5);
+				cell.setCellValue(activity.getCost());
+				cell = row.createCell(6);
+				cell.setCellValue(activity.getDescription());
+				cell = row.createCell(7);
+				cell.setCellValue(activity.getCreateTime());
+				cell = row.createCell(8);
+				cell.setCellValue(activity.getCreateBy());
+				cell = row.createCell(9);
+				cell.setCellValue(activity.getEditTime());
+				cell = row.createCell(10);
+				cell.setCellValue(activity.getEditBy());
+			}
+		}
+		//生成excel文件
+		OutputStream os = new FileOutputStream("D:\\dev\\projects\\CRMBySSM\\excel\\activity.xls");
+		wb.write(os);
+		//关闭资源
+		os.close();
+		wb.close();
+
+		//把生成的Excel文件下载到客户端
+		response.setContentType("application/octet-stream;charset=utf-8");
+		response.addHeader("Content-Disposition", "attachment;filename=activity.xls");
+		OutputStream out = response.getOutputStream();
+		FileInputStream fis = new FileInputStream("D:\\dev\\projects\\CRMBySSM\\excel\\activity.xls");
+		byte[] buff = new byte[256];
+		int len = 0;
+		while ((len=fis.read(buff))!=-1) {
+			out.write(buff, 0, len);
+		}
+		fis.close();
+		out.flush();
+		
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	/**
 	 * 跳转到某条市场活动的详情页面
