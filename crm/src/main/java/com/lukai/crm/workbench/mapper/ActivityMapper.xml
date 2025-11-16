@@ -277,7 +277,7 @@
     where id = #{id,jdbcType=CHAR}
   </update>
   
-  <!-- 查询所有市场活动 -->
+  <!--  すべてのマーケティングキャンペーンを検索 -->
   <select id="selectAllActivities" resultMap="BaseResultMap">
      select a.id,a.name,u1.name as owner,a.start_date,a.end_date,a.cost,a.description,a.create_time,u2.name as create_by,
     a.edit_time,u3.name as edit_by

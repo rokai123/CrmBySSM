@@ -1,7 +1,5 @@
 package com.lukai.crm.workbench.web.controller;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.util.Date;
 import java.util.HashMap;
@@ -196,10 +194,10 @@ public class ActivityController {
 	@SuppressWarnings("resource")
 	@RequestMapping("/workbench/activity/exportAllActivitys.do")
 	public void exportAllActivitys(HttpServletResponse response) throws Exception {
-		//获取所有市场活动
+		//すべてのマーケティングキャンペーンを取得
 		List<Activity> activities = activityService.queryAllActivitys();
 		
-		//在服务器生成Excel文件
+		// サーバー側でExcelファイルを生成
 		HSSFWorkbook wb = new HSSFWorkbook();
 		HSSFSheet sheet = wb.createSheet("マーケティングキャンペーン");
 		HSSFRow row = sheet.createRow(0);
@@ -226,7 +224,7 @@ public class ActivityController {
 		cell=row.createCell(10);
 		cell.setCellValue("更新者");
 		
-		//遍历activities，创建HSSFRow对象，生成所有的数据行
+		// activitiesをループ処理し、HSSFRowオブジェクトを作成、全データ行を生成
 		Activity activity;
 		if (activities!=null && activities.size()>0) {
 			for(int i=0;i<activities.size();i++){
@@ -256,24 +254,26 @@ public class ActivityController {
 				cell.setCellValue(activity.getEditBy());
 			}
 		}
-		//生成excel文件
+		/*//excelファイルを生成する
 		OutputStream os = new FileOutputStream("D:\\dev\\projects\\CRMBySSM\\excel\\activity.xls");
 		wb.write(os);
-		//关闭资源
+		// リソースを解放する
 		os.close();
-		wb.close();
+		wb.close();*/
 
 		//把生成的Excel文件下载到客户端
 		response.setContentType("application/octet-stream;charset=utf-8");
 		response.addHeader("Content-Disposition", "attachment;filename=activity.xls");
 		OutputStream out = response.getOutputStream();
-		FileInputStream fis = new FileInputStream("D:\\dev\\projects\\CRMBySSM\\excel\\activity.xls");
+		/*FileInputStream fis = new FileInputStream("D:\\dev\\projects\\CRMBySSM\\excel\\activity.xls");
 		byte[] buff = new byte[256];
 		int len = 0;
 		while ((len=fis.read(buff))!=-1) {
 			out.write(buff, 0, len);
 		}
-		fis.close();
+		fis.close();*/
+		wb.write(out);
+		wb.close();
 		out.flush();
 		
 	}

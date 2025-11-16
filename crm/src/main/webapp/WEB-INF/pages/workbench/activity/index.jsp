@@ -302,6 +302,35 @@
 			}
 			
 		});
+
+		//キャンペーン一覧の全部エクスポートボタンにクリックイベントをバインド
+		$("#exportActivityAllBtn").click(function () {
+			if(confirm("すべてのマーケティングキャンペーンをエクスポートしますか")){
+				window.location.href = "workbench/activity/exportAllActivitys.do";
+			}
+		});
+
+		// 選択エクスポートボタンにイベントを追加
+		$("#exportActivityCheckedBtn").click(function () {
+			// パラメータを収集（すべての選択されたチェックボックスを取得）
+			var activityIds = $("#activityBody input[type='checkbox']:checked");
+			if(activityIds.size() == 0){
+				alert("エクスポートするレコードを選択してください");
+				return;
+			}
+			if(confirm("選択したマーケティングキャンペーンをエクスポートしますか")){
+				// ids=xxx&ids=xxx&ids=xxx
+				var ids = "";
+				$.each(activityIds,function () {
+					ids += "ids=" + $(this).val() + "&";
+				});
+				ids = ids.substr(0,ids.length-1);
+				//同期的リクエストを送信
+				window.location.href = "workbench/activity/exportCheckedActivitys.do?" + ids;
+			}
+			
+		});
+
 	});
 	
 	//在页面入口函数外面封装市场活动列表的查询显示的函数
@@ -611,8 +640,8 @@
 				</div>
 				<div class="btn-group" style="position: relative; top: 18%;">
                     <button type="button" class="btn btn-default" data-toggle="modal" data-target="#importActivityModal" ><span class="glyphicon glyphicon-import"></span> 上传列表数据（导入）</button>
-                    <button id="exportActivityAllBtn" type="button" class="btn btn-default"><span class="glyphicon glyphicon-export"></span> 下载列表数据（批量导出）</button>
-                    <button id="exportActivityXzBtn" type="button" class="btn btn-default"><span class="glyphicon glyphicon-export"></span> 下载列表数据（选择导出）</button>
+                    <button id="exportActivityAllBtn" type="button" class="btn btn-default"><span class="glyphicon glyphicon-export"></span> リストデータを一括ダウンロード</button>
+                    <button id="exportActivityCheckedBtn" type="button" class="btn btn-default"><span class="glyphicon glyphicon-export"></span> 選択したリストデータをダウンロード</button>
                 </div>
 			</div>
 			<div style="position: relative;top: 10px;">
