@@ -68,8 +68,7 @@
 					alert("​コストは0以上の整数で入力してください​​");
 					return;
 				}
-          return;
-      }
+     		 }
 			            //すべての検証が成功した後、Ajaxを通じて作成リクエストを送信します。
             $.ajax({
                 url:"workbench/activity/saveCreateActivity.do",

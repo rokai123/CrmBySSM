@@ -1,5 +1,6 @@
 package com.lukai.crm.workbench.web.controller;
 
+import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Date;
 import java.util.HashMap;
@@ -191,92 +192,103 @@ public class ActivityController {
 		return returnObject;
 	}
 	
-	@SuppressWarnings("resource")
+
 	@RequestMapping("/workbench/activity/exportAllActivitys.do")
 	public void exportAllActivitys(HttpServletResponse response) throws Exception {
 		//すべてのマーケティングキャンペーンを取得
 		List<Activity> activities = activityService.queryAllActivitys();
+		exportActivitysUtils(response,activities);
 		
-		// サーバー側でExcelファイルを生成
-		HSSFWorkbook wb = new HSSFWorkbook();
-		HSSFSheet sheet = wb.createSheet("マーケティングキャンペーン");
-		HSSFRow row = sheet.createRow(0);
-		HSSFCell cell = row.createCell(0);
-		cell.setCellValue("ID");
-		cell = row.createCell(1);
-		cell.setCellValue("所有者");
-		cell = row.createCell(2);
-		cell.setCellValue("キャンペーン名");
-		cell=row.createCell(3);
-		cell.setCellValue("開始日");
-		cell=row.createCell(4);
-		cell.setCellValue("終了日");
-		cell=row.createCell(5);
-		cell.setCellValue("コスト");
-		cell=row.createCell(6);
-		cell.setCellValue("コメント");
-		cell=row.createCell(7);
-		cell.setCellValue("作成日時");
-		cell=row.createCell(8);
-		cell.setCellValue("作成者");
-		cell=row.createCell(9);
-		cell.setCellValue("更新日時");
-		cell=row.createCell(10);
-		cell.setCellValue("更新者");
-		
-		// activitiesをループ処理し、HSSFRowオブジェクトを作成、全データ行を生成
-		Activity activity;
-		if (activities!=null && activities.size()>0) {
-			for(int i=0;i<activities.size();i++){
-				row = sheet.createRow(i+1);
-				activity = activities.get(i);
-				cell = row.createCell(0);
-				cell.setCellValue(activity.getId());
-				cell = row.createCell(1);
-				cell.setCellValue(activity.getOwner());
-				cell = row.createCell(2);
-				cell.setCellValue(activity.getName());
-				cell = row.createCell(3);
-				cell.setCellValue(activity.getStartDate());
-				cell = row.createCell(4);
-				cell.setCellValue(activity.getEndDate());
-				cell = row.createCell(5);
-				cell.setCellValue(activity.getCost());
-				cell = row.createCell(6);
-				cell.setCellValue(activity.getDescription());
-				cell = row.createCell(7);
-				cell.setCellValue(activity.getCreateTime());
-				cell = row.createCell(8);
-				cell.setCellValue(activity.getCreateBy());
-				cell = row.createCell(9);
-				cell.setCellValue(activity.getEditTime());
-				cell = row.createCell(10);
-				cell.setCellValue(activity.getEditBy());
-			}
-		}
-		/*//excelファイルを生成する
-		OutputStream os = new FileOutputStream("D:\\dev\\projects\\CRMBySSM\\excel\\activity.xls");
-		wb.write(os);
-		// リソースを解放する
-		os.close();
-		wb.close();*/
-
-		//把生成的Excel文件下载到客户端
-		response.setContentType("application/octet-stream;charset=utf-8");
-		response.addHeader("Content-Disposition", "attachment;filename=activity.xls");
-		OutputStream out = response.getOutputStream();
-		/*FileInputStream fis = new FileInputStream("D:\\dev\\projects\\CRMBySSM\\excel\\activity.xls");
-		byte[] buff = new byte[256];
-		int len = 0;
-		while ((len=fis.read(buff))!=-1) {
-			out.write(buff, 0, len);
-		}
-		fis.close();*/
-		wb.write(out);
-		wb.close();
-		out.flush();
 		
 	}
+	
+	@RequestMapping("/workbench/activity/exportCheckedActivitys.do")
+	public void exportCheckedActivitys(String[] ids,HttpServletResponse response) throws Exception {
+		List<Activity> activities = activityService.queryActivitysByIds(ids);
+		exportActivitysUtils(response,activities);
+	}
+	
+	public static void exportActivitysUtils(HttpServletResponse response,List<Activity> activities) throws IOException {
+		// サーバー側でExcelファイルを生成
+				HSSFWorkbook wb = new HSSFWorkbook();
+				HSSFSheet sheet = wb.createSheet("マーケティングキャンペーン");
+				HSSFRow row = sheet.createRow(0);
+				HSSFCell cell = row.createCell(0);
+				cell.setCellValue("ID");
+				cell = row.createCell(1);
+				cell.setCellValue("所有者");
+				cell = row.createCell(2);
+				cell.setCellValue("キャンペーン名");
+				cell=row.createCell(3);
+				cell.setCellValue("開始日");
+				cell=row.createCell(4);
+				cell.setCellValue("終了日");
+				cell=row.createCell(5);
+				cell.setCellValue("コスト");
+				cell=row.createCell(6);
+				cell.setCellValue("コメント");
+				cell=row.createCell(7);
+				cell.setCellValue("作成日時");
+				cell=row.createCell(8);
+				cell.setCellValue("作成者");
+				cell=row.createCell(9);
+				cell.setCellValue("更新日時");
+				cell=row.createCell(10);
+				cell.setCellValue("更新者");
+				
+				// activitiesをループ処理し、HSSFRowオブジェクトを作成、全データ行を生成
+				Activity activity;
+				if (activities!=null && activities.size()>0) {
+					for(int i=0;i<activities.size();i++){
+						row = sheet.createRow(i+1);
+						activity = activities.get(i);
+						cell = row.createCell(0);
+						cell.setCellValue(activity.getId());
+						cell = row.createCell(1);
+						cell.setCellValue(activity.getOwner());
+						cell = row.createCell(2);
+						cell.setCellValue(activity.getName());
+						cell = row.createCell(3);
+						cell.setCellValue(activity.getStartDate());
+						cell = row.createCell(4);
+						cell.setCellValue(activity.getEndDate());
+						cell = row.createCell(5);
+						cell.setCellValue(activity.getCost());
+						cell = row.createCell(6);
+						cell.setCellValue(activity.getDescription());
+						cell = row.createCell(7);
+						cell.setCellValue(activity.getCreateTime());
+						cell = row.createCell(8);
+						cell.setCellValue(activity.getCreateBy());
+						cell = row.createCell(9);
+						cell.setCellValue(activity.getEditTime());
+						cell = row.createCell(10);
+						cell.setCellValue(activity.getEditBy());
+					}
+				}
+				/*//excelファイルを生成する
+				OutputStream os = new FileOutputStream("D:\\dev\\projects\\CRMBySSM\\excel\\activity.xls");
+				wb.write(os);
+				// リソースを解放する
+				os.close();
+				wb.close();*/
+
+				//把生成的Excel文件下载到客户端
+				response.setContentType("application/octet-stream;charset=utf-8");
+				response.addHeader("Content-Disposition", "attachment;filename=activity.xls");
+				OutputStream out = response.getOutputStream();
+				/*FileInputStream fis = new FileInputStream("D:\\dev\\projects\\CRMBySSM\\excel\\activity.xls");
+				byte[] buff = new byte[256];
+				int len = 0;
+				while ((len=fis.read(buff))!=-1) {
+					out.write(buff, 0, len);
+				}
+				fis.close();*/
+				wb.write(out);
+				wb.close();
+				out.flush();
+	}
+	
 	
 	
 	
