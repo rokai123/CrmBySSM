@@ -343,25 +343,30 @@
 				alert("インポートするファイルはExcelファイルでなければなりません");
 				return;
 			}
+			//ファイルサイズ制限: 5MB以下
+			if(activityFile.size > 5*1024*1024){
+				alert("インポートするファイルは5MB以下でなければなりません");
+				return;
+			}
 			if(confirm("インポートしますか")){
 				// 同期的リクエストを送信
-				//const activityFile = new FormData($("#importActivityForm")[0])
+				const formData = new FormData();
+				formData.append("activityFile",activityFile);
 				$.ajax({
 					url:"workbench/activity/importActivity.do",
 					type:"post",
-					data:new FormData($("#importActivityForm")[0]),
-					processData:false,
-					contentType:false,
+					data:formData,
+					processData: false, // データを文字列に変換するかどうか
+					contentType: false, // 全てのパラメータを application/x-www-form-urlencoded 形式で送信するかどうか
 					dataType:"json",
 					success:function (data) {
 						if(data.code == "1"){
 							// キャンペーンインポート成功
-							//alert(data.message);
+							alert(data.resultData  + "個のマーケティングキャンペーンをインポートしました")
 							// モーダルウィンドウを閉じる
 							$("#importActivityModal").modal("hide");
 							// マーケティングキャンペーン一覧を更新し、1ページ目のデータを表示、ページあたりの表示件数を維持
 							queryActivityByConditionForPage(1,$("#activityPage").bs_pagination("getOption","rowsPerPage"));
-							alert("インポートを成功した")
 					 	} else{
 							// キャンペーンインポート失敗
 							alert(data.message);
