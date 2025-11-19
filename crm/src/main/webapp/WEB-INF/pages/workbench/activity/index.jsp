@@ -330,6 +330,48 @@
 			
 		});
 
+		//インポートボタンにクリックイベントをバインド
+		$("#importActivityBtn").click(function () {
+			// ファイルインプットを取得
+			var activityFile = $("#activityFile").get(0).files[0];
+			if(activityFile == null){
+				alert("ファイルを選択してください");
+				return;
+			}
+			//拡張子チェック
+			if(!/^.+\.(xlsx|xls)$/.test(activityFile.name)){
+				alert("インポートするファイルはExcelファイルでなければなりません");
+				return;
+			}
+			if(confirm("インポートしますか")){
+				// 同期的リクエストを送信
+				//const activityFile = new FormData($("#importActivityForm")[0])
+				$.ajax({
+					url:"workbench/activity/importActivity.do",
+					type:"post",
+					data:new FormData($("#importActivityForm")[0]),
+					processData:false,
+					contentType:false,
+					dataType:"json",
+					success:function (data) {
+						if(data.code == "1"){
+							// キャンペーンインポート成功
+							//alert(data.message);
+							// モーダルウィンドウを閉じる
+							$("#importActivityModal").modal("hide");
+							// マーケティングキャンペーン一覧を更新し、1ページ目のデータを表示、ページあたりの表示件数を維持
+							queryActivityByConditionForPage(1,$("#activityPage").bs_pagination("getOption","rowsPerPage"));
+							alert("インポートを成功した")
+					 	} else{
+							// キャンペーンインポート失敗
+							alert(data.message);
+							$("#importActivityModal").modal("show");
+						}
+					}
+				})
+			}
+			
+		});
 	});
 	
 	//在页面入口函数外面封装市场活动列表的查询显示的函数
@@ -555,31 +597,31 @@
                     <button type="button" class="close" data-dismiss="modal">
                         <span aria-hidden="true">×</span>
                     </button>
-                    <h4 class="modal-title" id="myModalLabel">导入市场活动</h4>
+                    <h4 class="modal-title" id="myModalLabel">マーケティングキャンペーンのインポート</h4>
                 </div>
                 <div class="modal-body" style="height: 350px;">
                     <div style="position: relative;top: 20px; left: 50px;">
-                        请选择要上传的文件：<small style="color: gray;">[仅支持.xls]</small>
+                        アップロードするファイルを選択：<small style="color: gray;">[.xls形式のみ対応]</small>
                     </div>
                     <div style="position: relative;top: 40px; left: 50px;">
-                        <input type="file" id="activityFile">
+                       	<input type="file" id="activityFile">
                     </div>
                     <div style="position: relative; width: 400px; height: 320px; left: 45% ; top: -40px;" >
-                        <h3>重要提示</h3>
-                        <ul>
-                            <li>操作仅针对Excel，仅支持后缀名为XLS的文件。</li>
-                            <li>给定文件的第一行将视为字段名。</li>
-                            <li>请确认您的文件大小不超过5MB。</li>
-                            <li>日期值以文本形式保存，必须符合yyyy-MM-dd格式。</li>
-                            <li>日期时间以文本形式保存，必须符合yyyy-MM-dd HH:mm:ss的格式。</li>
-                            <li>默认情况下，字符编码是UTF-8 (统一码)，请确保您导入的文件使用的是正确的字符编码方式。</li>
-                            <li>建议您在导入真实数据之前用测试文件测试文件导入功能。</li>
-                        </ul>
+                        <h4>重要なお知らせ</h4>
+						<ul>
+							<li>本操作はExcelファイルのみ対象となり、拡張子がXLSのファイルのみサポートします。</li>
+							<li>指定されたファイルの最初の行はフィールド名として扱われます。</li>
+							<li>ファイルサイズが5MBを超えないようにしてください。</li>
+							<li>日付値はテキスト形式で保存され、yyyy-MM-dd形式に準拠する必要があります。</li>
+							<li>日時値はテキスト形式で保存され、yyyy-MM-dd HH:mm:ss形式に準拠する必要があります。</li>
+							<li>デフォルトの文字エンコーディングはUTF-8です。インポートするファイルが正しい文字エンコーディングを使用していることを確認してください。</li>
+							<li>実際のデータをインポートする前に、テストファイルでインポート機能を確認することを推奨します。</li>
+						</ul>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-                    <button id="importActivityBtn" type="button" class="btn btn-primary">导入</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">閉じる</button>
+                    <button id="importActivityBtn" type="button" class="btn btn-primary">インポート</button>
                 </div>
             </div>
         </div>
@@ -638,7 +680,7 @@
 				  <button type="button" class="btn btn-danger" id="deleteBtn"><span class="glyphicon glyphicon-minus"></span> 削除</button>
 				</div>
 				<div class="btn-group" style="position: relative; top: 18%;">
-                    <button type="button" class="btn btn-default" data-toggle="modal" data-target="#importActivityModal" ><span class="glyphicon glyphicon-import"></span> 上传列表数据（导入）</button>
+                    <button type="button" class="btn btn-default" data-toggle="modal" data-target="#importActivityModal" ><span class="glyphicon glyphicon-import"></span> リストデータインポート</button>
                     <button id="exportActivityAllBtn" type="button" class="btn btn-default"><span class="glyphicon glyphicon-export"></span> リストデータを一括ダウンロード</button>
                     <button id="exportActivityCheckedBtn" type="button" class="btn btn-default"><span class="glyphicon glyphicon-export"></span> 選択したリストデータをダウンロード</button>
                 </div>

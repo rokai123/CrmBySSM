@@ -297,6 +297,18 @@
     <foreach collection="array" item="ids" open="(" close=")" separator=",">
 	     #{ids}
 	</foreach>
-  
   </select>
+  <!-- 批量保存活動-->
+  <insert id="insertActivityByList" parameterType="com.lukai.crm.workbench.domain.Activity">
+    <foreach collection="list" item="activity" separator=";">
+      insert into tbl_activity 
+      (id, owner, name, start_date, 
+      end_date, cost, description, 
+      create_time, create_by)
+      values (#{activity.id}, #{activity.owner}, #{activity.name} , #{activity.startDate}, 
+      #{activity.endDate}, #{activity.cost}, #{activity.description}, 
+      #{activity.createTime}, #{activity.createBy})
+    </foreach>
+  </insert>
+  
 </mapper>

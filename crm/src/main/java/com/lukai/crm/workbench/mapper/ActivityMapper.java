@@ -75,4 +75,11 @@ public interface ActivityMapper {
     List<Activity> selectAllActivities();
     
     List<Activity> selectActivityByIds(String[] ids);
+    /**
+	 * 複数のマーケティングキャンペーンを一括で挿入
+	 * @param activityList
+	 * @return 挿入された行数
+	 * created by 102106
+	 */
+    int insertActivityByList(List<Activity> activityList);
 }

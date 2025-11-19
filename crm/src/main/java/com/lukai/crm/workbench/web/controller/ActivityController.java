@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.lukai.crm.commons.contants.Contants;
 import com.lukai.crm.commons.domain.ReturnObject;
@@ -59,30 +60,14 @@ public class ActivityController {
 	 */
 	@RequestMapping("/workbench/activity/saveCreateActivity.do")
 	@ResponseBody
-	public Object saveCreateActivity(Activity activity,HttpSession session) {
+	public ReturnObject saveCreateActivity(Activity activity,HttpSession session) {
 		//セッションスコープから現在ユーザを取得。
 		User user = (User)session.getAttribute(Contants.SESSION_USER);
 		//データの一貫性を保つため、アカウント名よりユーザーIDを優先して使用すること。
 		activity.setCreateBy(user.getId());
 		activity.setId(UUIdUtils.getUUId());
 		activity.setCreateTime(DateUtils.formateDateTime(new Date()));
-		ReturnObject returnObject = new ReturnObject();
-		try {
-			int resultNum = activityService.saveCreateActivity(activity);
-			if (resultNum>0) {
-				returnObject.setCode(Contants.RETURN_OBJECT_CODE_SUCCESS);
-				
-			}else {
-				returnObject.setCode(Contants.RETURN_OBJECT_CODE_FAIL);
-				returnObject.setMessage("システムが混雑中です、しばらくしてから再度お試しください");
-			}
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-			returnObject.setCode(Contants.RETURN_OBJECT_CODE_FAIL);
-			returnObject.setMessage("システムが混雑中です、しばらくしてから再度お試しください");
-		}
-		
+		ReturnObject returnObject = activityService.saveCreateActivity(activity);
 		
 		return returnObject;
 		
@@ -192,16 +177,27 @@ public class ActivityController {
 		return returnObject;
 	}
 	
-
+	
+	/**
+	 * すべてのマーケティング活動データをExcelファイルとしてエクスポートする
+	 * 
+	 * @param response HTTPレスポンスオブジェクト
+	 * @throws Exception エクスポート処理中にエラーが発生した場合
+	 */
 	@RequestMapping("/workbench/activity/exportAllActivitys.do")
 	public void exportAllActivitys(HttpServletResponse response) throws Exception {
 		//すべてのマーケティングキャンペーンを取得
 		List<Activity> activities = activityService.queryAllActivitys();
 		exportActivitysUtils(response,activities);
-		
-		
 	}
 	
+	/**
+	 * 選択したマーケティング活動データをExcelファイルとしてエクスポートする
+	 * 
+	 * @param ids エクスポートするマーケティング活動のID配列
+	 * @param response HTTPレスポンスオブジェクト
+	 * @throws Exception エクスポート処理中にエラーが発生した場合
+	 */
 	@RequestMapping("/workbench/activity/exportCheckedActivitys.do")
 	public void exportCheckedActivitys(String[] ids,HttpServletResponse response) throws Exception {
 		List<Activity> activities = activityService.queryActivitysByIds(ids);
@@ -273,7 +269,7 @@ public class ActivityController {
 				os.close();
 				wb.close();*/
 
-				//把生成的Excel文件下载到客户端
+				// サーバー側で生成したExcelファイルをクライアントにダウンロードさせる
 				response.setContentType("application/octet-stream;charset=utf-8");
 				response.addHeader("Content-Disposition", "attachment;filename=activity.xls");
 				OutputStream out = response.getOutputStream();
@@ -290,7 +286,20 @@ public class ActivityController {
 	}
 	
 	
-	
+	/**
+	 * 批量インポートマーケティング活動データ
+	 * 
+	 * @param activityFile インポートするマーケティング活動データファイル
+	 * @param session HTTPセッションオブジェクト
+	 * @return 処理結果を含むリターンオブジェクト
+	 * @throws Exception インポート処理中にエラーが発生した場合
+	 */
+	@RequestMapping("/workbench/activity/importActivity.do")
+	@ResponseBody
+	public Object importActivity(MultipartFile activityFile,HttpSession session) throws Exception {
+		ReturnObject ret = activityService.saveCreateActivityByList(activityFile,session);
+		return ret;
+	 }
 	
 	
 	
