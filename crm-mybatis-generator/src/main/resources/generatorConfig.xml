@@ -48,11 +48,16 @@
 <javaClientGenerator targetPackage="com.lukai.crm.workbench.mapper" targetProject="D:\dev\git\git_repos\crm\src\main\java" type="XMLMAPPER">
 <property name="enableSubPackages" value="true"/>
 </javaClientGenerator>
- 	<table tableName="tbl_activity" domainObjectName="Activity"
+				<table tableName="tbl_activity_remark" domainObjectName="ActivityRemark"
+				                       enableCountByExample="false" enableUpdateByExample="false"
+				                       enableDeleteByExample="false" enableSelectByExample="false"
+				                       selectByExampleQueryId="false">
+                </table>
+ 	<!-- <table tableName="tbl_activity" domainObjectName="Activity"
                        enableCountByExample="false" enableUpdateByExample="false"
                        enableDeleteByExample="false" enableSelectByExample="false"
                        selectByExampleQueryId="false">
-     </table>
+     </table> -->
 <!-- <table tableName="tbl_user" domainObjectName="User" 
 	enableCountByExample="false" enableUpdateByExample="false" 
 	enableDeleteByExample="false" enableSelectByExample="false" 
