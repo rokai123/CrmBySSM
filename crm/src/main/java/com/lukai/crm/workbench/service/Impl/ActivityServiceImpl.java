@@ -156,6 +156,7 @@ public class ActivityServiceImpl implements ActivityService{
 			int resultNum = activityMapper.insertActivityByList(activityList);
 			if (resultNum>0) {
 				returnObject.setCode(Contants.RETURN_OBJECT_CODE_SUCCESS);
+				returnObject.setResultData(resultNum);
 			}else {
 				returnObject.setCode(Contants.RETURN_OBJECT_CODE_FAIL);
 				returnObject.setMessage("システムが混雑中です、しばらくしてから再度お試しください");
