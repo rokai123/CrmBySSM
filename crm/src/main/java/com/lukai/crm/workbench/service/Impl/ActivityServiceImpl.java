@@ -1,7 +1,5 @@
 package com.lukai.crm.workbench.service.Impl;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
@@ -111,11 +109,12 @@ public class ActivityServiceImpl implements ActivityService{
 		List<Activity> activityList = new ArrayList<Activity>();
 		try {
 			// 受信したExcelファイルをディスクに書き込む
-			String originalFilename = activityFile.getOriginalFilename();
-			File file = new File( "D:\\dev\\projects\\CRMBySSM\\excel"+ originalFilename);
-			activityFile.transferTo(file);
+			// String originalFilename = activityFile.getOriginalFilename();
+			// File file = new File( "D:\\dev\\projects\\CRMBySSM\\excel\\"+ originalFilename);
+			// activityFile.transferTo(file);
 			// Excelファイルを解析し、シートデータを読み取ってActivityオブジェクトのリストに変換
-			InputStream is = new FileInputStream("D:\\dev\\projects\\CRMBySSM\\excel"+ originalFilename);
+			// InputStream is = new FileInputStream("D:\\dev\\projects\\CRMBySSM\\excel\\"+ originalFilename);
+			InputStream is = activityFile.getInputStream();
 			HSSFWorkbook wb = new HSSFWorkbook(is);
 			HSSFSheet sheet = wb.getSheetAt(0);
 			// 行単位でループ処理
