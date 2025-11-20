@@ -171,5 +171,12 @@ public class ActivityServiceImpl implements ActivityService{
 		
 		return returnObject;
 	}
+	
+	//詳細情報のためにIDに基づいてマーケティングキャンペーンをリサーチ
+	@Override
+	public Activity queryActivityForDetailById(String id) {
+		
+		return activityMapper.selectActivityByIdForDetail(id);
+	}
 
 }

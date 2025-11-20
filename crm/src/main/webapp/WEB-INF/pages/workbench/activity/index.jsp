@@ -25,7 +25,9 @@
 <script type="text/javascript">
 	//ページ読み込み完了で実行
 	$(function(){
-
+		// マーケティングキャンペーン一覧ページの読み込み完了時、全データの最初のページと総件数を取得
+		queryActivityByConditionForPage(1,10);
+		
 		$("#createActivityBtn").click(function(){
 			//模态窗口弹出控制：需通过JS代码而非HTML属性实现，以便在弹出前执行初始化操作
 			//モーダル表示制御は、表示前の初期化処理を可能にするため、JSコードで実装すること（HTML属性不可）。
@@ -110,8 +112,6 @@
 		    todayBtn: true,          // 「今日」ボタンを表示
 		    clearBtn: true           // 「クリア」ボタンを表示
 		});
-		// マーケティングキャンペーン一覧ページの読み込み完了時、全データの最初のページと総件数を取得
-		queryActivityByConditionForPage(1,10);
 
 		//検索ボタンにクリックイベントをバインドする。
 		$("#researchBtn").click(function () {
@@ -413,7 +413,7 @@
 		        $.each(data.activities, function(i, n) {
 		            html += "<tr class=\"active\">";
 		            html += "<td><input type=\"checkbox\" value=\"" + n.id + "\" id=\" \"/></td>";
-		            html += "<td><a style=\"text-decoration: none; cursor: pointer;\" onclick=\"window.location.href='workbench/activity/detailActivity.do';\">" + n.name + "</a></td>";
+		            html += "<td><a style=\"text-decoration: none; cursor: pointer;\" onclick=\"window.location.href='workbench/activity/detailActivity.do?id=" + n.id + "';\">" + n.name + "</a></td>";
 		            html += "<td>" + n.owner + "</td>";
 		            html += "<td>" + n.startDate + "</td>";
 		            html += "<td>" + n.endDate + "</td>";

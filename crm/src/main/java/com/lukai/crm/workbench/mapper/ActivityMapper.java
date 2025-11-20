@@ -82,4 +82,9 @@ public interface ActivityMapper {
 	 * created by 102106
 	 */
     int insertActivityByList(List<Activity> activityList);
+    
+    /**
+	 * 詳細情報のためにIDに基づいてマーケティングキャンペーンをリサーチ
+	 */
+    Activity selectActivityByIdForDetail(String id);
 }
