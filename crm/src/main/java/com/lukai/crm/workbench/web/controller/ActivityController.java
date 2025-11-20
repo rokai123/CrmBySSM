@@ -28,6 +28,8 @@ import com.lukai.crm.commons.utils.UUIdUtils;
 import com.lukai.crm.settings.domain.User;
 import com.lukai.crm.settings.service.UserService;
 import com.lukai.crm.workbench.domain.Activity;
+import com.lukai.crm.workbench.domain.ActivityRemark;
+import com.lukai.crm.workbench.service.ActivityRemarkService;
 import com.lukai.crm.workbench.service.ActivityService;
 
 @Controller
@@ -38,6 +40,9 @@ public class ActivityController {
 	@Autowired
 	ActivityService activityService;
 
+	@Autowired
+	ActivityRemarkService activityRemarkService;
+	
 	/*
 	 * by rokai123 
 	 * 
@@ -315,10 +320,11 @@ public class ActivityController {
 	 */
 	@RequestMapping("/workbench/activity/detailActivity.do")
 	public String detailActivity(String id,HttpServletRequest request) { 
-		// Activity activity = activityService.queryActivityForDetailById(id);
-		// List<ActivityRemark> remarkList = activityService.queryActivityRemarkForDetailByActivityId(id);
-		// request.setAttribute("activity", activity);
-		// request.setAttribute("remarkList", remarkList);
+		Activity activity = activityService.queryActivityForDetailById(id);
+		List<ActivityRemark> activityRemarks = activityRemarkService.queryActivityRemarksByActivityIdForDetail(id);
+		System.out.println(activityRemarks);
+		request.setAttribute("activity", activity);
+		request.setAttribute("activityRemarks", activityRemarks);
 		return "workbench/activity/detail";
 	}
 
