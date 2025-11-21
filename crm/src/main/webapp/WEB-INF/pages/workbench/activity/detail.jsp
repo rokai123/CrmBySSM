@@ -37,20 +37,73 @@
 			cancelAndSaveBtnDefault = true;
 		});
 		
-		$(".remarkDiv").mouseover(function(){
+		/* $(".remarkDiv").mouseover(function(){
 			$(this).children("div").children("div").show();
 		});
 		
 		$(".remarkDiv").mouseout(function(){
 			$(this).children("div").children("div").hide();
-		});
+		}); */
 		
-		$(".myHref").mouseover(function(){
-			$(this).children("span").css("color","red");
+		 // 鼠标移入，显示按钮		
+		$(document).on("mouseenter", ".remarkDiv", function () {
+		   // $(this).children().children("div:last").show();
+			$(this).children("div").children("div").show();
 		});
-		
-		$(".myHref").mouseout(function(){
-			$(this).children("span").css("color","#E6E6E6");
+		 // 鼠标移出，隐藏按钮
+		$(document).on("mouseleave", ".remarkDiv", function () {
+		    //$(this).children().children("div:last").hide();
+			$(this).children("div").children("div").hide();
+		});
+				
+		// 鼠标移入动态元素
+		$(document).on("mouseover", ".myHref", function(){
+		    $(this).children("span").css("color","red");
+		});
+
+		// 鼠标移出
+		$(document).on("mouseout", ".myHref", function(){
+		    $(this).children("span").css("color","#E6E6E6");
+		});
+
+
+		//添加备注
+		$('#saveCreateActivityRemarkBtn').click(function () { 
+			let noteContent = $.trim($("#remark").val());
+			if(noteContent == ""){
+				alert("何も入力していません");
+				return;
+			}
+			$.ajax({
+				url:'workbench/activity/saveCreateActivityRemark.do',
+				data:{
+					'noteContent':noteContent,
+					'activityId':'${activity.id}'
+				},
+				type:'post',
+				dataType:'json',
+				success:function (data) {
+					if(data.code == "1"){
+						//清空输入框
+						$("#remark").val("");
+						let html = "";
+					    html+="<div class=\"remarkDiv\" style=\"height: 60px;\">";
+						html+="<img title=\"${sessionScope.sessionUser.name}\" src=\"image/user-thumbnail.png\" style=\"width: 30px; height:30px;\">";
+						html+="<div style=\"position: relative; top: -40px; left: 40px;\" >";
+						html+="<h5>"+data.resultData.noteContent+"</h5>";
+						html+="<font color=\"gray\">市场活动</font> <font color=\"gray\">-</font><b>${activity.name}</b> <small style=\"color: gray;\">"+data.resultData.createTime+"--\"${sessionScope.sessionUser.name}\"さんが作成した</small>";
+						html+="<div style=\"position: relative; left: 500px; top: -30px; height: 30px; width: 100px; display: none;\">";
+						html+= "<a class='myHref' remarkId='"+data.resultData.id+"' href='javascript:void(0);'><span class='glyphicon glyphicon-edit' style='font-size: 20px; color: #E6E6E6;'></span></a>";
+						html+= '&nbsp;&nbsp;&nbsp;&nbsp;';
+						html+= "<a class='myHref' remarkId='"+data.resultData.id+"' href='javascript:void(0);'><span class='glyphicon glyphicon-remove' style='font-size: 20px; color: #E6E6E6;'></span></a>";
+						html+="</div>";
+						html+="</div>";
+						html+="</div>";
+						$("#page-header-id").after(html);  
+					}
+				}
+			})
+
 		});
 	});
 	
@@ -155,7 +208,7 @@
 	
 	<!-- 备注 -->
 	<div style="position: relative; top: 30px; left: 40px;">
-		<div class="page-header">
+		<div class="page-header" id="page-header-id">
 			<h4>备注</h4>
 		</div>
 		
@@ -174,47 +227,36 @@
 			</div>
 		</div>
         </foreach> -->
-    <!-- 备注1 -->
+    <!--備考欄1 -->
   <c:forEach items="${activityRemarks}" var="remark" >
 		<div class="remarkDiv" style="height: 60px;">
 			<img title="${remark.createBy}" src="image/user-thumbnail.png" style="width: 30px; height:30px;">
 			<div style="position: relative; top: -40px; left: 40px;" >
 				<h5>${remark.noteContent}</h5>
-				<c:if test="${remark.editFlag=='1'}">
+				<%-- <c:if test="${remark.editFlag=='1'}">
 					<font color="gray">市场活动</font> <font color="gray">-</font> <b>${activity.name}</b> <small style="color: gray;"> ${remark.editTime} 由${remark.editBy }</small>
 				</c:if>
-				<c:if test="${remark.editFlag==''}">
+				<c:if test="${remark.editFlag=='' || remark.editFlag == null}">
 					<font color="gray">市场活动</font> <font color="gray">-</font> <b>${activity.name}</b> <small style="color: gray;"> ${remark.createTime} 由${remark.createBy }</small>
-				</c:if>
+				</c:if> --%>
+				<font color="gray">市场活动</font> <font color="gray">-</font> <b>${activity.name}</b> <small style="color: gray;"> ${remark.editFlag=='1'? remark.editTime : remark.createTime}--${remark.editFlag=='1'?remark.editBy:remark.createBy}さんが${remark.editFlag=='1'?'変更した':'作成した' }</small>
 				<div style="position: relative; left: 500px; top: -30px; height: 30px; width: 100px; display: none;">
-					<a class="myHref" href="javascript:void(0);"><span class="glyphicon glyphicon-edit" style="font-size: 20px; color: #E6E6E6;"></span></a>
+					<%--remarkId="${remark.id}" はカスタムタグ属性のため、JSで値を取得するにはjQueryのattr()メソッドを使用必須 --%>
+					<a class="myHref" remarkId="${remark.id}" href="javascript:void(0);"><span class="glyphicon glyphicon-edit" style="font-size: 20px; color: #E6E6E6;"></span></a>
 					&nbsp;&nbsp;&nbsp;&nbsp;
-					<a class="myHref" href="javascript:void(0);"><span class="glyphicon glyphicon-remove" style="font-size: 20px; color: #E6E6E6;"></span></a>
+					<a class="myHref" remarkId="${remark.id}" href="javascript:void(0);"><span class="glyphicon glyphicon-remove" style="font-size: 20px; color: #E6E6E6;"></span></a>
 				</div>
 			</div>
 		</div>
 	</c:forEach>
-	<!-- 备注2 -->
-		<!-- 
-		<div class="remarkDiv" style="height: 60px;">
-			<img title="zhangsan" src="image/user-thumbnail.png" style="width: 30px; height:30px;">
-			<div style="position: relative; top: -40px; left: 40px;" >
-				<h5>呵呵！</h5>
-				<font color="gray">市场活动</font> <font color="gray">-</font> <b>发传单</b> <small style="color: gray;"> 2017-01-22 10:20:10 由zhangsan</small>
-				<div style="position: relative; left: 500px; top: -30px; height: 30px; width: 100px; display: none;">
-					<a class="myHref" href="javascript:void(0);"><span class="glyphicon glyphicon-edit" style="font-size: 20px; color: #E6E6E6;"></span></a>
-					&nbsp;&nbsp;&nbsp;&nbsp;
-					<a class="myHref" href="javascript:void(0);"><span class="glyphicon glyphicon-remove" style="font-size: 20px; color: #E6E6E6;"></span></a>
-				</div>
-			</div>
-		</div> -->
+	
 		
 		<div id="remarkDiv" style="background-color: #E6E6E6; width: 870px; height: 90px;">
 			<form role="form" style="position: relative;top: 10px; left: 10px;">
 				<textarea id="remark" class="form-control" style="width: 850px; resize : none;" rows="2"  placeholder="添加备注..."></textarea>
 				<p id="cancelAndSaveBtn" style="position: relative;left: 737px; top: 10px; display: none;">
 					<button id="cancelBtn" type="button" class="btn btn-default">取消</button>
-					<button type="button" class="btn btn-primary">保存</button>
+					<button type="button" class="btn btn-primary" id="saveCreateActivityRemarkBtn">保存</button>
 				</p>
 			</form>
 		</div>

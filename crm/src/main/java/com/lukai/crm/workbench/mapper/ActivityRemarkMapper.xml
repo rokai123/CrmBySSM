@@ -175,4 +175,11 @@
     order by create_time desc
   
   </select>
+  
+  <insert id="insertActivityRemark" parameterType="com.lukai.crm.workbench.domain.ActivityRemark">
+  	insert into tbl_activity_remark
+    (id,note_content,create_time,create_by,edit_flag,activity_id)
+    values
+    (#{id},#{noteContent},#{createTime},#{createBy},#{editFlag},#{activityId})
+  </insert>
 </mapper>

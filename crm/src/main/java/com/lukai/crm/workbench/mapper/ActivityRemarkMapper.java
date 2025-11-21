@@ -54,10 +54,16 @@ public interface ActivityRemarkMapper {
     int updateByPrimaryKey(ActivityRemark row);
     
     /**
-	 * 
-	 * @param activityId
-	 * @return
-	 *  通过市场活动id查询该市场活动下的所有备注信息
-	 */
+     * マーケティングキャンペーンIDに基づき、該当キャンペーンに属する全ての備考情報を検索（詳細表示用）
+     * @param activityId マーケティングキャンペーンID
+     * @return 備考情報リスト
+     */
     List<ActivityRemark> selectActivityRemarksByActivityIdForDetail(String activityId);
+    
+    /**
+	 * 新しいマーケティングキャンペーン備考情報を挿入
+	 * @param activityRemark 挿入する備考情報
+	 * @return 挿入された行数
+	 */
+    int insertActivityRemark(ActivityRemark activityRemark);
 }

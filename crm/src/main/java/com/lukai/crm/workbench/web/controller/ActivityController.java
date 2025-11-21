@@ -307,13 +307,6 @@ public class ActivityController {
 	 }
 	
 	
-	
-	
-	
-	
-	
-	
-	
 	/**
 	 * 跳转到某条市场活动的详情页面
 	 * 
@@ -322,7 +315,6 @@ public class ActivityController {
 	public String detailActivity(String id,HttpServletRequest request) { 
 		Activity activity = activityService.queryActivityForDetailById(id);
 		List<ActivityRemark> activityRemarks = activityRemarkService.queryActivityRemarksByActivityIdForDetail(id);
-		System.out.println(activityRemarks);
 		request.setAttribute("activity", activity);
 		request.setAttribute("activityRemarks", activityRemarks);
 		return "workbench/activity/detail";
