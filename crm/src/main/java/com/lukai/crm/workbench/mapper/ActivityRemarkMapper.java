@@ -66,4 +66,6 @@ public interface ActivityRemarkMapper {
 	 * @return 挿入された行数
 	 */
     int insertActivityRemark(ActivityRemark activityRemark);
+    
+    int deleteActivityRemarkById(String id);
 }

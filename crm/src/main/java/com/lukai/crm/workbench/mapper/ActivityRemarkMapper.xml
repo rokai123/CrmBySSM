@@ -182,4 +182,8 @@
     values
     (#{id},#{noteContent},#{createTime},#{createBy},#{editFlag},#{activityId})
   </insert>
-</mapper>
+  
+  <delete id="deleteActivityRemarkById" parameterType="String">
+    delete from tbl_activity_remark where id = #{id}
+   </delete>
+   </mapper>

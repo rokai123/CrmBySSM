@@ -29,6 +29,12 @@ public class ActivityRemarkServiceImpl implements ActivityRemarkService{
 		return activityRemarks;
 	}
 
+	/**
+	 * 
+	 * @param activityRemark
+	 * @return
+	 * 	マーケティングキャンペーンの備考を保存
+	 */
 	@Override
 	public ReturnObject saveActivityRemark(ActivityRemark activityRemark) {
 		ReturnObject returnObject = new ReturnObject();
@@ -45,6 +51,33 @@ public class ActivityRemarkServiceImpl implements ActivityRemarkService{
 			e.printStackTrace();
 			returnObject.setCode(Contants.RETURN_OBJECT_CODE_FAIL);
 			returnObject.setMessage("システムが混雑中です、しばらくしてから再度お試しください");
+		}
+		
+		return returnObject;
+	}
+
+	/**
+	 * 
+	 * @param id
+	 * @return
+	 * 	マーケティングキャンペーンの備考IDを条件にマーケティングキャンペーンの備考を削除
+	 */
+	@Override
+	public ReturnObject deleteActivityRemarkById(String id) {
+		ReturnObject returnObject = new ReturnObject();
+		try {
+			int retInt = activityRemarkMapper.deleteByPrimaryKey(id);
+			if (retInt>0) {
+				returnObject.setCode(Contants.RETURN_OBJECT_CODE_SUCCESS);
+			}else {
+				returnObject.setCode(Contants.RETURN_OBJECT_CODE_FAIL);
+				returnObject.setMessage("システムが混雑中です、しばらくしてから再度お試しください");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			returnObject.setCode(Contants.RETURN_OBJECT_CODE_FAIL);
+			returnObject.setMessage("システムが混雑中です、しばらくしてから再度お試しください");
+			
 		}
 		
 		return returnObject;

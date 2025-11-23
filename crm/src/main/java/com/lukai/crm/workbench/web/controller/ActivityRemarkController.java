@@ -26,18 +26,32 @@ public class ActivityRemarkController {
 	@RequestMapping("/workbench/activity/saveCreateActivityRemark.do")
 	@ResponseBody
 	public ReturnObject saveCreateActivityRemark(ActivityRemark activityRemark,HttpSession session) {
-		//封装前台没有传过来的参数
+		// フロントエンドから渡されていないパラメータをカプセル化
 		activityRemark.setId(UUIdUtils.getUUId());
 		User user = (User)session.getAttribute(Contants.SESSION_USER);
 		activityRemark.setCreateBy(user.getId());
 		activityRemark.setCreateTime(DateUtils.formateDateTime(new Date()));
 		activityRemark.setEditFlag(Contants.REMARK_EDIT_FLAG_NO_EDITED);
 		
-		//封装好的activityRemark交给service层处理
+		// カプセル化済みのactivityRemarkをサービス層で処理
 		ReturnObject retData = activityRemarkService.saveActivityRemark(activityRemark);
 		
 		
 		return retData;
 		
+	}
+	
+	/**
+	 * マーケティングキャンペーンの備考IDを条件にマーケティングキャンペーンの備考を削除
+	 * @param id
+	 * @return
+	 */
+	@RequestMapping("/workbench/activity/deleteActivityRemarkById.do")
+	@ResponseBody
+	public ReturnObject deleteActivityRemarkById(String id) {
+		
+		ReturnObject ret = activityRemarkService.deleteActivityRemarkById(id);
+		
+		return ret;
 	}
 }

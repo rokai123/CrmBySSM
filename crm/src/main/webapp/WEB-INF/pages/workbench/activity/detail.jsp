@@ -87,15 +87,15 @@
 						//清空输入框
 						$("#remark").val("");
 						let html = "";
-					    html+="<div class=\"remarkDiv\" style=\"height: 60px;\">";
+					    html+="<div class=\"remarkDiv\" id=\"div_"+data.resultData.id+"\" style=\"height: 60px;\">";
 						html+="<img title=\"${sessionScope.sessionUser.name}\" src=\"image/user-thumbnail.png\" style=\"width: 30px; height:30px;\">";
 						html+="<div style=\"position: relative; top: -40px; left: 40px;\" >";
 						html+="<h5>"+data.resultData.noteContent+"</h5>";
 						html+="<font color=\"gray\">市场活动</font> <font color=\"gray\">-</font><b>${activity.name}</b> <small style=\"color: gray;\">"+data.resultData.createTime+"--\"${sessionScope.sessionUser.name}\"さんが作成した</small>";
 						html+="<div style=\"position: relative; left: 500px; top: -30px; height: 30px; width: 100px; display: none;\">";
-						html+= "<a class='myHref' remarkId='"+data.resultData.id+"' href='javascript:void(0);'><span class='glyphicon glyphicon-edit' style='font-size: 20px; color: #E6E6E6;'></span></a>";
+						html+= "<a class='myHref' name='editBtn' remarkId='"+data.resultData.id+"' href='javascript:void(0);'><span class='glyphicon glyphicon-edit' style='font-size: 20px; color: #E6E6E6;'></span></a>";
 						html+= '&nbsp;&nbsp;&nbsp;&nbsp;';
-						html+= "<a class='myHref' remarkId='"+data.resultData.id+"' href='javascript:void(0);'><span class='glyphicon glyphicon-remove' style='font-size: 20px; color: #E6E6E6;'></span></a>";
+						html+= "<a class='myHref' name='removeBtn' remarkId='"+data.resultData.id+"' href='javascript:void(0);'><span class='glyphicon glyphicon-remove' style='font-size: 20px; color: #E6E6E6;'></span></a>";
 						html+="</div>";
 						html+="</div>";
 						html+="</div>";
@@ -105,6 +105,30 @@
 			})
 
 		});
+
+		//删除备注
+		$(remarkDivList).on("click", "a[name='removeBtn']", function () {
+			let remarkId = $(this).attr("remarkId");
+			$.ajax({
+				url:'workbench/activity/deleteActivityRemarkById.do',
+				data:{
+					'id':remarkId
+				},
+				type:'post',
+				dataType:'json',
+				success:function (data) {
+					if(data.code == "1"){
+						//alert(data.message);
+						//移除被删除备注的div
+						$("#div_"+remarkId).remove();
+					}else{
+						alert(data.message);
+					}
+				}
+			})
+			
+
+		})
 	});
 	
 </script>
@@ -207,7 +231,7 @@
 	</div>
 	
 	<!-- 备注 -->
-	<div style="position: relative; top: 30px; left: 40px;">
+	<div style="position: relative; top: 30px; left: 40px;" id="remarkDivList">
 		<div class="page-header" id="page-header-id">
 			<h4>备注</h4>
 		</div>
@@ -229,7 +253,7 @@
         </foreach> -->
     <!--備考欄1 -->
   <c:forEach items="${activityRemarks}" var="remark" >
-		<div class="remarkDiv" style="height: 60px;">
+		<div class="remarkDiv" id="div_${remark.id}" style="height: 60px;">
 			<img title="${remark.createBy}" src="image/user-thumbnail.png" style="width: 30px; height:30px;">
 			<div style="position: relative; top: -40px; left: 40px;" >
 				<h5>${remark.noteContent}</h5>
@@ -242,9 +266,9 @@
 				<font color="gray">市场活动</font> <font color="gray">-</font> <b>${activity.name}</b> <small style="color: gray;"> ${remark.editFlag=='1'? remark.editTime : remark.createTime}--${remark.editFlag=='1'?remark.editBy:remark.createBy}さんが${remark.editFlag=='1'?'変更した':'作成した' }</small>
 				<div style="position: relative; left: 500px; top: -30px; height: 30px; width: 100px; display: none;">
 					<%--remarkId="${remark.id}" はカスタムタグ属性のため、JSで値を取得するにはjQueryのattr()メソッドを使用必須 --%>
-					<a class="myHref" remarkId="${remark.id}" href="javascript:void(0);"><span class="glyphicon glyphicon-edit" style="font-size: 20px; color: #E6E6E6;"></span></a>
+					<a class="myHref" remarkId="${remark.id}" name="editBtn" href="javascript:void(0);"><span class="glyphicon glyphicon-edit" style="font-size: 20px; color: #E6E6E6;"></span></a>
 					&nbsp;&nbsp;&nbsp;&nbsp;
-					<a class="myHref" remarkId="${remark.id}" href="javascript:void(0);"><span class="glyphicon glyphicon-remove" style="font-size: 20px; color: #E6E6E6;"></span></a>
+					<a class="myHref" remarkId="${remark.id}" name="removeBtn" href="javascript:void(0);"><span class="glyphicon glyphicon-remove" style="font-size: 20px; color: #E6E6E6;"></span></a>
 				</div>
 			</div>
 		</div>
