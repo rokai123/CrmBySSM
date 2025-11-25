@@ -1,6 +1,7 @@
 package crm;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import org.junit.runner.RunWith;
@@ -11,8 +12,10 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import com.lukai.crm.commons.utils.DateUtils;
 import com.lukai.crm.workbench.domain.Activity;
 import com.lukai.crm.workbench.domain.ActivityRemark;
+import com.lukai.crm.workbench.domain.Clue;
 import com.lukai.crm.workbench.mapper.ActivityMapper;
 import com.lukai.crm.workbench.mapper.ActivityRemarkMapper;
+import com.lukai.crm.workbench.mapper.ClueMapper;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {
 		"classpath:applicationContext.xml",
@@ -24,6 +27,8 @@ public class Test {
 	ActivityMapper activityMapper;
 	@Autowired
 	ActivityRemarkMapper activityRemarkMapper;
+	@Autowired
+	ClueMapper clueMapper;
 	
 	@org.junit.Test
 	public void dateUtilsTest() {
@@ -42,5 +47,13 @@ public class Test {
 	public void selectByPrimaryKeyTest() {
 		List<ActivityRemark> selectByPrimaryKey =activityRemarkMapper.selectActivityRemarksByActivityIdForDetail("3f0fa1d7efb24087a7d54e3cce2907c6");
 		System.out.println(selectByPrimaryKey);
+	}
+	
+	@org.junit.Test
+	public void selecClueByConditionForPage() {
+		HashMap<String, Object> hashMap = new HashMap<String, Object>();
+		hashMap.put("fullname", "f");
+		List<Clue> clues = clueMapper.selectClueByConditionForPage(hashMap);
+		clues.forEach(System.out::println);
 	}
 }

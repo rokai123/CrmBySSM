@@ -172,7 +172,7 @@
 		<li class="liClass"><a href="javascript:void(0);" target="workareaFrame"><span class="glyphicon glyphicon-time"></span> 承認</a></li>
 		<li class="liClass"><a href="javascript:void(0);" target="workareaFrame"><span class="glyphicon glyphicon-user"></span> カスタマープール</a></li>
 		<li class="liClass"><a href="workbench/activity/index.do" target="workareaFrame"><span class="glyphicon glyphicon-play-circle"></span> マーケティングキャンペーン</a></li>
-		<li class="liClass"><a href="clue/index.html" target="workareaFrame"><span class="glyphicon glyphicon-search"></span> リード（見込み客）</a></li>
+		<li class="liClass"><a href="workbench/clue/index.do" target="workareaFrame"><span class="glyphicon glyphicon-search"></span> リード（見込み客）</a></li>
 		<li class="liClass"><a href="customer/index.html" target="workareaFrame"><span class="glyphicon glyphicon-user"></span> 顧客</a></li>
 		<li class="liClass"><a href="contacts/index.html" target="workareaFrame"><span class="glyphicon glyphicon-earphone"></span> 連絡先</a></li>
 		<li class="liClass"><a href="transaction/index.html" target="workareaFrame"><span class="glyphicon glyphicon-usd"></span> 取引（商機）</a></li>

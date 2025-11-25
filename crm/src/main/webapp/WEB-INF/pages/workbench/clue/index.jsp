@@ -1,24 +1,116 @@
-<!DOCTYPE html>
+<%@ page contentType="text/html; charset=UTF-8" language="java" %>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%
+		String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
+                + request.getContextPath() + "/";
+ %>
 <html>
 <head>
+<base href="<%=basePath%>">
 <meta charset="UTF-8">
 
-<link href="../../jquery/bootstrap_3.3.0/css/bootstrap.min.css" type="text/css" rel="stylesheet" />
-<link href="../../jquery/bootstrap-datetimepicker-master/css/bootstrap-datetimepicker.min.css" type="text/css" rel="stylesheet" />
+<link href="jquery/bootstrap_3.3.0/css/bootstrap.min.css" type="text/css" rel="stylesheet" />
+<link href="jquery/bootstrap-datetimepicker-master/css/bootstrap-datetimepicker.min.css" type="text/css" rel="stylesheet" />
+<link href="jquery/bs_pagination-master/css/jquery.bs_pagination.min.css" type="text/css" rel="stylesheet" />
 
-<script type="text/javascript" src="../../jquery/jquery-1.11.1-min.js"></script>
-<script type="text/javascript" src="../../jquery/bootstrap_3.3.0/js/bootstrap.min.js"></script>
-<script type="text/javascript" src="../../jquery/bootstrap-datetimepicker-master/js/bootstrap-datetimepicker.js"></script>
-<script type="text/javascript" src="../../jquery/bootstrap-datetimepicker-master/locale/bootstrap-datetimepicker.zh-CN.js"></script>
+<script type="text/javascript" src="jquery/jquery-1.11.1-min.js"></script>
+<script type="text/javascript" src="jquery/bootstrap_3.3.0/js/bootstrap.min.js"></script>
+<!-- 時間選択のためのJSファイルの読み込み -->
+<script type="text/javascript" src="jquery/bootstrap-datetimepicker-master/js/bootstrap-datetimepicker.js"></script>
+<script type="text/javascript" src="jquery/bootstrap-datetimepicker-master/locale/bootstrap-datetimepicker.ja.js"></script>
+<!-- ページングのためのJSファイルの読み込み -->
+<script type="text/javascript" src="jquery/bs_pagination-master/js/jquery.bs_pagination.min.js"></script>
+<script type="text/javascript" src="jquery/bs_pagination-master/localization/ja.js"></script>
 
 <script type="text/javascript">
 
 	$(function(){
-		
+		queryActivityByConditionForPage(1,10);
 		
 		
 	});
 	
+	//在页面入口函数外面封装线索列表的查询显示的函数
+	// ページのエントリ関数外に、リード一覧の検索表示機能をカプセル化
+	function queryActivityByConditionForPage(pageNo,pageSize) { 
+		
+		// パラメータを収集
+		let clueName = $("#clueName").val();
+        let company = $("#company").val();
+        let companyPhone = $("#companyPhone").val();
+        let leadSource = $("#leadSource").val();
+        let owner = $("#owner").val();
+        let phone = $("#phone").val();
+        let leadStatus = $("#leadStatus").val();
+
+
+		$.ajax({
+		    url: "workbench/activity/queryActivityByConditionForPage.do",
+		    type: "post",
+		    data: {
+		    	fullname: clueName,
+		        company: company,
+		        phone: companyPhone,
+		        leadSource: leadSource,
+		        owner: owner,
+		        phone: phone,
+		        leadStatus: leadStatus,
+		        pageNo: pageNo,
+		        pageSize: pageSize
+		    },
+		    dataType: "json",
+		    success: function(data) {
+		        // data.totalRows：レスポンスデータから取得した総レコード数
+		        //$("#totalRowsB").text(data.totalRows);
+
+		      let html = "";
+		        $.each(data.clues, function(i, n) {
+                    html += "<tr class=\"active\">";
+                    html += "<td><input type=\"checkbox\" /></td>";
+                    html += "<td><a style=\"text-decoration: none; cursor: pointer;\" onclick=\"window.location.href='detail.html';\">李四先生</a></td>";
+                    html += "<td>动力节点</td>";
+                    html += "<td>010-84846003</td>";
+                    html += "<td>12345678901</td>";
+                    html += "<td>广告</td>";
+                    html += "<td>zhangsan</td>";
+                    html += "<td>已联系</td>";
+                    html += "</tr>";
+		        });
+		        
+		        $("#activityBody").html(html);
+				//総ページ数を計算する
+				let totalPages;
+				if(data.totalRows % pageSize == 0) {
+					totalPages = data.totalRows / pageSize;
+				} else {
+					//切り上げ関数 Math.ceil()
+					totalPages = Math.ceil(data.totalRows / pageSize);
+				}
+
+				//在此处设置分页组件的函数（因为在这里才能读取到后台返回的总件数)
+				// ここでページネーションコンポーネントの関数を設定（バックエンドから返されたdataを取得できるため）
+				$("#cluePage") .bs_pagination({
+					currentPage: pageNo, // ページ番号
+					rowsPerPage: pageSize, // 1ページあたりの行数
+					totalRows: data.totalRows, // 総レコード数
+					totalPages: totalPages, // 総ページ数
+					visiblePageLinks: 10, // 表示するページリンク数
+					showGoToPage: true, // Go to pageリンクを表示
+					showRowsPerPage: true, // 1ページあたりの行数リンクを表示
+					showRowsInfo: true, // ページ情報を表示
+					// ページリンクがクリックされたときに呼び出される関数
+					onChangePage: function(event, pageObj) { 
+						// ページリンクがクリックされたら、マーケティングキャンペーン一覧を表示
+						queryActivityByConditionForPage(pageObj.currentPage,pageObj.rowsPerPage);
+						//全選択チェックボックスをデフォルトの未選択状態に設定
+						$("#checkAll").prop("checked",false);
+						
+					}
+
+				})
+		    }
+		});
+	}
 </script>
 </head>
 <body>
@@ -40,9 +132,9 @@
 							<label for="create-clueOwner" class="col-sm-2 control-label">所有者<span style="font-size: 15px; color: red;">*</span></label>
 							<div class="col-sm-10" style="width: 300px;">
 								<select class="form-control" id="create-clueOwner">
-								  <option>zhangsan</option>
-								  <option>lisi</option>
-								  <option>wangwu</option>
+									<c:forEach items="${userList}" var="user">
+										<option value="${user.id}">${user.name}</option>
+									</c:forEach>
 								</select>
 							</div>
 							<label for="create-company" class="col-sm-2 control-label">公司<span style="font-size: 15px; color: red;">*</span></label>
@@ -197,9 +289,9 @@
 							<label for="edit-clueOwner" class="col-sm-2 control-label">所有者<span style="font-size: 15px; color: red;">*</span></label>
 							<div class="col-sm-10" style="width: 300px;">
 								<select class="form-control" id="edit-clueOwner">
-								  <option>zhangsan</option>
-								  <option>lisi</option>
-								  <option>wangwu</option>
+									<c:forEach items="${userList}" var="user">
+										<option value="${user.id}">${user.name}</option>
+									</c:forEach>
 								</select>
 							</div>
 							<label for="edit-company" class="col-sm-2 control-label">公司<span style="font-size: 15px; color: red;">*</span></label>
@@ -357,28 +449,28 @@
 				  <div class="form-group">
 				    <div class="input-group">
 				      <div class="input-group-addon">名称</div>
-				      <input class="form-control" type="text">
+				      <input class="form-control" id="clueName" type="text">
 				    </div>
 				  </div>
 				  
 				  <div class="form-group">
 				    <div class="input-group">
 				      <div class="input-group-addon">公司</div>
-				      <input class="form-control" type="text">
+				      <input class="form-control" id="company" type="text">
 				    </div>
 				  </div>
 				  
 				  <div class="form-group">
 				    <div class="input-group">
 				      <div class="input-group-addon">公司座机</div>
-				      <input class="form-control" type="text">
+				      <input class="form-control" id="companyPhone" type="text">
 				    </div>
 				  </div>
 				  
 				  <div class="form-group">
 				    <div class="input-group">
 				      <div class="input-group-addon">线索来源</div>
-					  <select class="form-control">
+					  <select class="form-control" id="leadSource">
 					  	  <option></option>
 					  	  <option>广告</option>
 						  <option>推销电话</option>
@@ -403,7 +495,7 @@
 				  <div class="form-group">
 				    <div class="input-group">
 				      <div class="input-group-addon">所有者</div>
-				      <input class="form-control" type="text">
+				      <input class="form-control" type="text" id="owner">
 				    </div>
 				  </div>
 				  
@@ -412,14 +504,14 @@
 				  <div class="form-group">
 				    <div class="input-group">
 				      <div class="input-group-addon">手机</div>
-				      <input class="form-control" type="text">
+				      <input class="form-control" id="phone" type="text">
 				    </div>
 				  </div>
 				  
 				  <div class="form-group">
 				    <div class="input-group">
 				      <div class="input-group-addon">线索状态</div>
-					  <select class="form-control">
+					  <select class="form-control" id="leadStatus">
 					  	<option></option>
 					  	<option>试图联系</option>
 					  	<option>将来联系</option>
@@ -484,8 +576,8 @@
 				</table>
 			</div>
 			
-			<div style="height: 50px; position: relative;top: 60px;">
-				<div>
+			<div style="height: 80px; position: relative;top: 60px;" id="cluePage">
+				<!--  <div>
 					<button type="button" class="btn btn-default" style="cursor: default;">共<b>50</b>条记录</button>
 				</div>
 				<div class="btn-group" style="position: relative;top: -34px; left: 110px;">
@@ -517,7 +609,7 @@
 						</ul>
 					</nav>
 				</div>
-			</div>
+			</div> -->
 			
 		</div>
 		

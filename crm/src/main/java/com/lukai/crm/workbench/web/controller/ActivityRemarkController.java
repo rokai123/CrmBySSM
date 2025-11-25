@@ -54,4 +54,18 @@ public class ActivityRemarkController {
 		
 		return ret;
 	}
+	
+	/**
+	 * マーケティングキャンペーンの備考を編集保存
+	 * @param activityRemark
+	 * @param session
+	 * @return
+	 */
+	@RequestMapping("/workbench/activity/saveEditActivityRemark.do")
+	@ResponseBody
+	public ReturnObject saveEditActivityRemark(ActivityRemark activityRemark,HttpSession session) {
+		ReturnObject returnObject = activityRemarkService.saveEditActivityRemark(activityRemark, session);
+		
+		return returnObject;
+	}
 }

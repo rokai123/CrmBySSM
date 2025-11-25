@@ -91,7 +91,7 @@
 						html+="<img title=\"${sessionScope.sessionUser.name}\" src=\"image/user-thumbnail.png\" style=\"width: 30px; height:30px;\">";
 						html+="<div style=\"position: relative; top: -40px; left: 40px;\" >";
 						html+="<h5>"+data.resultData.noteContent+"</h5>";
-						html+="<font color=\"gray\">市场活动</font> <font color=\"gray\">-</font><b>${activity.name}</b> <small style=\"color: gray;\">"+data.resultData.createTime+"--\"${sessionScope.sessionUser.name}\"さんが作成した</small>";
+						html+="<font color=\"gray\">市场活动</font> <font color=\"gray\">-</font><b>${activity.name}</b> <small style=\"color: gray;\">"+data.resultData.createTime+"--${sessionScope.sessionUser.name}さんが作成した</small>";
 						html+="<div style=\"position: relative; left: 500px; top: -30px; height: 30px; width: 100px; display: none;\">";
 						html+= "<a class='myHref' name='editBtn' remarkId='"+data.resultData.id+"' href='javascript:void(0);'><span class='glyphicon glyphicon-edit' style='font-size: 20px; color: #E6E6E6;'></span></a>";
 						html+= '&nbsp;&nbsp;&nbsp;&nbsp;';
@@ -126,10 +126,65 @@
 					}
 				}
 			})
-			
-
 		})
-	});
+
+		//修改备注
+		$(remarkDivList).on("click", "a[name='editBtn']", function () {
+			let remarkId = $(this).attr("remarkId");
+			//选择div_remarkId元素内部所有层级的h5标签
+			let noteContent = $("#div_"+remarkId+" h5").text();
+			$("#saveRemarkIdInput").val(remarkId);
+			$("#edit-noteContent").val(noteContent);
+			$("#edit-noteContent-Hidden").val(noteContent);
+			$("#editRemarkModal").modal("show");
+		})
+
+		//編集した備考内容を送信する
+		$("#updateRemarkBtn").click(function () {
+			let noteContent = $.trim($("#edit-noteContent").val());
+			let noteContentHidden = $("#edit-noteContent-Hidden").val();
+			let id = $("#saveRemarkIdInput").val();
+			if(noteContent == ""){
+				alert("何も入力していません");
+				return;
+			}
+			//編集内容が変更されたかどうかを確認する
+			if(noteContentHidden == noteContent){
+				alert("何も変更していません");
+				return;
+			}
+			$.ajax({
+				url:'workbench/activity/saveEditActivityRemark.do',
+				data:{
+					'id':id,
+					'noteContent':noteContent
+				},
+				type:'post',
+				dataType:'json',
+				success:function (data) {
+					if(data.code == "1"){
+						alert(data.message);
+						//更新备注的div
+						$("#div_"+id+" h5").text(noteContent);
+						//创建人改为修改人，创建时间改为修改时间
+						$("#div_"+id+" small").text(data.resultData.editTime+"--${sessionScope.sessionUser.name}さんが編集した");
+						$("#editRemarkModal").modal("hide");
+					}else{
+						alert(data.message);
+					}
+				}
+			})
+		})
+
+
+
+
+
+
+
+
+	
+	});// 页面加载完毕(尻尾)	
 	
 </script>
 
@@ -138,7 +193,7 @@
 	
 	<!-- 修改市场活动备注的模态窗口 -->
 	<div class="modal fade" id="editRemarkModal" role="dialog">
-		<%-- 备注的id --%>
+		<!-- 备注的id -->
 		<input type="hidden" id="remarkId">
         <div class="modal-dialog" role="document" style="width: 40%;">
             <div class="modal-content">
@@ -150,10 +205,13 @@
                 </div>
                 <div class="modal-body">
                     <form class="form-horizontal" role="form">
+						<!-- 将remarkId保存在隐藏域 -->
+						<input type="hidden" id="saveRemarkIdInput"/>
                         <div class="form-group">
                             <label for="noteContent" class="col-sm-2 control-label">内容</label>
                             <div class="col-sm-10" style="width: 81%;">
-                                <textarea class="form-control" rows="3" id="noteContent"></textarea>
+								<input type="hidden" id="edit-noteContent-Hidden"/>
+                                <textarea class="form-control" rows="3" id="edit-noteContent"></textarea>
                             </div>
                         </div>
                     </form>
@@ -263,7 +321,7 @@
 				<c:if test="${remark.editFlag=='' || remark.editFlag == null}">
 					<font color="gray">市场活动</font> <font color="gray">-</font> <b>${activity.name}</b> <small style="color: gray;"> ${remark.createTime} 由${remark.createBy }</small>
 				</c:if> --%>
-				<font color="gray">市场活动</font> <font color="gray">-</font> <b>${activity.name}</b> <small style="color: gray;"> ${remark.editFlag=='1'? remark.editTime : remark.createTime}--${remark.editFlag=='1'?remark.editBy:remark.createBy}さんが${remark.editFlag=='1'?'変更した':'作成した' }</small>
+				<font color="gray">市场活动</font> <font color="gray">-</font> <b>${activity.name}</b> <small style="color: gray;"> ${remark.editFlag=='1'? remark.editTime : remark.createTime}--${remark.editFlag=='1'?remark.editBy:remark.createBy}さんが${remark.editFlag=='1'?'編集した':'作成した' }</small>
 				<div style="position: relative; left: 500px; top: -30px; height: 30px; width: 100px; display: none;">
 					<%--remarkId="${remark.id}" はカスタムタグ属性のため、JSで値を取得するにはjQueryのattr()メソッドを使用必須 --%>
 					<a class="myHref" remarkId="${remark.id}" name="editBtn" href="javascript:void(0);"><span class="glyphicon glyphicon-edit" style="font-size: 20px; color: #E6E6E6;"></span></a>

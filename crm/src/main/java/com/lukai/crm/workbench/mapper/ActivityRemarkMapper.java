@@ -68,4 +68,6 @@ public interface ActivityRemarkMapper {
     int insertActivityRemark(ActivityRemark activityRemark);
     
     int deleteActivityRemarkById(String id);
+    
+    int updateActivityRemark(ActivityRemark activityRemark);
 }
