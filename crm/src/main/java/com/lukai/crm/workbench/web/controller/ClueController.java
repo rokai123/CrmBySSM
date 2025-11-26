@@ -9,7 +9,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.lukai.crm.settings.domain.DicValue;
 import com.lukai.crm.settings.domain.User;
+import com.lukai.crm.settings.service.DicValueService;
 import com.lukai.crm.settings.service.UserService;
 import com.lukai.crm.workbench.domain.Clue;
 
@@ -17,7 +19,8 @@ import com.lukai.crm.workbench.domain.Clue;
 public class ClueController {
 	@Autowired
 	UserService userService;
-	
+	@Autowired
+	DicValueService dicValueService;
 	/**
 	 * 进入线索首页
 	 * @param request
@@ -26,8 +29,14 @@ public class ClueController {
 	@RequestMapping("/workbench/clue/index.do")
 	public String index(HttpServletRequest request) {
 		List<User> users = userService.queryAllUsers();
-		request.setAttribute("userList", users);
+		List<DicValue> appellations = dicValueService.queryDicValueByTypeCode("appellation");
+		List<DicValue> clueStates = dicValueService.queryDicValueByTypeCode("clueState");
+		List<DicValue> sources = dicValueService.queryDicValueByTypeCode("source");
 		
+		request.setAttribute("appellationList", appellations);
+		request.setAttribute("clueStateList", clueStates);
+		request.setAttribute("sourceList", sources);
+		request.setAttribute("userList", users);
 		return "workbench/clue/index";
 	}
 	

@@ -10,6 +10,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.lukai.crm.commons.utils.DateUtils;
+import com.lukai.crm.settings.mapper.DicValueMapper;
 import com.lukai.crm.workbench.domain.Activity;
 import com.lukai.crm.workbench.domain.ActivityRemark;
 import com.lukai.crm.workbench.domain.Clue;
@@ -29,6 +30,8 @@ public class Test {
 	ActivityRemarkMapper activityRemarkMapper;
 	@Autowired
 	ClueMapper clueMapper;
+	@Autowired
+	DicValueMapper dicValueMapper;
 	
 	@org.junit.Test
 	public void dateUtilsTest() {
@@ -55,5 +58,11 @@ public class Test {
 		hashMap.put("fullname", "f");
 		List<Clue> clues = clueMapper.selectClueByConditionForPage(hashMap);
 		clues.forEach(System.out::println);
+	}
+	
+	@org.junit.Test
+	public void selectDicValueByTypeCode() {
+		String typeCode = "appellation";
+		dicValueMapper.selectDicValueByTypeCode(typeCode).forEach(System.out::println);
 	}
 }
