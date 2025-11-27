@@ -25,49 +25,49 @@
 <script type="text/javascript">
 
 	$(function(){
-		queryActivityByConditionForPage(1,10);
+		queryClueByConditionForPage(1,10);
 		
 		
 	});
 	
 	//在页面入口函数外面封装线索列表的查询显示的函数
 	// ページのエントリ関数外に、リード一覧の検索表示機能をカプセル化
-	function queryActivityByConditionForPage(pageNo,pageSize) { 
+	function queryClueByConditionForPage(pageNo,pageSize) { 
 		
 		// パラメータを収集
-		let clueName = $("#clueName").val();
+		let fullname = $("#fullname").val();
         let company = $("#company").val();
         let companyPhone = $("#companyPhone").val();
-        let leadSource = $("#leadSource").val();
+        let state = $("#state").val();
         let owner = $("#owner").val();
         let phone = $("#phone").val();
-        let leadStatus = $("#leadStatus").val();
+        let source = $("#source").val();
 
 
 		$.ajax({
-		    url: "workbench/activity/queryActivityByConditionForPage.do",
+		    url: "workbench/clue/queryClueByConditionForPage",
 		    type: "post",
 		    data: {
-		    	fullname: clueName,
+		    	fullname: fullname,
 		        company: company,
 		        phone: companyPhone,
-		        leadSource: leadSource,
+		        source: source,
 		        owner: owner,
-		        phone: phone,
-		        leadStatus: leadStatus,
+		        mphone: phone,
+		        phone: companyPhone,
 		        pageNo: pageNo,
 		        pageSize: pageSize
 		    },
 		    dataType: "json",
 		    success: function(data) {
-		        // data.totalRows：レスポンスデータから取得した総レコード数
+		        //data.totalRows：レスポンスデータから取得した総レコード数
 		        //$("#totalRowsB").text(data.totalRows);
 
 		      let html = "";
-		        $.each(data.clues, function(i, n) {
+		        $.each(data.clueList, function(i, n) {
                     html += "<tr class=\"active\">";
                     html += "<td><input type=\"checkbox\" /></td>";
-                    html += "<td><a style=\"text-decoration: none; cursor: pointer;\" onclick=\"window.location.href='detail.html';\">李四先生</a></td>";
+                    html += "<td><a style=\"text-decoration: none; cursor: pointer;\" onclick=\"window.location.href='detail.html';\">"+n.fullname+"</a></td>";
                     html += "<td>动力节点</td>";
                     html += "<td>010-84846003</td>";
                     html += "<td>12345678901</td>";
@@ -77,7 +77,7 @@
                     html += "</tr>";
 		        });
 		        
-		        $("#activityBody").html(html);
+		        $("#clueTableBody").html(html);
 				//総ページ数を計算する
 				let totalPages;
 				if(data.totalRows % pageSize == 0) {
@@ -85,8 +85,7 @@
 				} else {
 					//切り上げ関数 Math.ceil()
 					totalPages = Math.ceil(data.totalRows / pageSize);
-				}
-
+				} 
 				//在此处设置分页组件的函数（因为在这里才能读取到后台返回的总件数)
 				// ここでページネーションコンポーネントの関数を設定（バックエンドから返されたdataを取得できるため）
 				$("#cluePage") .bs_pagination({
@@ -101,7 +100,7 @@
 					// ページリンクがクリックされたときに呼び出される関数
 					onChangePage: function(event, pageObj) { 
 						// ページリンクがクリックされたら、マーケティングキャンペーン一覧を表示
-						queryActivityByConditionForPage(pageObj.currentPage,pageObj.rowsPerPage);
+						queryClueByConditionForPage(pageObj.currentPage,pageObj.rowsPerPage);
 						//全選択チェックボックスをデフォルトの未選択状態に設定
 						$("#checkAll").prop("checked",false);
 						
@@ -147,12 +146,10 @@
 							<label for="create-call" class="col-sm-2 control-label">称呼</label>
 							<div class="col-sm-10" style="width: 300px;">
 								<select class="form-control" id="create-call">
-								  <option></option>
-								  <option>先生</option>
-								  <option>夫人</option>
-								  <option>女士</option>
-								  <option>博士</option>
-								  <option>教授</option>
+								  		<option></option>
+								  	<c:forEach items="${appellationList}" var="appellation">
+										<option value="${appellation.id}">${appellation.text}</option>
+								  	</c:forEach>
 								</select>
 							</div>
 							<label for="create-surname" class="col-sm-2 control-label">姓名<span style="font-size: 15px; color: red;">*</span></label>
@@ -191,14 +188,10 @@
 							<label for="create-status" class="col-sm-2 control-label">线索状态</label>
 							<div class="col-sm-10" style="width: 300px;">
 								<select class="form-control" id="create-status">
-								  <option></option>
-								  <option>试图联系</option>
-								  <option>将来联系</option>
-								  <option>已联系</option>
-								  <option>虚假线索</option>
-								  <option>丢失线索</option>
-								  <option>未联系</option>
-								  <option>需要条件</option>
+								 	    <option></option>
+								  	<c:forEach items="${clueStateList}" var="clueState">
+										<option value="${clueState.id}">${clueState.text}</option>
+								  	</c:forEach>
 								</select>
 							</div>
 						</div>
@@ -207,21 +200,10 @@
 							<label for="create-source" class="col-sm-2 control-label">线索来源</label>
 							<div class="col-sm-10" style="width: 300px;">
 								<select class="form-control" id="create-source">
-								  <option></option>
-								  <option>广告</option>
-								  <option>推销电话</option>
-								  <option>员工介绍</option>
-								  <option>外部介绍</option>
-								  <option>在线商场</option>
-								  <option>合作伙伴</option>
-								  <option>公开媒介</option>
-								  <option>销售邮件</option>
-								  <option>合作伙伴研讨会</option>
-								  <option>内部研讨会</option>
-								  <option>交易会</option>
-								  <option>web下载</option>
-								  <option>web调研</option>
-								  <option>聊天</option>
+								  		<option></option>
+								  	<c:forEach items="${sourceList}" var="source">
+										<option value="${source.id}">${source.text}</option>
+								  	</c:forEach>
 								</select>
 							</div>
 						</div>
@@ -449,7 +431,7 @@
 				  <div class="form-group">
 				    <div class="input-group">
 				      <div class="input-group-addon">名称</div>
-				      <input class="form-control" id="clueName" type="text">
+				      <input class="form-control" id="fullname" type="text">
 				    </div>
 				  </div>
 				  
@@ -470,7 +452,7 @@
 				  <div class="form-group">
 				    <div class="input-group">
 				      <div class="input-group-addon">线索来源</div>
-					  <select class="form-control" id="leadSource">
+					  <select class="form-control" id="source">
 					  		<option value="">--------------------------</option>
 					  	<c:forEach items="${sourceList}" var="source">
 							<option value="${source.id}">${source.text}</option>
@@ -500,7 +482,7 @@
 				  <div class="form-group">
 				    <div class="input-group">
 				      <div class="input-group-addon">线索状态</div>
-					  <select class="form-control" id="leadStatus">
+					  <select class="form-control" id="state">
 					  	<c:forEach items="${clueStateList}" var="clueState">
 							<option value="${clueState.id}">${clueState.text}</option>
 					  	</c:forEach>
@@ -521,7 +503,7 @@
 				
 				
 			</div>
-			<div style="position: relative;top: 50px;">
+			<div style="position: relative;top: 50px;" id="clueTableDiv">
 				<table class="table table-hover">
 					<thead>
 						<tr style="color: #B3B3B3;">
@@ -535,7 +517,7 @@
 							<td>线索状态</td>
 						</tr>
 					</thead>
-					<tbody>
+					<tbody id="clueTableBody">
 						<tr>
 							<td><input type="checkbox" /></td>
 							<td><a style="text-decoration: none; cursor: pointer;" onclick="window.location.href='detail.html';">李四先生</a></td>

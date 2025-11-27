@@ -11,4 +11,5 @@ import com.lukai.crm.workbench.domain.Clue;
 public interface ClueMapper {
 	
 	List<Clue> selectClueByConditionForPage(Map<String, Object> map);
+	int selectClueByConditionForPageCount(Map<String, Object> map);
 }

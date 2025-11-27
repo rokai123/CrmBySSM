@@ -55,7 +55,7 @@ public class Test {
 	@org.junit.Test
 	public void selecClueByConditionForPage() {
 		HashMap<String, Object> hashMap = new HashMap<String, Object>();
-		hashMap.put("fullname", "f");
+		hashMap.put("source", "6b86f215e69f4dbd8a2daa22efccf0cf");
 		List<Clue> clues = clueMapper.selectClueByConditionForPage(hashMap);
 		clues.forEach(System.out::println);
 	}
@@ -65,4 +65,6 @@ public class Test {
 		String typeCode = "appellation";
 		dicValueMapper.selectDicValueByTypeCode(typeCode).forEach(System.out::println);
 	}
+	
+	
 }

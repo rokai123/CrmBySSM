@@ -1,5 +1,6 @@
 package com.lukai.crm.workbench.service.Impl;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -15,9 +16,13 @@ public class ClueServiceImpl implements ClueService {
 	@Autowired
 	ClueMapper clueMapper;
 	
-	public List<Clue> queryClueByConditionForPage(Map<String,Object> map) {
+	public Map<String,Object> queryClueByConditionForPage(Map<String,Object> map) {
 		List<Clue> clues = clueMapper.selectClueByConditionForPage(map);
-		return clues;
+		int totalRows = clueMapper.selectClueByConditionForPageCount(map);
+		HashMap<String, Object> retMap = new HashMap<String,Object>();
+		retMap.put("clueList", clues);
+		retMap.put("totalRows", totalRows);
+		return retMap;
 	}
 	
 }

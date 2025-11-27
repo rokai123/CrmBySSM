@@ -1,6 +1,8 @@
 package com.lukai.crm.workbench.web.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -13,7 +15,7 @@ import com.lukai.crm.settings.domain.DicValue;
 import com.lukai.crm.settings.domain.User;
 import com.lukai.crm.settings.service.DicValueService;
 import com.lukai.crm.settings.service.UserService;
-import com.lukai.crm.workbench.domain.Clue;
+import com.lukai.crm.workbench.service.ClueService;
 
 @Controller
 public class ClueController {
@@ -21,6 +23,8 @@ public class ClueController {
 	UserService userService;
 	@Autowired
 	DicValueService dicValueService;
+	@Autowired
+	ClueService clueService;
 	/**
 	 * 进入线索首页
 	 * @param request
@@ -40,10 +44,23 @@ public class ClueController {
 		return "workbench/clue/index";
 	}
 	
-	@RequestMapping("queryClueByConditionForPage")
+	@RequestMapping("/workbench/clue/queryClueByConditionForPage")
 	@ResponseBody
-	public List<Clue> queryClueByConditionForPage(String fullName){
-		
-		return null;
+	public Object queryClueByConditionForPage(String fullName, String company, String phone, String source, String owner,
+																				String mphone, String state, int pageNo, int pageSize)
+	{
+		HashMap<String, Object> clueMap = new HashMap<String, Object>();
+		int beginNo = (pageNo - 1) * pageSize;
+		clueMap.put("fullName", fullName);
+		clueMap.put("company", company);
+		clueMap.put("phone", phone);
+		clueMap.put("source", source);
+		clueMap.put("owner", owner);
+		clueMap.put("mphone", mphone);
+		clueMap.put("state", state);
+		clueMap.put("beginNo", beginNo);
+		clueMap.put("pageSize", pageSize);
+		Map<String, Object> retMap= clueService.queryClueByConditionForPage(clueMap);
+		return retMap;
 	}
 }
