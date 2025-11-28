@@ -46,12 +46,12 @@ public class ClueController {
 	
 	@RequestMapping("/workbench/clue/queryClueByConditionForPage")
 	@ResponseBody
-	public Object queryClueByConditionForPage(String fullName, String company, String phone, String source, String owner,
+	public Object queryClueByConditionForPage(String fullname, String company, String phone, String source, String owner,
 																				String mphone, String state, int pageNo, int pageSize)
 	{
 		HashMap<String, Object> clueMap = new HashMap<String, Object>();
 		int beginNo = (pageNo - 1) * pageSize;
-		clueMap.put("fullName", fullName);
+		clueMap.put("fullname", fullname);
 		clueMap.put("company", company);
 		clueMap.put("phone", phone);
 		clueMap.put("source", source);

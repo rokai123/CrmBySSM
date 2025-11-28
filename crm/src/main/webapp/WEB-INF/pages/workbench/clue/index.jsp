@@ -25,9 +25,13 @@
 <script type="text/javascript">
 
 	$(function(){
+		//初期表示でリードリストを表示する
 		queryClueByConditionForPage(1,10);
 		
-		
+		$("#researchClue").click(function () {
+			//alert("クリックされました");
+			queryClueByConditionForPage(1,10);
+		});
 	});
 	
 	//在页面入口函数外面封装线索列表的查询显示的函数
@@ -37,10 +41,10 @@
 		// パラメータを収集
 		let fullname = $("#fullname").val();
         let company = $("#company").val();
-        let companyPhone = $("#companyPhone").val();
+        let phone = $("#companyPhone").val();
         let state = $("#state").val();
         let owner = $("#owner").val();
-        let phone = $("#phone").val();
+        let mphone = $("#phone").val();
         let source = $("#source").val();
 
 
@@ -50,11 +54,11 @@
 		    data: {
 		    	fullname: fullname,
 		        company: company,
-		        phone: companyPhone,
+		        phone: phone,
 		        source: source,
 		        owner: owner,
-		        mphone: phone,
-		        phone: companyPhone,
+		        mphone: mphone,
+		        state: state,
 		        pageNo: pageNo,
 		        pageSize: pageSize
 		    },
@@ -64,16 +68,16 @@
 		        //$("#totalRowsB").text(data.totalRows);
 
 		      let html = "";
-		        $.each(data.clueList, function(i, n) {
+		        $.each(data.clueList, function(i, clue) {
                     html += "<tr class=\"active\">";
                     html += "<td><input type=\"checkbox\" /></td>";
-                    html += "<td><a style=\"text-decoration: none; cursor: pointer;\" onclick=\"window.location.href='detail.html';\">"+n.fullname+"</a></td>";
-                    html += "<td>动力节点</td>";
-                    html += "<td>010-84846003</td>";
-                    html += "<td>12345678901</td>";
-                    html += "<td>广告</td>";
-                    html += "<td>zhangsan</td>";
-                    html += "<td>已联系</td>";
+                    html += "<td><a style=\"text-decoration: none; cursor: pointer;\" onclick=\"window.location.href='detail.html';\">"+clue.fullname+""+clue.appellation+"</a></td>";
+                    html += "<td>"+clue.company+"</td>";
+                    html += "<td>"+clue.phone+"</td>";
+                    html += "<td>"+clue.mphone+"</td>";
+                    html += "<td>"+clue.source+"</td>";
+                    html += "<td>"+clue.owner+"</td>";
+                    html += "<td>"+clue.state+"</td>";
                     html += "</tr>";
 		        });
 		        
@@ -453,7 +457,7 @@
 				    <div class="input-group">
 				      <div class="input-group-addon">线索来源</div>
 					  <select class="form-control" id="source">
-					  		<option value="">--------------------------</option>
+					  		<option value=""></option>
 					  	<c:forEach items="${sourceList}" var="source">
 							<option value="${source.id}">${source.text}</option>
 					  	</c:forEach>
@@ -483,6 +487,7 @@
 				    <div class="input-group">
 				      <div class="input-group-addon">线索状态</div>
 					  <select class="form-control" id="state">
+							<option value=""></option>
 					  	<c:forEach items="${clueStateList}" var="clueState">
 							<option value="${clueState.id}">${clueState.text}</option>
 					  	</c:forEach>
@@ -490,7 +495,7 @@
 				    </div>
 				  </div>
 
-				  <button type="submit" class="btn btn-default">查询</button>
+				  <button type="button" class="btn btn-default" id="researchClue">查询</button>
 				  
 				</form>
 			</div>
@@ -508,36 +513,17 @@
 					<thead>
 						<tr style="color: #B3B3B3;">
 							<td><input type="checkbox" /></td>
-							<td>名称</td>
-							<td>公司</td>
-							<td>公司座机</td>
-							<td>手机</td>
+							<td>客様</td>
+							<td>お会社</td>
+							<td>会社TEL</td>
+							<td>個人電話</td>
 							<td>线索来源</td>
 							<td>所有者</td>
 							<td>线索状态</td>
 						</tr>
 					</thead>
 					<tbody id="clueTableBody">
-						<tr>
-							<td><input type="checkbox" /></td>
-							<td><a style="text-decoration: none; cursor: pointer;" onclick="window.location.href='detail.html';">李四先生</a></td>
-							<td>动力节点</td>
-							<td>010-84846003</td>
-							<td>12345678901</td>
-							<td>广告</td>
-							<td>zhangsan</td>
-							<td>已联系</td>
-						</tr>
-                        <tr class="active">
-                            <td><input type="checkbox" /></td>
-                            <td><a style="text-decoration: none; cursor: pointer;" onclick="window.location.href='detail.html';">李四先生</a></td>
-                            <td>动力节点</td>
-                            <td>010-84846003</td>
-                            <td>12345678901</td>
-                            <td>广告</td>
-                            <td>zhangsan</td>
-                            <td>已联系</td>
-                        </tr>
+						<!-- 通过AJAX异步请求线索数据后，填充到此处 -->
 					</tbody>
 				</table>
 			</div>

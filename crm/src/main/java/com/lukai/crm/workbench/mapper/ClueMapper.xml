@@ -42,22 +42,27 @@
                         
 		<where>
 		    <if test="fullname != null and fullname != ''">
-		        fullname like '%' || #{fullname} || '%'
+		    	<bind name="fullnamePattern" value="'%' + fullname + '%'" />
+		        fullname like #{fullnamePattern}
 		    </if>
 		    <if test="company != null and company != ''">
-		        and company like '%' || #{company} || '%'
+		    	<bind name="companyPattern" value="'%' + company + '%'" />
+		        and company like #{companyPattern}
 		    </if>
 		    <if test="phone != null and phone != ''">
-		        and phone like '%' || #{phone} || '%'
+		        <bind name="phonePattern" value="'%' + phone + '%'" />
+		        and phone like #{phonePattern}
 		    </if>
 		    <if test="source != null and source != ''">
 		        and source = #{source}
 		    </if>
 		    <if test="owner != null and owner != ''">
-		        and u1.name like '%' || #{owner} || '%'
+		    	<bind name="ownerPattern" value="'%' + owner + '%'" />
+		        and u1.name like #{ownerPattern}
 		    </if>
 		    <if test="mphone != null and mphone != ''">
-		        and mphone like '%' || #{mphone} || '%'
+		    	<bind name="mphonePattern" value="'%' + mphone + '%'" />
+		        and mphone like #{mphonePattern}
 		    </if>
 		    <if test="state != null and state != ''">
 		        and state = #{state}

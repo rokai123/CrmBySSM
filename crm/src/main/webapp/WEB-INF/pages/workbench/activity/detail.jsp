@@ -91,7 +91,7 @@
 						html+="<img title=\"${sessionScope.sessionUser.name}\" src=\"image/user-thumbnail.png\" style=\"width: 30px; height:30px;\">";
 						html+="<div style=\"position: relative; top: -40px; left: 40px;\" >";
 						html+="<h5>"+data.resultData.noteContent+"</h5>";
-						html+="<font color=\"gray\">市场活动</font> <font color=\"gray\">-</font><b>${activity.name}</b> <small style=\"color: gray;\">"+data.resultData.createTime+"--${sessionScope.sessionUser.name}さんが作成した</small>";
+						html+="<font color=\"gray\">ﾏｰｹﾃｨﾝｸﾞｷｬﾝﾍﾟｰﾝ</font> <font color=\"gray\">-</font><b>${activity.name}</b> <small style=\"color: gray;\">"+data.resultData.createTime+"--${sessionScope.sessionUser.name}さんが作成した</small>";
 						html+="<div style=\"position: relative; left: 500px; top: -30px; height: 30px; width: 100px; display: none;\">";
 						html+= "<a class='myHref' name='editBtn' remarkId='"+data.resultData.id+"' href='javascript:void(0);'><span class='glyphicon glyphicon-edit' style='font-size: 20px; color: #E6E6E6;'></span></a>";
 						html+= '&nbsp;&nbsp;&nbsp;&nbsp;';
@@ -248,37 +248,37 @@
 		<div style="position: relative; left: 40px; height: 30px;">
 			<div style="width: 300px; color: gray;">所有者</div>
 			<div style="width: 300px;position: relative; left: 200px; top: -20px;"><b>${activity.owner}</b></div>
-			<div style="width: 300px;position: relative; left: 450px; top: -40px; color: gray;">名称</div>
+			<div style="width: 300px;position: relative; left: 450px; top: -40px; color: gray;">ｷｬﾝﾍﾟｰﾝ名</div>
 			<div style="width: 300px;position: relative; left: 650px; top: -60px;"><b>${activity.name}</b></div>
 			<div style="height: 1px; width: 400px; background: #D5D5D5; position: relative; top: -60px;"></div>
 			<div style="height: 1px; width: 400px; background: #D5D5D5; position: relative; top: -60px; left: 450px;"></div>
 		</div>
 
 		<div style="position: relative; left: 40px; height: 30px; top: 10px;">
-			<div style="width: 300px; color: gray;">开始日期</div>
+			<div style="width: 300px; color: gray;">開始日</div>
 			<div style="width: 300px;position: relative; left: 200px; top: -20px;"><b>${activity.startDate}</b></div>
-			<div style="width: 300px;position: relative; left: 450px; top: -40px; color: gray;">结束日期</div>
+			<div style="width: 300px;position: relative; left: 450px; top: -40px; color: gray;">終了日</div>
 			<div style="width: 300px;position: relative; left: 650px; top: -60px;"><b>${activity.endDate}</b></div>
 			<div style="height: 1px; width: 400px; background: #D5D5D5; position: relative; top: -60px;"></div>
 			<div style="height: 1px; width: 400px; background: #D5D5D5; position: relative; top: -60px; left: 450px;"></div>
 		</div>
 		<div style="position: relative; left: 40px; height: 30px; top: 20px;">
-			<div style="width: 300px; color: gray;">成本</div>
+			<div style="width: 300px; color: gray;">コスト</div>
 			<div style="width: 300px;position: relative; left: 200px; top: -20px;"><b>${activity.cost}</b></div>
 			<div style="height: 1px; width: 400px; background: #D5D5D5; position: relative; top: -20px;"></div>
 		</div>
 		<div style="position: relative; left: 40px; height: 30px; top: 30px;">
-			<div style="width: 300px; color: gray;">创建者</div>
+			<div style="width: 300px; color: gray;">作成者</div>
 			<div style="width: 500px;position: relative; left: 200px; top: -20px;"><b>${activity.createBy}&nbsp;&nbsp;</b><small style="font-size: 10px; color: gray;">${activity.createTime}</small></div>
 			<div style="height: 1px; width: 550px; background: #D5D5D5; position: relative; top: -20px;"></div>
 		</div>
 		<div style="position: relative; left: 40px; height: 30px; top: 40px;">
-			<div style="width: 300px; color: gray;">修改者</div>
+			<div style="width: 300px; color: gray;">更新者</div>
 			<div style="width: 500px;position: relative; left: 200px; top: -20px;"><b>${activity.editBy}&nbsp;&nbsp;</b><small style="font-size: 10px; color: gray;">${activity.editTime}</small></div>
 			<div style="height: 1px; width: 550px; background: #D5D5D5; position: relative; top: -20px;"></div>
 		</div>
 		<div style="position: relative; left: 40px; height: 30px; top: 50px;">
-			<div style="width: 300px; color: gray;">描述</div>
+			<div style="width: 300px; color: gray;">説明</div>
 			<div style="width: 630px;position: relative; left: 200px; top: -20px;">
 				<b>
 					${activity.description}
@@ -291,7 +291,7 @@
 	<!-- 备注 -->
 	<div style="position: relative; top: 30px; left: 40px;" id="remarkDivList">
 		<div class="page-header" id="page-header-id">
-			<h4>备注</h4>
+			<h4>備考</h4>
 		</div>
 		
 		
@@ -321,7 +321,7 @@
 				<c:if test="${remark.editFlag=='' || remark.editFlag == null}">
 					<font color="gray">市场活动</font> <font color="gray">-</font> <b>${activity.name}</b> <small style="color: gray;"> ${remark.createTime} 由${remark.createBy }</small>
 				</c:if> --%>
-				<font color="gray">市场活动</font> <font color="gray">-</font> <b>${activity.name}</b> <small style="color: gray;"> ${remark.editFlag=='1'? remark.editTime : remark.createTime}--${remark.editFlag=='1'?remark.editBy:remark.createBy}さんが${remark.editFlag=='1'?'編集した':'作成した' }</small>
+				<font color="gray">ﾏｰｹﾃｨﾝｸﾞｷｬﾝﾍﾟｰﾝ</font> <font color="gray">-</font> <b>${activity.name}</b> <small style="color: gray;"> ${remark.editFlag=='1'? remark.editTime : remark.createTime}--${remark.editFlag=='1'?remark.editBy:remark.createBy}さんが${remark.editFlag=='1'?'編集した':'作成した' }</small>
 				<div style="position: relative; left: 500px; top: -30px; height: 30px; width: 100px; display: none;">
 					<%--remarkId="${remark.id}" はカスタムタグ属性のため、JSで値を取得するにはjQueryのattr()メソッドを使用必須 --%>
 					<a class="myHref" remarkId="${remark.id}" name="editBtn" href="javascript:void(0);"><span class="glyphicon glyphicon-edit" style="font-size: 20px; color: #E6E6E6;"></span></a>
@@ -335,9 +335,9 @@
 		
 		<div id="remarkDiv" style="background-color: #E6E6E6; width: 870px; height: 90px;">
 			<form role="form" style="position: relative;top: 10px; left: 10px;">
-				<textarea id="remark" class="form-control" style="width: 850px; resize : none;" rows="2"  placeholder="添加备注..."></textarea>
-				<p id="cancelAndSaveBtn" style="position: relative;left: 737px; top: 10px; display: none;">
-					<button id="cancelBtn" type="button" class="btn btn-default">取消</button>
+				<textarea id="remark" class="form-control" style="width: 850px; resize : none;" rows="2"  placeholder="備考を入力..."></textarea>
+				<p id="cancelAndSaveBtn" style="position: relative;left: 700px; top: 10px; display: none;">
+					<button id="cancelBtn" type="button" class="btn btn-default">キャンセル</button>
 					<button type="button" class="btn btn-primary" id="saveCreateActivityRemarkBtn">保存</button>
 				</p>
 			</form>

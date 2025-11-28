@@ -612,7 +612,7 @@
                        	<input type="file" id="activityFile">
                     </div>
                     <div style="position: relative; width: 400px; height: 320px; left: 45% ; top: -40px;" >
-                        <h4>重要なお知らせ</h4>
+                        <h4>注意事項</h4>
 						<ul>
 							<li>本操作はExcelファイルのみ対象となり、拡張子がXLSのファイルのみサポートします。</li>
 							<li>指定されたファイルの最初の行はフィールド名として扱われます。</li>
