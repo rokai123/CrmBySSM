@@ -1,5 +1,6 @@
 package com.lukai.crm.workbench.web.controller;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,10 +12,15 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.lukai.crm.commons.contants.Contants;
+import com.lukai.crm.commons.domain.ReturnObject;
+import com.lukai.crm.commons.utils.DateUtils;
+import com.lukai.crm.commons.utils.UUIdUtils;
 import com.lukai.crm.settings.domain.DicValue;
 import com.lukai.crm.settings.domain.User;
 import com.lukai.crm.settings.service.DicValueService;
 import com.lukai.crm.settings.service.UserService;
+import com.lukai.crm.workbench.domain.Clue;
 import com.lukai.crm.workbench.service.ClueService;
 
 @Controller
@@ -62,5 +68,40 @@ public class ClueController {
 		clueMap.put("pageSize", pageSize);
 		Map<String, Object> retMap= clueService.queryClueByConditionForPage(clueMap);
 		return retMap;
+	}
+	/**
+	 * 保存创建的线索
+	 * @param clue
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/workbench/clue/saveCreateClue.do")
+	@ResponseBody
+	public ReturnObject saveCreateClue(Clue clue,HttpServletRequest request) {
+		User user = (User) request.getSession().getAttribute(Contants.SESSION_USER);
+		clue.setCreateBy(user.getId());
+		clue.setCreateTime(DateUtils.formateDateTime(new Date()));
+		clue.setId(UUIdUtils.getUUId());
+		return clueService.saveCreateClue(clue);
+	}
+	/**
+	 * 根据id删除线索
+	 * @param ids
+	 * @return
+	 */
+	@RequestMapping("/workbench/clue/deleteClueByIds.do")
+	@ResponseBody
+	public ReturnObject deleteClueByIds(String[] id) {
+		return clueService.deleteClueByIds(id);
+	}
+	
+	/**
+	 * リードの詳細画面を初期化する
+	 */
+	@RequestMapping("/workbench/clue/detailClue.do")
+	public String detailClue(String id,HttpServletRequest request) {
+		Clue clue = clueService.queryClueByClueId(id);
+		request.setAttribute("clue", clue);
+		return "workbench/clue/detail";
 	}
 }

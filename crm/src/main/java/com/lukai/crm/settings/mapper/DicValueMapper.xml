@@ -19,6 +19,7 @@
           <include refid="Base_Column_List" />
         FROM tbl_dic_value
         WHERE type_code = #{typeCode}
+        ORDER BY order_no ASC
     </select>
 
 </mapper>
