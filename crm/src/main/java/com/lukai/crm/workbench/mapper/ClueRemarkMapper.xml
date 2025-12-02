@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lukai.crm.workbench.mapper.ClueRemarkMapper">
+  	
+    <!-- 通用查询结果列-->
+  	<resultMap id="BaseResultMap" type="com.lukai.crm.workbench.domain.ClueRemark">
+   
+    <id column="id" jdbcType="CHAR" property="id" />
+    <result column="note_content" jdbcType="CHAR" property="noteContent" />
+    <result column="create_by" jdbcType="CHAR" property="createBy" />
+    <result column="create_time" jdbcType="CHAR" property="createTime" />
+    <result column="edit_by" jdbcType="CHAR" property="editBy" />
+    <result column="edit_time" jdbcType="CHAR" property="editTime" />
+    <result column="edit_flag" jdbcType="CHAR" property="editFlag" />
+    <result column="clue_id" jdbcType="CHAR" property="clueId" />
+    
+  </resultMap>
+  	
+  <sql id="Base_Column_List">
+  	    id, note_content, create_by, create_time, edit_by, edit_time, edit_flag, clue_id
+  </sql>
+  	
+    <!--根据clueId查询该线索的备注-->
+  	<select id="selectClueRemarkByClueId" parameterType="String" resultMap="BaseResultMap">
+  		select cr.id, cr.note_content, u1.name as create_by, cr.create_time, u2.name as edit_by, cr.edit_time, cr.edit_flag, clue_id
+      from tbl_clue_remark cr 
+        join tbl_user u1 on cr.create_by = u1.id
+        left join tbl_user u2 on cr.edit_by = u2.id
+      where clue_id = #{clueId}
+  	</select>
+  	
+  </mapper>

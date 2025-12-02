@@ -14,9 +14,11 @@ import com.lukai.crm.settings.mapper.DicValueMapper;
 import com.lukai.crm.workbench.domain.Activity;
 import com.lukai.crm.workbench.domain.ActivityRemark;
 import com.lukai.crm.workbench.domain.Clue;
+import com.lukai.crm.workbench.domain.ClueRemark;
 import com.lukai.crm.workbench.mapper.ActivityMapper;
 import com.lukai.crm.workbench.mapper.ActivityRemarkMapper;
 import com.lukai.crm.workbench.mapper.ClueMapper;
+import com.lukai.crm.workbench.mapper.ClueRemarkMapper;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {
 		"classpath:applicationContext.xml",
@@ -32,6 +34,8 @@ public class Test {
 	ClueMapper clueMapper;
 	@Autowired
 	DicValueMapper dicValueMapper;
+	@Autowired
+	ClueRemarkMapper clueRemarkMapper;
 	
 	@org.junit.Test
 	public void dateUtilsTest() {
@@ -64,6 +68,13 @@ public class Test {
 	public void selectDicValueByTypeCode() {
 		String typeCode = "appellation";
 		dicValueMapper.selectDicValueByTypeCode(typeCode).forEach(System.out::println);
+	}
+	
+	@org.junit.Test
+	public void selectClueRemarkByClueId() {
+		String clueId = "66ca2b3686574e7e9a38973ca6f0637e";
+		List<ClueRemark> clues = clueRemarkMapper.selectClueRemarkByClueId(clueId);
+		clues.forEach(System.out::println);
 	}
 	
 	
