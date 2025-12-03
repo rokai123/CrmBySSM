@@ -73,7 +73,7 @@ public class Test {
 	@org.junit.Test
 	public void selectClueRemarkByClueId() {
 		String clueId = "66ca2b3686574e7e9a38973ca6f0637e";
-		List<ClueRemark> clues = clueRemarkMapper.selectClueRemarkByClueId(clueId);
+		List<ClueRemark> clues = clueRemarkMapper.selectClueRemarkForDetailByClueId(clueId);
 		clues.forEach(System.out::println);
 	}
 	

@@ -324,4 +324,12 @@
   		left join tbl_user u3 on a.edit_by=u3.id
   	where a.id=#{id}
   </select>
+  
+  <!-- 根据线索Id查询关联的市场活动的信息 -->
+  <select id="selectActivityForClueDetailByClueId" parameterType="String" resultMap="BaseResultMap">
+  	select a.id,a.start_date,a.end_date,u1.name as owner,a.name
+  	from tbl_activity a join tbl_user u1 on a.owner = u1.id
+  								join tbl_clue_activity_relation car on car.activity_id=a.id
+  	where car.clue_id=#{clueId}
+  </select>
 </mapper>

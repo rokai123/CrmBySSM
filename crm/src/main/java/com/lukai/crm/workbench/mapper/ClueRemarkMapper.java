@@ -6,7 +6,10 @@ import org.apache.ibatis.annotations.Mapper;
 
 import com.lukai.crm.workbench.domain.ClueRemark;
 
+/**
+ * リードIDに基づきリード備考情報を検索
+ */
 @Mapper
 public interface ClueRemarkMapper {
-	List<ClueRemark> selectClueRemarkByClueId(String clueId);
+	List<ClueRemark> selectClueRemarkForDetailByClueId(String clueId);
 }

@@ -179,4 +179,10 @@ public class ActivityServiceImpl implements ActivityService{
 		return activityMapper.selectActivityByIdForDetail(id);
 	}
 
+	@Override
+	public List<Activity> queryActivityForClueDetailByClueId(String clueId) {
+		List<Activity> activities = activityMapper.selectActivityForClueDetailByClueId(clueId);
+		return activities;
+	}
+
 }

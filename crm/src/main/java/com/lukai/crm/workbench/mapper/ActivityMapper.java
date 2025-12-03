@@ -87,4 +87,10 @@ public interface ActivityMapper {
 	 * 詳細情報のためにIDに基づいてマーケティングキャンペーンをリサーチ
 	 */
     Activity selectActivityByIdForDetail(String id);
+    
+    /**
+	 * リードIDに基づいて関連するマーケティングキャンペ ーンをリサーチ
+	 * @param clueId
+	 */
+    List<Activity> selectActivityForClueDetailByClueId(String clueId);
 }

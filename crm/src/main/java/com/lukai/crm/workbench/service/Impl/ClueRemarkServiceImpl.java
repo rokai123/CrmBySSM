@@ -16,7 +16,7 @@ public class ClueRemarkServiceImpl implements ClueRemarkService{
 	
 	@Override
 	public List<ClueRemark> queryClueRemarkByClueId(String ClueId) {
-		List<ClueRemark> clueRemarks = clueRemarkMapper.selectClueRemarkByClueId(ClueId);
+		List<ClueRemark> clueRemarks = clueRemarkMapper.selectClueRemarkForDetailByClueId(ClueId);
 		return clueRemarks;
 	}
 

@@ -20,8 +20,10 @@ import com.lukai.crm.settings.domain.DicValue;
 import com.lukai.crm.settings.domain.User;
 import com.lukai.crm.settings.service.DicValueService;
 import com.lukai.crm.settings.service.UserService;
+import com.lukai.crm.workbench.domain.Activity;
 import com.lukai.crm.workbench.domain.Clue;
 import com.lukai.crm.workbench.domain.ClueRemark;
+import com.lukai.crm.workbench.service.ActivityService;
 import com.lukai.crm.workbench.service.ClueRemarkService;
 import com.lukai.crm.workbench.service.ClueService;
 
@@ -35,6 +37,8 @@ public class ClueController {
 	ClueService clueService;
 	@Autowired
 	ClueRemarkService clueRemarkService;
+	@Autowired
+	ActivityService activityService;
 	/**
 	 * 进入线索首页
 	 * @param request
@@ -106,8 +110,10 @@ public class ClueController {
 	public String detailClue(String id,HttpServletRequest request) {
 		Clue clue = clueService.queryClueByClueId(id);
 		List<ClueRemark> clueRemarks = clueRemarkService.queryClueRemarkByClueId(id);
+		List<Activity> activities = activityService.queryActivityForClueDetailByClueId(id);
 		request.setAttribute("clue", clue);
 		request.setAttribute("clueRemarks", clueRemarks);
+		request.setAttribute("activities", activities);
 		
 		return "workbench/clue/detail";
 	}
