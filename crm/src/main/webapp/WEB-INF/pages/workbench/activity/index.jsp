@@ -276,7 +276,7 @@
 				description:description
 
 			}
-			if(confirm("変更された内容を送信して大丈夫ですか")){
+			if(confirm("変更された内容を送信してよろしいですか")){
 				$.ajax({
 					url:"workbench/activity/saveEditActivity.do",
 					type:"post",

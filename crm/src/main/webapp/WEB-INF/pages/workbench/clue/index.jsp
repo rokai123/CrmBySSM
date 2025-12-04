@@ -184,13 +184,62 @@
 								queryClueByConditionForPage($("#cluePage") .bs_pagination("getOption","currentPage"),$("#cluePage") .bs_pagination("getOption","rowsPerPage"));
 								
 							}else {
-                                data.message;
-                            }
+                data.message;
+              }
 						}
 					})
 				}
 			} 
 		})
+
+		//編集ボタンをクリックする時
+		$("#editClueBtn").click(function() { 
+			let checkedClue = $("#clueTableDiv input[name=xz]:checked");
+			if(checkedClue.length==0) {
+				alert("編集しようとするレコードを選択してください");
+				return;
+			}else if(checkedClue.length>1) {
+				alert("編集できるレコードは1件だけです");
+				return;
+			}else {
+				//alert("クリックされました");
+				let clueId = checkedClue.val();
+				$("#editClueModal").modal("show");
+				$.ajax({ 
+					url: "workbench/clue/queryClueById.do",
+					type: "post",
+					data: {
+						id: clueId
+					},
+					dataType: "json",
+					success: function(data) {
+						$("#edit-id").val(data.id);
+						$("#edit-clueOwner").val(data.owner);
+						$("#edit-company").val(data.company);
+						$("#edit-call").val(data.appellation);
+						$("#edit-surname").val(data.fullname);
+						$("#edit-job").val(data.job);
+						$("#edit-email").val(data.email);
+						$("#edit-phone").val(data.phone);
+						$("#edit-website").val(data.website);
+						$("#edit-mphone").val(data.mphone);
+						$("#edit-status").val(data.state);
+						$("#edit-source").val(data.source);
+						$("#edit-describe").val(data.description);
+						$("#edit-contactSummary").val(data.contactSummary);
+						$("#edit-nextContactTime").val(data.nextContactTime);
+						$("#edit-address").val(data.address);
+						$("#editClueModal").modal("show");
+
+					}
+
+
+				})
+			}
+		})
+
+
+
 	});
 	
 	//在页面入口函数外面封装线索列表的查询显示的函数
@@ -433,7 +482,7 @@
 				</div>
 				<div class="modal-body">
 					<form class="form-horizontal" role="form">
-					
+						<input type="hidden" id="edit-id">
 						<div class="form-group">
 							<label for="edit-clueOwner" class="col-sm-2 control-label">所有者<span style="font-size: 15px; color: red;">*</span></label>
 							<div class="col-sm-10" style="width: 300px;">
@@ -453,12 +502,10 @@
 							<label for="edit-call" class="col-sm-2 control-label">称呼</label>
 							<div class="col-sm-10" style="width: 300px;">
 								<select class="form-control" id="edit-call">
-								  <option></option>
-								  <option selected>先生</option>
-								  <option>夫人</option>
-								  <option>女士</option>
-								  <option>博士</option>
-								  <option>教授</option>
+									<option></option>
+									<c:forEach items="${appellationList}" var="appellation">
+									<option value="${appellation.id}">${appellation.text}</option>
+									</c:forEach>
 								</select>
 							</div>
 							<label for="edit-surname" class="col-sm-2 control-label">姓名<span style="font-size: 15px; color: red;">*</span></label>
@@ -497,14 +544,10 @@
 							<label for="edit-status" class="col-sm-2 control-label">线索状态</label>
 							<div class="col-sm-10" style="width: 300px;">
 								<select class="form-control" id="edit-status">
-								  <option></option>
-								  <option>试图联系</option>
-								  <option>将来联系</option>
-								  <option selected>已联系</option>
-								  <option>虚假线索</option>
-								  <option>丢失线索</option>
-								  <option>未联系</option>
-								  <option>需要条件</option>
+									<option></option>
+									<c:forEach items="${clueStateList}" var="clueState">
+									<option value="${clueState.id}">${clueState.text}</option>
+									</c:forEach>
 								</select>
 							</div>
 						</div>
@@ -513,21 +556,10 @@
 							<label for="edit-source" class="col-sm-2 control-label">线索来源</label>
 							<div class="col-sm-10" style="width: 300px;">
 								<select class="form-control" id="edit-source">
-								  <option></option>
-								  <option selected>广告</option>
-								  <option>推销电话</option>
-								  <option>员工介绍</option>
-								  <option>外部介绍</option>
-								  <option>在线商场</option>
-								  <option>合作伙伴</option>
-								  <option>公开媒介</option>
-								  <option>销售邮件</option>
-								  <option>合作伙伴研讨会</option>
-								  <option>内部研讨会</option>
-								  <option>交易会</option>
-								  <option>web下载</option>
-								  <option>web调研</option>
-								  <option>聊天</option>
+									<option></option>
+									<c:forEach items="${sourceList}" var="source">
+									<option value="${source.id}">${source.text}</option>
+									</c:forEach>
 								</select>
 							</div>
 						</div>
@@ -665,7 +697,7 @@
 			<div class="btn-toolbar" role="toolbar" style="background-color: #F7F7F7; height: 50px; position: relative;top: 40px;">
 				<div class="btn-group" style="position: relative; top: 18%;">
 				  <button type="button" class="btn btn-primary" id="createClueBtn"><span class="glyphicon glyphicon-plus"></span> 创建</button>
-				  <button type="button" class="btn btn-default" data-toggle="modal" data-target="#editClueModal"><span class="glyphicon glyphicon-pencil"></span> 修改</button>
+				  <button type="button" class="btn btn-default" data-toggle="modal" id="editClueBtn"><span class="glyphicon glyphicon-pencil"></span> 修改</button>
 				  <button type="button" class="btn btn-danger" id="deleteClueBtn"><span class="glyphicon glyphicon-minus"></span> 删除</button>
 				</div>
 				
