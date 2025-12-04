@@ -25,7 +25,9 @@
 <script type="text/javascript">
 	//ページ読み込み完了で実行
 	$(function(){
-
+		// マーケティングキャンペーン一覧ページの読み込み完了時、全データの最初のページと総件数を取得
+		queryActivityByConditionForPage(1,10);
+		
 		$("#createActivityBtn").click(function(){
 			//模态窗口弹出控制：需通过JS代码而非HTML属性实现，以便在弹出前执行初始化操作
 			//モーダル表示制御は、表示前の初期化処理を可能にするため、JSコードで実装すること（HTML属性不可）。
@@ -68,8 +70,7 @@
 					alert("​コストは0以上の整数で入力してください​​");
 					return;
 				}
-          return;
-      }
+     		 }
 			            //すべての検証が成功した後、Ajaxを通じて作成リクエストを送信します。
             $.ajax({
                 url:"workbench/activity/saveCreateActivity.do",
@@ -111,8 +112,6 @@
 		    todayBtn: true,          // 「今日」ボタンを表示
 		    clearBtn: true           // 「クリア」ボタンを表示
 		});
-		// マーケティングキャンペーン一覧ページの読み込み完了時、全データの最初のページと総件数を取得
-		queryActivityByConditionForPage(1,10);
 
 		//検索ボタンにクリックイベントをバインドする。
 		$("#researchBtn").click(function () {
@@ -277,26 +276,106 @@
 				description:description
 
 			}
-			$.ajax({
-				url:"workbench/activity/saveEditActivity.do",
-				type:"post",
-				data:activity,
-				dataType:"json",
-				success:function (data) {
-					if(data.code == "1"){
-						// キャンペーン更新成功
-						//alert(data.message);
-						// モーダルウィンドウを閉じる
-						$("#editActivityModal").modal("hide");
-						// マーケティングキャンペーン一覧を更新し、1ページ目のデータを表示、ページあたりの表示件数を維持
-						queryActivityByConditionForPage($("#activityPage").bs_pagination("getOption","currentPage"),$("#activityPage").bs_pagination("getOption","rowsPerPage"));
-					}else{
-						// キャンペーン更新失敗
-						alert(data.message);
-						$("#editActivityModal").modal("show");
+			if(confirm("変更された内容を送信して大丈夫ですか")){
+				$.ajax({
+					url:"workbench/activity/saveEditActivity.do",
+					type:"post",
+					data:activity,
+					dataType:"json",
+					success:function (data) {
+						if(data.code == "1"){
+							// キャンペーン更新成功
+							//alert(data.message);
+							// モーダルウィンドウを閉じる
+							$("#editActivityModal").modal("hide");
+							// マーケティングキャンペーン一覧を更新し、1ページ目のデータを表示、ページあたりの表示件数を維持
+							queryActivityByConditionForPage($("#activityPage").bs_pagination("getOption","currentPage"),$("#activityPage").bs_pagination("getOption","rowsPerPage"));
+							alert("内容変更を成功した")
+						}else{
+							// キャンペーン更新失敗
+							alert(data.message);
+							$("#editActivityModal").modal("show");
+						}
 					}
-				}
-			})
+				})
+			}
+			
+		});
+
+		//キャンペーン一覧の全部エクスポートボタンにクリックイベントをバインド
+		$("#exportActivityAllBtn").click(function () {
+			if(confirm("すべてのマーケティングキャンペーンをエクスポートしますか")){
+				window.location.href = "workbench/activity/exportAllActivitys.do";
+			}
+		});
+
+		// 選択エクスポートボタンにイベントを追加
+		$("#exportActivityCheckedBtn").click(function () {
+			// パラメータを収集（すべての選択されたチェックボックスを取得）
+			var activityIds = $("#activityBody input[type='checkbox']:checked");
+			if(activityIds.size() == 0){
+				alert("エクスポートするレコードを選択してください");
+				return;
+			}
+			if(confirm("選択したマーケティングキャンペーンをエクスポートしますか")){
+				// ids=xxx&ids=xxx&ids=xxx
+				var ids = "";
+				$.each(activityIds,function () {
+					ids += "ids=" + $(this).val() + "&";
+				});
+				ids = ids.substr(0,ids.length-1);
+				//同期的リクエストを送信
+				window.location.href = "workbench/activity/exportCheckedActivitys.do?" + ids;
+			}
+			
+		});
+
+		//インポートボタンにクリックイベントをバインド
+		$("#importActivityBtn").click(function () {
+			// ファイルインプットを取得
+			var activityFile = $("#activityFile").get(0).files[0];
+			if(activityFile == null){
+				alert("ファイルを選択してください");
+				return;
+			}
+			//拡張子チェック
+			if(!/^.+\.(xlsx|xls)$/.test(activityFile.name)){
+				alert("インポートするファイルはExcelファイルでなければなりません");
+				return;
+			}
+			//ファイルサイズ制限: 5MB以下
+			if(activityFile.size > 5*1024*1024){
+				alert("インポートするファイルは5MB以下でなければなりません");
+				return;
+			}
+			if(confirm("インポートしますか")){
+				// 同期的リクエストを送信
+				const formData = new FormData();
+				formData.append("activityFile",activityFile);
+				$.ajax({
+					url:"workbench/activity/importActivity.do",
+					type:"post",
+					data:formData,
+					processData: false, // データを文字列に変換するかどうか
+					contentType: false, // 全てのパラメータを application/x-www-form-urlencoded 形式で送信するかどうか
+					dataType:"json",
+					success:function (data) {
+						if(data.code == "1"){
+							// キャンペーンインポート成功
+							alert(data.resultData  + "個のマーケティングキャンペーンをインポートしました")
+							// モーダルウィンドウを閉じる
+							$("#importActivityModal").modal("hide");
+							// マーケティングキャンペーン一覧を更新し、1ページ目のデータを表示、ページあたりの表示件数を維持
+							queryActivityByConditionForPage(1,$("#activityPage").bs_pagination("getOption","rowsPerPage"));
+					 	} else{
+							// キャンペーンインポート失敗
+							alert(data.message);
+							$("#importActivityModal").modal("show");
+						}
+					}
+				})
+			}
+			
 		});
 	});
 	
@@ -334,7 +413,7 @@
 		        $.each(data.activities, function(i, n) {
 		            html += "<tr class=\"active\">";
 		            html += "<td><input type=\"checkbox\" value=\"" + n.id + "\" id=\" \"/></td>";
-		            html += "<td><a style=\"text-decoration: none; cursor: pointer;\" onclick=\"window.location.href='detail.html';\">" + n.name + "</a></td>";
+		            html += "<td><a style=\"text-decoration: none; cursor: pointer;\" onclick=\"window.location.href='workbench/activity/detailActivity.do?id=" + n.id + "';\">" + n.name + "</a></td>";
 		            html += "<td>" + n.owner + "</td>";
 		            html += "<td>" + n.startDate + "</td>";
 		            html += "<td>" + n.endDate + "</td>";
@@ -476,12 +555,12 @@
 						</div>
 
 						<div class="form-group">
-							<label for="edit-startTime" class="col-sm-2 control-label">开始日期</label>
+							<label for="edit-startTime" class="col-sm-2 control-label">開始日</label>
 							<div class="col-sm-10" style="width: 300px;">
 								<input type="text" class="form-control myDate" id="edit-startTime" value="2020-10-10">
 								<input type="hidden" id="hidden-startTime"></input>
 							</div>
-							<label for="edit-endTime" class="col-sm-2 control-label">结束日期</label>
+							<label for="edit-endTime" class="col-sm-2 control-label">終了日</label>
 							<div class="col-sm-10" style="width: 300px;">
 								<input type="text" class="form-control myDate" id="edit-endTime" value="2020-10-20">
 								<input type="hidden" id="hidden-endTime"></input>
@@ -489,7 +568,7 @@
 						</div>
 						
 						<div class="form-group">
-							<label for="edit-cost" class="col-sm-2 control-label">成本</label>
+							<label for="edit-cost" class="col-sm-2 control-label">コスト</label>
 							<div class="col-sm-10" style="width: 300px;">
 								<input type="text" class="form-control" id="edit-cost" value="5,000">
 								<input type="hidden" id="hidden-cost"></input>
@@ -497,10 +576,10 @@
 						</div>
 						
 						<div class="form-group">
-							<label for="edit-describe" class="col-sm-2 control-label">描述</label>
+							<label for="edit-describe" class="col-sm-2 control-label">コメント</label>
 							<div class="col-sm-10" style="width: 81%;">
 								<input type="hidden" id="hidden-describe"></input>
-								<textarea class="form-control" rows="3" id="edit-describe">市场活动Marketing，是指品牌主办或参与的展览会议与公关市场活动，包括自行主办的各类研讨会、客户交流会、演示会、新产品发布会、体验会、答谢会、年会和出席参加并布展或演讲的展览会、研讨会、行业交流会、颁奖典礼等</textarea>
+								<textarea class="form-control" rows="3" id="edit-describe"></textarea>
 							</div>
 						</div>
 						
@@ -508,8 +587,8 @@
 					
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-					<button type="button" class="btn btn-primary" id="updateActivityBtn">更新</button>
+					<button type="button" class="btn btn-default" data-dismiss="modal">閉じる</button>
+					<button type="button" class="btn btn-primary" id="updateActivityBtn">送信する</button>
 				</div>
 			</div>
 		</div>
@@ -523,31 +602,31 @@
                     <button type="button" class="close" data-dismiss="modal">
                         <span aria-hidden="true">×</span>
                     </button>
-                    <h4 class="modal-title" id="myModalLabel">导入市场活动</h4>
+                    <h4 class="modal-title" id="myModalLabel">マーケティングキャンペーンのインポート</h4>
                 </div>
                 <div class="modal-body" style="height: 350px;">
                     <div style="position: relative;top: 20px; left: 50px;">
-                        请选择要上传的文件：<small style="color: gray;">[仅支持.xls]</small>
+                        アップロードするファイルを選択：<small style="color: gray;">[.xls形式のみ対応]</small>
                     </div>
                     <div style="position: relative;top: 40px; left: 50px;">
-                        <input type="file" id="activityFile">
+                       	<input type="file" id="activityFile">
                     </div>
                     <div style="position: relative; width: 400px; height: 320px; left: 45% ; top: -40px;" >
-                        <h3>重要提示</h3>
-                        <ul>
-                            <li>操作仅针对Excel，仅支持后缀名为XLS的文件。</li>
-                            <li>给定文件的第一行将视为字段名。</li>
-                            <li>请确认您的文件大小不超过5MB。</li>
-                            <li>日期值以文本形式保存，必须符合yyyy-MM-dd格式。</li>
-                            <li>日期时间以文本形式保存，必须符合yyyy-MM-dd HH:mm:ss的格式。</li>
-                            <li>默认情况下，字符编码是UTF-8 (统一码)，请确保您导入的文件使用的是正确的字符编码方式。</li>
-                            <li>建议您在导入真实数据之前用测试文件测试文件导入功能。</li>
-                        </ul>
+                        <h4>注意事項</h4>
+						<ul>
+							<li>本操作はExcelファイルのみ対象となり、拡張子がXLSのファイルのみサポートします。</li>
+							<li>指定されたファイルの最初の行はフィールド名として扱われます。</li>
+							<li>ファイルサイズが5MBを超えないようにしてください。</li>
+							<li>日付値はテキスト形式で保存され、yyyy-MM-dd形式に準拠する必要があります。</li>
+							<li>日時値はテキスト形式で保存され、yyyy-MM-dd HH:mm:ss形式に準拠する必要があります。</li>
+							<li>デフォルトの文字エンコーディングはUTF-8です。インポートするファイルが正しい文字エンコーディングを使用していることを確認してください。</li>
+							<li>実際のデータをインポートする前に、テストファイルでインポート機能を確認することを推奨します。</li>
+						</ul>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-                    <button id="importActivityBtn" type="button" class="btn btn-primary">导入</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">閉じる</button>
+                    <button id="importActivityBtn" type="button" class="btn btn-primary">インポート</button>
                 </div>
             </div>
         </div>
@@ -606,9 +685,9 @@
 				  <button type="button" class="btn btn-danger" id="deleteBtn"><span class="glyphicon glyphicon-minus"></span> 削除</button>
 				</div>
 				<div class="btn-group" style="position: relative; top: 18%;">
-                    <button type="button" class="btn btn-default" data-toggle="modal" data-target="#importActivityModal" ><span class="glyphicon glyphicon-import"></span> 上传列表数据（导入）</button>
-                    <button id="exportActivityAllBtn" type="button" class="btn btn-default"><span class="glyphicon glyphicon-export"></span> 下载列表数据（批量导出）</button>
-                    <button id="exportActivityXzBtn" type="button" class="btn btn-default"><span class="glyphicon glyphicon-export"></span> 下载列表数据（选择导出）</button>
+                    <button type="button" class="btn btn-default" data-toggle="modal" data-target="#importActivityModal" ><span class="glyphicon glyphicon-import"></span> リストデータインポート</button>
+                    <button id="exportActivityAllBtn" type="button" class="btn btn-default"><span class="glyphicon glyphicon-export"></span> リストデータを一括ダウンロード</button>
+                    <button id="exportActivityCheckedBtn" type="button" class="btn btn-default"><span class="glyphicon glyphicon-export"></span> 選択したリストデータをダウンロード</button>
                 </div>
 			</div>
 			<div style="position: relative;top: 10px;">

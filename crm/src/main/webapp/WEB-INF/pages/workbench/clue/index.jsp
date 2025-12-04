@@ -1,24 +1,282 @@
-<!DOCTYPE html>
+<%@ page contentType="text/html; charset=UTF-8" language="java" %>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%
+		String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
+                + request.getContextPath() + "/";
+ %>
 <html>
 <head>
+<base href="<%=basePath%>">
 <meta charset="UTF-8">
 
-<link href="../../jquery/bootstrap_3.3.0/css/bootstrap.min.css" type="text/css" rel="stylesheet" />
-<link href="../../jquery/bootstrap-datetimepicker-master/css/bootstrap-datetimepicker.min.css" type="text/css" rel="stylesheet" />
+<link href="jquery/bootstrap_3.3.0/css/bootstrap.min.css" type="text/css" rel="stylesheet" />
+<link href="jquery/bootstrap-datetimepicker-master/css/bootstrap-datetimepicker.min.css" type="text/css" rel="stylesheet" />
+<link href="jquery/bs_pagination-master/css/jquery.bs_pagination.min.css" type="text/css" rel="stylesheet" />
 
-<script type="text/javascript" src="../../jquery/jquery-1.11.1-min.js"></script>
-<script type="text/javascript" src="../../jquery/bootstrap_3.3.0/js/bootstrap.min.js"></script>
-<script type="text/javascript" src="../../jquery/bootstrap-datetimepicker-master/js/bootstrap-datetimepicker.js"></script>
-<script type="text/javascript" src="../../jquery/bootstrap-datetimepicker-master/locale/bootstrap-datetimepicker.zh-CN.js"></script>
+<script type="text/javascript" src="jquery/jquery-1.11.1-min.js"></script>
+<script type="text/javascript" src="jquery/bootstrap_3.3.0/js/bootstrap.min.js"></script>
+<!-- 時間選択のためのJSファイルの読み込み -->
+<script type="text/javascript" src="jquery/bootstrap-datetimepicker-master/js/bootstrap-datetimepicker.js"></script>
+<script type="text/javascript" src="jquery/bootstrap-datetimepicker-master/locale/bootstrap-datetimepicker.ja.js"></script>
+<!-- ページングのためのJSファイルの読み込み -->
+<script type="text/javascript" src="jquery/bs_pagination-master/js/jquery.bs_pagination.min.js"></script>
+<script type="text/javascript" src="jquery/bs_pagination-master/localization/ja.js"></script>
 
 <script type="text/javascript">
 
 	$(function(){
+		//初期表示でリードリストを表示する
+		queryClueByConditionForPage(1,10);
 		
 		
+		// ページの読み込み完了後、コンテナに対してカレンダーツール関数を呼び出す
+		$(".myDate").datetimepicker({
+		    language: "ja",          // 言語（日本語に設定）
+		    format: "yyyy-mm-dd",    // 日付フォーマット
+		    minView: "month",        // 月単位で表示
+		    initialDate: new Date(), // デフォルトで現在の日付を表示
+		    autoclose: true,         // 日付選択後にカレンダーを自動閉じる
+		    todayBtn: true,          // 「今日」ボタンを表示
+		    clearBtn: true           // 「クリア」ボタンを表示
+		});
+
+		//实现全选和取消全选
+		$("#checkAll").click(function () {
+			$("input[name=xz]").prop("checked",this.checked);
+		});
+		//实现单选取消全选
+		$("#clueTableDiv").on("click", "input[name=xz]", function () {
+		    $("#checkAll").prop("checked", 
+		        $("#clueTableDiv input[name=xz]").length === $("#clueTableDiv input[name=xz]:checked").length
+		    );
+		});
+
+		//为创建线索按钮绑定点击事件
+		$("#createClueBtn").click(function () {
+            //alert("クリックされました");
+            $("#createClueForm")[0].reset();  //フォームをリセット
+            //打开创建线索的模态窗口
+            $("#createClueModal").modal("show");
+        });
 		
+		//検索ボタンをクリック
+		$("#researchClue").click(function () {
+			//alert("クリックされました");
+			queryClueByConditionForPage(1,10);
+		});
+
+		// 防止创建模态表单执行原生提交（按Enter键），这可能会关闭模态框
+		/* $("#createClueModal form").on("submit", function(e) {
+			e.preventDefault();
+			return false;
+		}); */
+
+		//リード登録ボタンをクリック
+		$("#saveCreateClueBtn").click(function () {
+			 
+			let owner = $("#create-clueOwner").val();
+			let company = $.trim($("#create-company").val());
+			let appellation = $("#create-call").val();
+			let fullname = $.trim($("#create-surname").val());
+			let job = $.trim($("#create-job").val());
+			let email = $.trim($("#create-email").val());
+			let phone = $.trim($("#create-phone").val());
+			let website = $.trim($("#create-website").val());
+			let mphone = $.trim($("#create-mphone").val());
+			let state = $("#create-status").val();
+			let source = $("#create-source").val();
+			let description = $.trim($("#create-describe").val());
+			let contactSummary = $.trim($("#create-contactSummary").val());
+			let nextContactTime = $("#create-nextContactTime").val();
+			let address = $.trim($("#create-address").val());
+			//必須入力項目チェック
+			if(owner == "") {
+				alert("所有者は必須入力です");
+				return;
+			}else if(company==""){
+				alert("会社名は必須入力です");
+				return;
+			}else if(fullname==""){
+				alert("お客様の名前は必須入力です");
+				return;
+			}
+			// 正規表現によるメールアドレスの有効性検証
+			if(email != "" && !/^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+((\.[a-zA-Z0-9_-]{2,3}){1,2})$/.test(email)){
+				alert("メールアドレスの形式が正しくありません");
+				return;
+			}
+			//電話番号の有効性検証
+			if(phone != "" && !/^(?:\+?81[-\s]?|0)?(?:[789]0|50|[1-9]\d?)[-\s]?\d{1,4}[-\s]?\d{4}$/.test(phone)){
+				alert("会社の電話番号の形式が正しくありません");
+				return;
+			}
+			if(mphone != "" && !/^(?:\+?81[-\s]?|0)?(?:[789]0|50|[1-9]\d?)[-\s]?\d{1,4}[-\s]?\d{4}$/.test(mphone)){
+				alert("携帯電話番号の形式が正しくありません");
+				return;
+			}
+			//フォーム検証完了、非同期リクエストを送信
+			$.ajax({
+				url: "workbench/clue/saveCreateClue.do",
+				type: "post",
+				data: {
+					owner: owner,
+					company: company,
+					appellation: appellation,
+					fullname: fullname,
+					job: job,
+					email: email,
+					phone: phone,
+					website: website,
+					mphone: mphone,
+					state: state,
+					source: source,
+					description: description,
+					contactSummary: contactSummary,
+					nextContactTime: nextContactTime,
+					address: address
+				},
+				dataType: "json",
+				success: function(data) {
+					if(data.code=="1") {
+						// 登録成功
+						alert("リード登録成功");
+						//保持每页显示条数不变
+						queryClueByConditionForPage(1,$("#cluePage") .bs_pagination("getOption","rowsPerPage"));
+						$("#createClueModal").modal("hide");
+					}else {
+                        data.message;
+                        $("#createClueModal").modal("show");
+                    }
+				}
+				
+			})
+
+		})
+
+		//リードを削除する機能
+		$("#deleteClueBtn").click(function() {
+			//alert("クリックされました");
+			//获取选中的checkbox
+
+			let checkedClue = $("#clueTableDiv input[name=xz]:checked");
+			if(checkedClue.length==0) {
+				alert("请选择要删除的记录");
+				return;
+			}else {
+				if(confirm("确定要删除选中的记录吗？")) {
+					//alert("确定删除");
+					let ids = "";
+					$.each(checkedClue, function () {
+						ids += "id=" + this.value + "&";
+					})
+					ids = ids.substr(0, ids.length - 1);
+					alert(ids);
+					$.ajax({
+						url: "workbench/clue/deleteClueByIds.do",
+						type: "post",
+						data: ids,
+						dataType: "json",
+						success: function(data) {
+							if(data.code=="1") {
+								// 删除成功
+								alert("リード削除成功");
+								//保持每页显示条数不变
+								queryClueByConditionForPage($("#cluePage") .bs_pagination("getOption","currentPage"),$("#cluePage") .bs_pagination("getOption","rowsPerPage"));
+								
+							}else {
+                                data.message;
+                            }
+						}
+					})
+				}
+			} 
+		})
 	});
 	
+	//在页面入口函数外面封装线索列表的查询显示的函数
+	// ページのエントリ関数外に、リード一覧の検索表示機能をカプセル化
+	function queryClueByConditionForPage(pageNo,pageSize) { 
+		
+		// パラメータを収集
+		let fullname = $("#fullname").val();
+        let company = $("#company").val();
+        let phone = $("#companyPhone").val();
+        let state = $("#state").val();
+        let owner = $("#owner").val();
+        let mphone = $("#phone").val();
+        let source = $("#source").val();
+
+
+		$.ajax({
+		    url: "workbench/clue/queryClueByConditionForPage",
+		    type: "post",
+		    data: {
+		    	fullname: fullname,
+		        company: company,
+		        phone: phone,
+		        source: source,
+		        owner: owner,
+		        mphone: mphone,
+		        state: state,
+		        pageNo: pageNo,
+		        pageSize: pageSize
+		    },
+		    dataType: "json",
+		    success: function(data) {
+		        //data.totalRows：レスポンスデータから取得した総レコード数
+		        //$("#totalRowsB").text(data.totalRows);
+
+		    let html = "";
+			$.each(data.clueList, function(i, clue) {
+				html += "<tr class=\"active\">";
+				html += "<td><input type=\"checkbox\" name=\"xz\" value=\""+clue.id+"\"/></td>";
+				html += "<td><a style=\"text-decoration: none; cursor: pointer;\" onclick=\"window.location.href='workbench/clue/detailClue.do?id=" + clue.id + "';\">"
+						+ (clue.fullname || "")
+						+ (clue.appellation || "")
+						+ "</a></td>";
+				html += "<td>"+ (clue.company || "") +"</td>";
+				html += "<td>"+ (clue.phone || "") +"</td>";
+				html += "<td>"+ (clue.mphone || "") +"</td>";
+				html += "<td>"+ (clue.source || "") +"</td>";
+				html += "<td>"+ (clue.owner || "") +"</td>";
+				html += "<td>"+ (clue.state || "") +"</td>";
+				html += "</tr>";
+			});
+
+		        
+		        $("#clueTableBody").html(html);
+				//総ページ数を計算する
+				let totalPages;
+				if(data.totalRows % pageSize == 0) {
+					totalPages = data.totalRows / pageSize;
+				} else {
+					//切り上げ関数 Math.ceil()
+					totalPages = Math.ceil(data.totalRows / pageSize);
+				} 
+				//在此处设置分页组件的函数（因为在这里才能读取到后台返回的总件数)
+				// ここでページネーションコンポーネントの関数を設定（バックエンドから返されたdataを取得できるため）
+				$("#cluePage") .bs_pagination({
+					currentPage: pageNo, // ページ番号
+					rowsPerPage: pageSize, // 1ページあたりの行数
+					totalRows: data.totalRows, // 総レコード数
+					totalPages: totalPages, // 総ページ数
+					visiblePageLinks: 10, // 表示するページリンク数
+					showGoToPage: true, // Go to pageリンクを表示
+					showRowsPerPage: true, // 1ページあたりの行数リンクを表示
+					showRowsInfo: true, // ページ情報を表示
+					// ページリンクがクリックされたときに呼び出される関数
+					onChangePage: function(event, pageObj) { 
+						// ページリンクがクリックされたら、マーケティングキャンペーン一覧を表示
+						queryClueByConditionForPage(pageObj.currentPage,pageObj.rowsPerPage);
+						//全選択チェックボックスをデフォルトの未選択状態に設定
+						$("#checkAll").prop("checked",false);
+						
+					}
+
+				})
+		    }
+		});
+	}
 </script>
 </head>
 <body>
@@ -34,15 +292,15 @@
 					<h4 class="modal-title" id="myModalLabel">创建线索</h4>
 				</div>
 				<div class="modal-body">
-					<form class="form-horizontal" role="form">
+					<form class="form-horizontal" role="form" id="createClueForm">
 					
 						<div class="form-group">
 							<label for="create-clueOwner" class="col-sm-2 control-label">所有者<span style="font-size: 15px; color: red;">*</span></label>
 							<div class="col-sm-10" style="width: 300px;">
 								<select class="form-control" id="create-clueOwner">
-								  <option>zhangsan</option>
-								  <option>lisi</option>
-								  <option>wangwu</option>
+									<c:forEach items="${userList}" var="user">
+										<option value="${user.id}">${user.name}</option>
+									</c:forEach>
 								</select>
 							</div>
 							<label for="create-company" class="col-sm-2 control-label">公司<span style="font-size: 15px; color: red;">*</span></label>
@@ -55,12 +313,10 @@
 							<label for="create-call" class="col-sm-2 control-label">称呼</label>
 							<div class="col-sm-10" style="width: 300px;">
 								<select class="form-control" id="create-call">
-								  <option></option>
-								  <option>先生</option>
-								  <option>夫人</option>
-								  <option>女士</option>
-								  <option>博士</option>
-								  <option>教授</option>
+								  		<option></option>
+								  	<c:forEach items="${appellationList}" var="appellation">
+										<option value="${appellation.id}">${appellation.text}</option>
+								  	</c:forEach>
 								</select>
 							</div>
 							<label for="create-surname" class="col-sm-2 control-label">姓名<span style="font-size: 15px; color: red;">*</span></label>
@@ -99,14 +355,10 @@
 							<label for="create-status" class="col-sm-2 control-label">线索状态</label>
 							<div class="col-sm-10" style="width: 300px;">
 								<select class="form-control" id="create-status">
-								  <option></option>
-								  <option>试图联系</option>
-								  <option>将来联系</option>
-								  <option>已联系</option>
-								  <option>虚假线索</option>
-								  <option>丢失线索</option>
-								  <option>未联系</option>
-								  <option>需要条件</option>
+								 	    <option></option>
+								  	<c:forEach items="${clueStateList}" var="clueState">
+										<option value="${clueState.id}">${clueState.text}</option>
+								  	</c:forEach>
 								</select>
 							</div>
 						</div>
@@ -115,21 +367,10 @@
 							<label for="create-source" class="col-sm-2 control-label">线索来源</label>
 							<div class="col-sm-10" style="width: 300px;">
 								<select class="form-control" id="create-source">
-								  <option></option>
-								  <option>广告</option>
-								  <option>推销电话</option>
-								  <option>员工介绍</option>
-								  <option>外部介绍</option>
-								  <option>在线商场</option>
-								  <option>合作伙伴</option>
-								  <option>公开媒介</option>
-								  <option>销售邮件</option>
-								  <option>合作伙伴研讨会</option>
-								  <option>内部研讨会</option>
-								  <option>交易会</option>
-								  <option>web下载</option>
-								  <option>web调研</option>
-								  <option>聊天</option>
+								  		<option></option>
+								  	<c:forEach items="${sourceList}" var="source">
+										<option value="${source.id}">${source.text}</option>
+								  	</c:forEach>
 								</select>
 							</div>
 						</div>
@@ -154,7 +395,7 @@
 							<div class="form-group">
 								<label for="create-nextContactTime" class="col-sm-2 control-label">下次联系时间</label>
 								<div class="col-sm-10" style="width: 300px;">
-									<input type="text" class="form-control" id="create-nextContactTime">
+									<input type="text" class="form-control myDate" id="create-nextContactTime">
 								</div>
 							</div>
 						</div>
@@ -174,7 +415,7 @@
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-					<button type="button" class="btn btn-primary" data-dismiss="modal">保存</button>
+					<button type="button" class="btn btn-primary" id="saveCreateClueBtn">保存</button>
 				</div>
 			</div>
 		</div>
@@ -197,9 +438,9 @@
 							<label for="edit-clueOwner" class="col-sm-2 control-label">所有者<span style="font-size: 15px; color: red;">*</span></label>
 							<div class="col-sm-10" style="width: 300px;">
 								<select class="form-control" id="edit-clueOwner">
-								  <option>zhangsan</option>
-								  <option>lisi</option>
-								  <option>wangwu</option>
+									<c:forEach items="${userList}" var="user">
+										<option value="${user.id}">${user.name}</option>
+									</c:forEach>
 								</select>
 							</div>
 							<label for="edit-company" class="col-sm-2 control-label">公司<span style="font-size: 15px; color: red;">*</span></label>
@@ -357,43 +598,32 @@
 				  <div class="form-group">
 				    <div class="input-group">
 				      <div class="input-group-addon">名称</div>
-				      <input class="form-control" type="text">
+				      <input class="form-control" id="fullname" type="text">
 				    </div>
 				  </div>
 				  
 				  <div class="form-group">
 				    <div class="input-group">
 				      <div class="input-group-addon">公司</div>
-				      <input class="form-control" type="text">
+				      <input class="form-control" id="company" type="text">
 				    </div>
 				  </div>
 				  
 				  <div class="form-group">
 				    <div class="input-group">
 				      <div class="input-group-addon">公司座机</div>
-				      <input class="form-control" type="text">
+				      <input class="form-control" id="companyPhone" type="text">
 				    </div>
 				  </div>
 				  
 				  <div class="form-group">
 				    <div class="input-group">
 				      <div class="input-group-addon">线索来源</div>
-					  <select class="form-control">
-					  	  <option></option>
-					  	  <option>广告</option>
-						  <option>推销电话</option>
-						  <option>员工介绍</option>
-						  <option>外部介绍</option>
-						  <option>在线商场</option>
-						  <option>合作伙伴</option>
-						  <option>公开媒介</option>
-						  <option>销售邮件</option>
-						  <option>合作伙伴研讨会</option>
-						  <option>内部研讨会</option>
-						  <option>交易会</option>
-						  <option>web下载</option>
-						  <option>web调研</option>
-						  <option>聊天</option>
+					  <select class="form-control" id="source">
+					  		<option value=""></option>
+					  	<c:forEach items="${sourceList}" var="source">
+							<option value="${source.id}">${source.text}</option>
+					  	</c:forEach>
 					  </select>
 				    </div>
 				  </div>
@@ -403,7 +633,7 @@
 				  <div class="form-group">
 				    <div class="input-group">
 				      <div class="input-group-addon">所有者</div>
-				      <input class="form-control" type="text">
+				      <input class="form-control" type="text" id="owner">
 				    </div>
 				  </div>
 				  
@@ -412,80 +642,57 @@
 				  <div class="form-group">
 				    <div class="input-group">
 				      <div class="input-group-addon">手机</div>
-				      <input class="form-control" type="text">
+				      <input class="form-control" id="phone" type="text">
 				    </div>
 				  </div>
 				  
 				  <div class="form-group">
 				    <div class="input-group">
 				      <div class="input-group-addon">线索状态</div>
-					  <select class="form-control">
-					  	<option></option>
-					  	<option>试图联系</option>
-					  	<option>将来联系</option>
-					  	<option>已联系</option>
-					  	<option>虚假线索</option>
-					  	<option>丢失线索</option>
-					  	<option>未联系</option>
-					  	<option>需要条件</option>
+					  <select class="form-control" id="state">
+							<option value=""></option>
+					  	<c:forEach items="${clueStateList}" var="clueState">
+							<option value="${clueState.id}">${clueState.text}</option>
+					  	</c:forEach>
 					  </select>
 				    </div>
 				  </div>
 
-				  <button type="submit" class="btn btn-default">查询</button>
+				  <button type="button" class="btn btn-default" id="researchClue">查询</button>
 				  
 				</form>
 			</div>
 			<div class="btn-toolbar" role="toolbar" style="background-color: #F7F7F7; height: 50px; position: relative;top: 40px;">
 				<div class="btn-group" style="position: relative; top: 18%;">
-				  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createClueModal"><span class="glyphicon glyphicon-plus"></span> 创建</button>
+				  <button type="button" class="btn btn-primary" id="createClueBtn"><span class="glyphicon glyphicon-plus"></span> 创建</button>
 				  <button type="button" class="btn btn-default" data-toggle="modal" data-target="#editClueModal"><span class="glyphicon glyphicon-pencil"></span> 修改</button>
-				  <button type="button" class="btn btn-danger"><span class="glyphicon glyphicon-minus"></span> 删除</button>
+				  <button type="button" class="btn btn-danger" id="deleteClueBtn"><span class="glyphicon glyphicon-minus"></span> 删除</button>
 				</div>
 				
 				
 			</div>
-			<div style="position: relative;top: 50px;">
+			<div style="position: relative;top: 50px;" id="clueTableDiv">
 				<table class="table table-hover">
 					<thead>
 						<tr style="color: #B3B3B3;">
-							<td><input type="checkbox" /></td>
-							<td>名称</td>
-							<td>公司</td>
-							<td>公司座机</td>
-							<td>手机</td>
+							<td><input type="checkbox" id="checkAll" /></td>
+							<td>客様</td>
+							<td>お会社</td>
+							<td>会社TEL</td>
+							<td>個人電話</td>
 							<td>线索来源</td>
 							<td>所有者</td>
 							<td>线索状态</td>
 						</tr>
 					</thead>
-					<tbody>
-						<tr>
-							<td><input type="checkbox" /></td>
-							<td><a style="text-decoration: none; cursor: pointer;" onclick="window.location.href='detail.html';">李四先生</a></td>
-							<td>动力节点</td>
-							<td>010-84846003</td>
-							<td>12345678901</td>
-							<td>广告</td>
-							<td>zhangsan</td>
-							<td>已联系</td>
-						</tr>
-                        <tr class="active">
-                            <td><input type="checkbox" /></td>
-                            <td><a style="text-decoration: none; cursor: pointer;" onclick="window.location.href='detail.html';">李四先生</a></td>
-                            <td>动力节点</td>
-                            <td>010-84846003</td>
-                            <td>12345678901</td>
-                            <td>广告</td>
-                            <td>zhangsan</td>
-                            <td>已联系</td>
-                        </tr>
+					<tbody id="clueTableBody">
+						<!-- 通过AJAX异步请求线索数据后，填充到此处 -->
 					</tbody>
 				</table>
 			</div>
 			
-			<div style="height: 50px; position: relative;top: 60px;">
-				<div>
+			<div style="height: 80px; position: relative;top: 60px;" id="cluePage">
+				<!--  <div>
 					<button type="button" class="btn btn-default" style="cursor: default;">共<b>50</b>条记录</button>
 				</div>
 				<div class="btn-group" style="position: relative;top: -34px; left: 110px;">
@@ -517,7 +724,7 @@
 						</ul>
 					</nav>
 				</div>
-			</div>
+			</div> -->
 			
 		</div>
 		

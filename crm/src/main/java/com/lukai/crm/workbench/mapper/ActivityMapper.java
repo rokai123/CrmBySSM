@@ -71,4 +71,26 @@ public interface ActivityMapper {
     
     //IDに基づいて該当するマーケティングキャンペーンを更新
     int updateActivity(Activity activity);
+    
+    List<Activity> selectAllActivities();
+    
+    List<Activity> selectActivityByIds(String[] ids);
+    /**
+	 * 複数のマーケティングキャンペーンを一括で挿入
+	 * @param activityList
+	 * @return 挿入された行数
+	 * created by 102106
+	 */
+    int insertActivityByList(List<Activity> activityList);
+    
+    /**
+	 * 詳細情報のためにIDに基づいてマーケティングキャンペーンをリサーチ
+	 */
+    Activity selectActivityByIdForDetail(String id);
+    
+    /**
+	 * リードIDに基づいて関連するマーケティングキャンペ ーンをリサーチ
+	 * @param clueId
+	 */
+    List<Activity> selectActivityForClueDetailByClueId(String clueId);
 }

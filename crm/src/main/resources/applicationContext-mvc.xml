@@ -44,9 +44,27 @@ class="org.springframework.web.servlet.view.InternalResourceViewResolver">
     <bean class="com.lukai.crm.settings.web.interceptor.LoginInterceptor"/>
   </mvc:interceptor>
 </mvc:interceptors>
-<!-- 配置文件上传解析器 id:必须是multipartResolver-->
-<!--<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
-    <property name="maxUploadSize" value="#{1024*1024*80}"/>
+<!-- 
+    文件上传解析器配置
+    id必须为multipartResolver（Spring约定）
+    
+    方式一：StandardServletMultipartResolver（Spring 6推荐）
+    基于Servlet 3.0+原生文件上传，性能更好，配置在web.xml中
+-->
+<bean id="multipartResolver" 
+    class="org.springframework.web.multipart.support.StandardServletMultipartResolver">
+</bean>
+
+<!-- 
+    方式二：CommonsMultipartResolver（传统方式，Spring 6仍支持但非首选）
+    基于Apache Commons FileUpload，配置更灵活但性能稍差
+    注意：需要额外添加commons-fileupload和commons-io依赖
+-->
+<!-- 
+<bean id="multipartResolver" 
+    class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+    <property name="maxUploadSize" value="#{1024 * 1024 * 5}"/>
     <property name="defaultEncoding" value="utf-8"/>
-</bean>-->
+</bean>
+-->
 </beans>

@@ -1,17 +1,25 @@
 package com.lukai.crm.workbench.web.controller;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.lukai.crm.commons.contants.Contants;
 import com.lukai.crm.commons.domain.ReturnObject;
@@ -20,6 +28,8 @@ import com.lukai.crm.commons.utils.UUIdUtils;
 import com.lukai.crm.settings.domain.User;
 import com.lukai.crm.settings.service.UserService;
 import com.lukai.crm.workbench.domain.Activity;
+import com.lukai.crm.workbench.domain.ActivityRemark;
+import com.lukai.crm.workbench.service.ActivityRemarkService;
 import com.lukai.crm.workbench.service.ActivityService;
 
 @Controller
@@ -30,6 +40,9 @@ public class ActivityController {
 	@Autowired
 	ActivityService activityService;
 
+	@Autowired
+	ActivityRemarkService activityRemarkService;
+	
 	/*
 	 * by rokai123 
 	 * 
@@ -52,30 +65,14 @@ public class ActivityController {
 	 */
 	@RequestMapping("/workbench/activity/saveCreateActivity.do")
 	@ResponseBody
-	public Object saveCreateActivity(Activity activity,HttpSession session) {
+	public ReturnObject saveCreateActivity(Activity activity,HttpSession session) {
 		//セッションスコープから現在ユーザを取得。
 		User user = (User)session.getAttribute(Contants.SESSION_USER);
 		//データの一貫性を保つため、アカウント名よりユーザーIDを優先して使用すること。
 		activity.setCreateBy(user.getId());
 		activity.setId(UUIdUtils.getUUId());
 		activity.setCreateTime(DateUtils.formateDateTime(new Date()));
-		ReturnObject returnObject = new ReturnObject();
-		try {
-			int resultNum = activityService.saveCreateActivity(activity);
-			if (resultNum>0) {
-				returnObject.setCode(Contants.RETURN_OBJECT_CODE_SUCCESS);
-				
-			}else {
-				returnObject.setCode(Contants.RETURN_OBJECT_CODE_FAIL);
-				returnObject.setMessage("システムが混雑中です、しばらくしてから再度お試しください");
-			}
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-			returnObject.setCode(Contants.RETURN_OBJECT_CODE_FAIL);
-			returnObject.setMessage("システムが混雑中です、しばらくしてから再度お試しください");
-		}
-		
+		ReturnObject returnObject = activityService.saveCreateActivity(activity);
 		
 		return returnObject;
 		
@@ -184,4 +181,143 @@ public class ActivityController {
 		}
 		return returnObject;
 	}
+	
+	
+	/**
+	 * すべてのマーケティング活動データをExcelファイルとしてエクスポートする
+	 * 
+	 * @param response HTTPレスポンスオブジェクト
+	 * @throws Exception エクスポート処理中にエラーが発生した場合
+	 */
+	@RequestMapping("/workbench/activity/exportAllActivitys.do")
+	public void exportAllActivitys(HttpServletResponse response) throws Exception {
+		//すべてのマーケティングキャンペーンを取得
+		List<Activity> activities = activityService.queryAllActivitys();
+		exportActivitysUtils(response,activities);
+	}
+	
+	/**
+	 * 選択したマーケティング活動データをExcelファイルとしてエクスポートする
+	 * 
+	 * @param ids エクスポートするマーケティング活動のID配列
+	 * @param response HTTPレスポンスオブジェクト
+	 * @throws Exception エクスポート処理中にエラーが発生した場合
+	 */
+	@RequestMapping("/workbench/activity/exportCheckedActivitys.do")
+	public void exportCheckedActivitys(String[] ids,HttpServletResponse response) throws Exception {
+		List<Activity> activities = activityService.queryActivitysByIds(ids);
+		exportActivitysUtils(response,activities);
+	}
+	
+	public static void exportActivitysUtils(HttpServletResponse response,List<Activity> activities) throws IOException {
+		// サーバー側でExcelファイルを生成
+				HSSFWorkbook wb = new HSSFWorkbook();
+				HSSFSheet sheet = wb.createSheet("マーケティングキャンペーン");
+				HSSFRow row = sheet.createRow(0);
+				HSSFCell cell = row.createCell(0);
+				cell.setCellValue("ID");
+				cell = row.createCell(1);
+				cell.setCellValue("所有者");
+				cell = row.createCell(2);
+				cell.setCellValue("キャンペーン名");
+				cell=row.createCell(3);
+				cell.setCellValue("開始日");
+				cell=row.createCell(4);
+				cell.setCellValue("終了日");
+				cell=row.createCell(5);
+				cell.setCellValue("コスト");
+				cell=row.createCell(6);
+				cell.setCellValue("コメント");
+				cell=row.createCell(7);
+				cell.setCellValue("作成日時");
+				cell=row.createCell(8);
+				cell.setCellValue("作成者");
+				cell=row.createCell(9);
+				cell.setCellValue("更新日時");
+				cell=row.createCell(10);
+				cell.setCellValue("更新者");
+				
+				// activitiesをループ処理し、HSSFRowオブジェクトを作成、全データ行を生成
+				Activity activity;
+				if (activities!=null && activities.size()>0) {
+					for(int i=0;i<activities.size();i++){
+						row = sheet.createRow(i+1);
+						activity = activities.get(i);
+						cell = row.createCell(0);
+						cell.setCellValue(activity.getId());
+						cell = row.createCell(1);
+						cell.setCellValue(activity.getOwner());
+						cell = row.createCell(2);
+						cell.setCellValue(activity.getName());
+						cell = row.createCell(3);
+						cell.setCellValue(activity.getStartDate());
+						cell = row.createCell(4);
+						cell.setCellValue(activity.getEndDate());
+						cell = row.createCell(5);
+						cell.setCellValue(activity.getCost());
+						cell = row.createCell(6);
+						cell.setCellValue(activity.getDescription());
+						cell = row.createCell(7);
+						cell.setCellValue(activity.getCreateTime());
+						cell = row.createCell(8);
+						cell.setCellValue(activity.getCreateBy());
+						cell = row.createCell(9);
+						cell.setCellValue(activity.getEditTime());
+						cell = row.createCell(10);
+						cell.setCellValue(activity.getEditBy());
+					}
+				}
+				/*//excelファイルを生成する
+				OutputStream os = new FileOutputStream("D:\\dev\\projects\\CRMBySSM\\excel\\activity.xls");
+				wb.write(os);
+				// リソースを解放する
+				os.close();
+				wb.close();*/
+
+				// サーバー側で生成したExcelファイルをクライアントにダウンロードさせる
+				response.setContentType("application/octet-stream;charset=utf-8");
+				response.addHeader("Content-Disposition", "attachment;filename=activity.xls");
+				OutputStream out = response.getOutputStream();
+				/*FileInputStream fis = new FileInputStream("D:\\dev\\projects\\CRMBySSM\\excel\\activity.xls");
+				byte[] buff = new byte[256];
+				int len = 0;
+				while ((len=fis.read(buff))!=-1) {
+					out.write(buff, 0, len);
+				}
+				fis.close();*/
+				wb.write(out);
+				wb.close();
+				out.flush();
+	}
+	
+	
+	/**
+	 * 批量インポートマーケティング活動データ
+	 * 
+	 * @param activityFile インポートするマーケティング活動データファイル
+	 * @param session HTTPセッションオブジェクト
+	 * @return 処理結果を含むリターンオブジェクト
+	 * @throws Exception インポート処理中にエラーが発生した場合
+	 */
+	@RequestMapping("/workbench/activity/importActivity.do")
+	@ResponseBody
+	public Object importActivity(MultipartFile activityFile,HttpSession session) throws Exception {
+		ReturnObject ret = activityService.saveCreateActivityByList(activityFile,session);
+		return ret;
+	 }
+	
+	
+	/**
+	 * 跳转到某条市场活动的详情页面
+	 * 
+	 */
+	@RequestMapping("/workbench/activity/detailActivity.do")
+	public String detailActivity(String id,HttpServletRequest request) { 
+		Activity activity = activityService.queryActivityForDetailById(id);
+		List<ActivityRemark> activityRemarks = activityRemarkService.queryActivityRemarksByActivityIdForDetail(id);
+		request.setAttribute("activity", activity);
+		request.setAttribute("activityRemarks", activityRemarks);
+		return "workbench/activity/detail";
+	}
+
 }
