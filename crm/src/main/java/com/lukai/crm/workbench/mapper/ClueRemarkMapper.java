@@ -6,10 +6,19 @@ import org.apache.ibatis.annotations.Mapper;
 
 import com.lukai.crm.workbench.domain.ClueRemark;
 
-/**
- * リードIDに基づきリード備考情報を検索
- */
+
 @Mapper
 public interface ClueRemarkMapper {
+	/**
+	 * リードIDに基づきリード備考情報を検索
+	 */
 	List<ClueRemark> selectClueRemarkForDetailByClueId(String clueId);
+	/**
+	 * リード備考情報を挿入
+	 */
+	int insertClueRemark(ClueRemark clueRemark);
+	/**
+	 * リード備考情報を削除
+	 */
+	int deleteClueRemarkByClueId(String id);
 }

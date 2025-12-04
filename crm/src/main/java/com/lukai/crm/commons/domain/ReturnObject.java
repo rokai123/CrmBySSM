@@ -1,7 +1,7 @@
 package com.lukai.crm.commons.domain;
-//asdasd
+
 import java.util.Objects;
-//返回结果集
+
  public class ReturnObject {
 	private String message;
 	private String code;

@@ -37,21 +37,102 @@
 			cancelAndSaveBtnDefault = true;
 		});
 		
-		$(".remarkDiv").mouseover(function(){
+		// $(".remarkDiv").mouseover(function(){
+		// 	$(this).children("div").children("div").show();
+		// });
+		$("#remarkOuterDiv").on("mouseover",".remarkDiv",function(){
 			$(this).children("div").children("div").show();
 		});
 		
-		$(".remarkDiv").mouseout(function(){
+		// $(".remarkDiv").mouseout(function(){
+		// 	$(this).children("div").children("div").hide();
+		// });
+		$("#remarkOuterDiv").on("mouseout",".remarkDiv",function(){
 			$(this).children("div").children("div").hide();
 		});
 		
-		$(".myHref").mouseover(function(){
+		// $(".myHref").mouseover(function(){
+		// 	$(this).children("span").css("color","red");
+		// });
+		$("#remarkOuterDiv").on("mouseover",".myHref",function(){
 			$(this).children("span").css("color","red");
 		});
 		
-		$(".myHref").mouseout(function(){
+		// $(".myHref").mouseout(function(){
+		// 	$(this).children("span").css("color","#E6E6E6");
+		// });
+		$("#remarkOuterDiv").on("mouseout",".myHref",function(){
 			$(this).children("span").css("color","#E6E6E6");
 		});
+
+		//新規したリード備考を保存するボタンをクリックイベントをバインドする
+		$("#saveClueRemarkBtn").click(function(){
+			let clueId = "${clue.id}";
+	    let noteContent = $.trim($("#remark").val());
+			if(noteContent == ""){
+				alert("リード備考を入力してください");
+				return;
+			}
+			$.ajax({
+				url:"workbench/clue/saveCreateClueRemark.do",
+				data:{
+					"clueId":clueId,
+					"noteContent":noteContent
+				},
+				type:"post",
+				dataType:"json",
+				success:function(data){
+					if(data.code=="1"){
+						//成功
+						//添加成功之后，清空输入框
+						$("#remark").val("");
+						let html = "";
+						html +="<div class=\"remarkDiv\" id=\"remarkDiv_"+data.resultData.id+"\" style=\"height: 60px;\">";
+						html +="<img title=\""+data.resultData.createBy+"\" src=\"image/user-thumbnail.png\" style=\"width: 30px; height:30px;\">";
+						html +="<div style=\"position: relative; top: -40px; left: 40px;\" >";
+						html +="<h5>"+data.resultData.noteContent+"</h5>";
+						html +="<font color=\"gray\">リード</font> <font color=\"gray\">-</font> <b>${clue.fullname}${clue.appellation}-${clue.company}</b> <small style=\"color: gray;\"> 2017-01-22 10:10:10 由zhangsan</small>";
+						html +="<div style=\"position: relative; left: 500px; top: -30px; height: 30px; width: 100px; display: none;\">";
+						html +="<a class=\"myHref\" data-remark-id=\""+data.resultData.id+"\" name=\"Clue_edit\" href=\"javascript:void(0);\"><span class=\"glyphicon glyphicon-edit\" style=\"font-size: 20px; color: #E6E6E6;\"></span></a>";
+						html +="&nbsp;&nbsp;&nbsp;&nbsp;";
+						html +="<a class=\"myHref\" data-remark-id=\""+data.resultData.id+"\" name=\"Clue_remove\" href=\"javascript:void(0);\"><span class=\"glyphicon glyphicon-remove\" style=\"font-size: 20px; color: #E6E6E6;\"></span></a>";
+						html +="</div>";
+						html +="</div>";
+						html +="</div>";
+						console.log(html);
+						$("#remarkDiv").before(html);
+
+					}else{
+                        alert(data.message);
+                    }
+				}
+
+			})
+		});
+		
+		$("#remarkOuterDiv").on("click","a[name='Clue_remove']",function(){ 
+			let id = $(this).data("remark-id")
+			//$("#remarkDiv_"+id).remove();
+			$.ajax({
+				url:"workbench/clue/removeClueRemarkById.do",
+				data:{
+					"id":id
+				},
+				type:"post",
+				dataType:"json",
+				success:function(data){
+					if(data.code=="1"){
+						//成功
+						//添加成功之后，清空输入框
+						$("#remarkDiv_"+id).remove();
+					}else{
+                        alert(data.message);
+                    }
+				}
+			})
+		});
+
+
 	});
 	
 </script>
@@ -223,34 +304,32 @@
 	</div>
 	
 	<!-- 备注 -->
-	<div style="position: relative; top: 40px; left: 40px;">
+	<div style="position: relative; top: 40px; left: 40px;" id="remarkOuterDiv">
 		<div class="page-header">
-			<h4>备注</h4>
+			<h4>備考</h4>
 		</div>
 		
 		<!-- 备注1 -->
-		<div class="remarkDiv" style="height: 60px;">
-			<img title="zhangsan" src="image/user-thumbnail.png" style="width: 30px; height:30px;">
-			<div style="position: relative; top: -40px; left: 40px;" >
-				<c:forEach items="${clueRemarks}" var="remark"> 
-					<h5>${remark.noteContent}</h5>
-					<font color="gray">线索</font> <font color="gray">-</font> <b>李四先生-动力节点</b> <small style="color: gray;"> 2017-01-22 10:10:10 由zhangsan</small>
-					<div style="position: relative; left: 500px; top: -30px; height: 30px; width: 100px; display: none;">
-						<a class="myHref" href="javascript:void(0);"><span class="glyphicon glyphicon-edit" style="font-size: 20px; color: #E6E6E6;"></span></a>
-						&nbsp;&nbsp;&nbsp;&nbsp;
-						<a class="myHref" href="javascript:void(0);"><span class="glyphicon glyphicon-remove" style="font-size: 20px; color: #E6E6E6;"></span></a>
+		<c:forEach items="${clueRemarks}" var="remark"> 
+			<div class="remarkDiv" id="remarkDiv_${remark.id}" style="height: 60px;">
+					<img title="zhangsan" src="image/user-thumbnail.png" style="width: 30px; height:30px;">
+					<div style="position: relative; top: -40px; left: 40px;" >
+							<h5>${remark.noteContent}</h5>
+							<font color="gray">リード</font> <font color="gray">-</font> <b>${clue.fullname}${clue.appellation}-${clue.company}</b> <small style="color: gray;"> 2017-01-22 10:10:10 由zhangsan</small>
+							<div style="position: relative; left: 500px; top: -30px; height: 30px; width: 100px; display: none;">
+								<a class="myHref" data-remark-id="${remark.id}" name="Clue_edit" href="javascript:void(0);"><span class="glyphicon glyphicon-edit" style="font-size: 20px; color: #E6E6E6;"></span></a>
+								&nbsp;&nbsp;&nbsp;&nbsp;
+								<a class="myHref" data-remark-id="${remark.id}" name="Clue_remove" href="javascript:void(0);"><span class="glyphicon glyphicon-remove" style="font-size: 20px; color: #E6E6E6;"></span></a>
+							</div>
 					</div>
-				</c:forEach>
-				
 			</div>
-		</div>
-		
+		</c:forEach>
 		<!-- 备注2 -->
 		<!-- <div class="remarkDiv" style="height: 60px;">
 			<img title="zhangsan" src="image/user-thumbnail.png" style="width: 30px; height:30px;">
 			<div style="position: relative; top: -40px; left: 40px;" >
 				<h5>呵呵！</h5>
-				<font color="gray">线索</font> <font color="gray">-</font> <b>李四先生-动力节点</b> <small style="color: gray;"> 2017-01-22 10:20:10 由zhangsan</small>
+				<font color="gray">线索</font> <font color="gray">-</font> <b>李四先生-公司</b> <small style="color: gray;"> 2017-01-22 10:20:10 由zhangsan</small>
 				<div style="position: relative; left: 500px; top: -30px; height: 30px; width: 100px; display: none;">
 					<a class="myHref" href="javascript:void(0);"><span class="glyphicon glyphicon-edit" style="font-size: 20px; color: #E6E6E6;"></span></a>
 					&nbsp;&nbsp;&nbsp;&nbsp;
@@ -261,10 +340,10 @@
 		
 		<div id="remarkDiv" style="background-color: #E6E6E6; width: 870px; height: 90px;">
 			<form role="form" style="position: relative;top: 10px; left: 10px;">
-				<textarea id="remark" class="form-control" style="width: 850px; resize : none;" rows="2"  placeholder="添加备注..."></textarea>
+				<textarea id="remark" class="form-control" style="width: 850px; resize : none;" rows="2"  placeholder="備考を入力..."></textarea>
 				<p id="cancelAndSaveBtn" style="position: relative;left: 737px; top: 10px; display: none;">
 					<button id="cancelBtn" type="button" class="btn btn-default">取消</button>
-					<button type="button" class="btn btn-primary">保存</button>
+					<button type="button" class="btn btn-primary" id="saveClueRemarkBtn">保存</button>
 				</p>
 			</form>
 		</div>
@@ -274,34 +353,29 @@
 	<div>
 		<div style="position: relative; top: 60px; left: 40px;">
 			<div class="page-header">
-				<h4>市场活动</h4>
+				<h4>ﾏｰｹﾃｨﾝｸﾞｷｬﾝﾍﾟｰﾝ</h4>
 			</div>
 			<div style="position: relative;top: 0px;">
 				<table class="table table-hover" style="width: 900px;">
 					<thead>
 						<tr style="color: #B3B3B3;">
-							<td>名称</td>
-							<td>开始日期</td>
-							<td>结束日期</td>
+							<td>キャンペン名</td>
+							<td>開始日</td>
+							<td>終了日</td>
 							<td>所有者</td>
 							<td></td>
 						</tr>
 					</thead>
 					<tbody>
+						<c:forEach items="${activities}" var="activity"> 
 						<tr>
-							<td>发传单</td>
-							<td>2020-10-10</td>
-							<td>2020-10-20</td>
-							<td>zhangsan</td>
+							<td>${activity.name}</td>
+							<td>${activity.startDate}</td>
+							<td>${activity.endDate}</td>
+							<td>${activity.owner}</td>
 							<td><a href="javascript:void(0);"  style="text-decoration: none;"><span class="glyphicon glyphicon-remove"></span>解除关联</a></td>
 						</tr>
-						<tr>
-							<td>发传单</td>
-							<td>2020-10-10</td>
-							<td>2020-10-20</td>
-							<td>zhangsan</td>
-							<td><a href="javascript:void(0);"  style="text-decoration: none;"><span class="glyphicon glyphicon-remove"></span>解除关联</a></td>
-						</tr>
+						</c:forEach>
 					</tbody>
 				</table>
 			</div>

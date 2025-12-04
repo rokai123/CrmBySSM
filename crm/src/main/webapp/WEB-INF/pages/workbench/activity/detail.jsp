@@ -107,7 +107,7 @@
 		});
 
 		//删除备注
-		$(remarkDivList).on("click", "a[name='removeBtn']", function () {
+		$("#remarkDivList").on("click", "a[name='removeBtn']", function () {
 			let remarkId = $(this).attr("remarkId");
 			$.ajax({
 				url:'workbench/activity/deleteActivityRemarkById.do',

@@ -118,5 +118,6 @@ public class ClueController {
 		return "workbench/clue/detail";
 	}
 	
+	
 
 }
