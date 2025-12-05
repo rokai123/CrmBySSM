@@ -119,5 +119,11 @@ public class ClueController {
 	}
 	
 	
+	@RequestMapping("/workbench/clue/queryClueForEditById.do")
+	@ResponseBody
+	public Clue queryClueById(String id) {
+		Clue clue = clueService.queryClueForEditByClueId(id);
+		return clue;
+	}
 
 }

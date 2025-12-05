@@ -24,6 +24,19 @@ public interface ClueMapper {
 	 * @return
 	 */
 	int deleteClueByIds(String[] ids);
-	
+	/**
+	 * IDでリードを検索する
+	 * @param id
+	 * @return
+	 */
 	Clue selectClueByClueId(String id);
+	/**
+	 * 編集のためにIDでリードを検索する
+	 * @param id
+	 * @return
+	 */
+	Clue selectClueForEditByClueId(String id);
+	
+	int updateClue(Clue clue);
+	
 }

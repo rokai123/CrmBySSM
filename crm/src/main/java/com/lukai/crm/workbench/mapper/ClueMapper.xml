@@ -138,5 +138,10 @@
         where c.id=#{id}
    
    </select>
-   
+   <select id="selectClueForEditByClueId" parameterType="String" resultMap="BaseResultMap">
+   	select
+   		<include refid="Base_Column_List"/>
+   	from tbl_clue
+   	where id=#{id}
+   </select>
 </mapper>

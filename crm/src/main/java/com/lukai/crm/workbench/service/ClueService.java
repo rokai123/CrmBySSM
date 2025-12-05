@@ -11,4 +11,5 @@ public interface ClueService {
 	ReturnObject saveCreateClue(Clue clue);
 	ReturnObject deleteClueByIds(String[] ids);
 	Clue queryClueByClueId(String id);
+	Clue queryClueForEditByClueId(String id);
 }

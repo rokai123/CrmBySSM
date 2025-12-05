@@ -206,7 +206,7 @@
 				let clueId = checkedClue.val();
 				$("#editClueModal").modal("show");
 				$.ajax({ 
-					url: "workbench/clue/queryClueById.do",
+					url: "workbench/clue/queryClueForEditById.do",
 					type: "post",
 					data: {
 						id: clueId
@@ -230,15 +230,94 @@
 						$("#edit-nextContactTime").val(data.nextContactTime);
 						$("#edit-address").val(data.address);
 						$("#editClueModal").modal("show");
-
+					},
+					fail: function() {
+						alert("エラー");
 					}
-
 
 				})
 			}
 		})
 
+		//編集の送信ボタンをクリックする時
+		$("#saveEditBtn").click(function() {
+			let id = $("#edit-id").val();
+			let owner = $("#edit-clueOwner").val();
+			let company = $("#edit-company").val();
+			let appellation = $("#edit-call").val();
+			let fullname = $("#edit-surname").val();
+			let job = $("#edit-job").val();
+			let email = $("#edit-email").val();
+			let phone = $("#edit-phone").val();
+			let website = $("#edit-website").val();
+			let mphone = $("#edit-mphone").val();
+			let state = $("#edit-status").val();
+			let source = $("#edit-source").val();
+			let description = $("#edit-describe").val();
+			let contactSummary = $("#edit-contactSummary").val();
+			let nextContactTime = $("#edit-nextContactTime").val();
+			let address = $("#edit-address").val();
 
+			//必須入力項目チェック
+			if(owner == "") {
+				alert("所有者は必須入力です");
+				return;
+			}else if(company==""){
+				alert("会社名は必須入力です");
+				return;
+			}else if(fullname==""){
+				alert("お客様の名前は必須入力です");
+				return;
+			}
+			// 正規表現によるメールアドレスの有効性検証
+			if(email != "" && !/^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+((\.[a-zA-Z0-9_-]{2,3}){1,2})$/.test(email)){
+				alert("メールアドレスの形式が正しくありません");
+				return;
+			}
+			//電話番号の有効性検証
+			if(phone != "" && !/^(?:\+?81[-\s]?|0)?(?:[789]0|50|[1-9]\d?)[-\s]?\d{1,4}[-\s]?\d{4}$/.test(phone)){
+				alert("会社の電話番号の形式が正しくありません");
+				return;
+			}
+			if(mphone != "" && !/^(?:\+?81[-\s]?|0)?(?:[789]0|50|[1-9]\d?)[-\s]?\d{1,4}[-\s]?\d{4}$/.test(mphone)){
+				alert("携帯電話番号の形式が正しくありません");
+				return;
+			}
+
+			$.ajax({
+				url: "workbench/clue/saveEditClue.do",
+				type: "post",
+				data: {
+					id: id,
+					owner: owner,
+					company: company,
+					appellation: appellation,
+					fullname: fullname,
+					job: job,
+					email: email,
+					phone: phone,
+					website: website,
+					mphone: mphone,
+					state: state,
+					source: source,
+					description: description,
+					contactSummary: contactSummary,
+					nextContactTime: nextContactTime,
+					address: address
+				},
+				dataType: "json",
+				success: function(data) {
+					if(data.code=="1") {
+						// 編集成功
+						alert("リード編集成功");
+					}else {
+						data.message;
+					}
+				}
+				
+				
+			})
+		})
 
 	});
 	
@@ -603,7 +682,9 @@
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-					<button type="button" class="btn btn-primary" data-dismiss="modal">更新</button>
+					<!-- <button type="button" class="btn btn-primary" data-dismiss="modal" id="saveEditBtn">更新</button> -->
+					 <!-- 删除了data-dismiss="modal"，使点击更新按钮时不会自动关闭模态窗口 -->
+					<button type="button" class="btn btn-primary" id="saveEditBtn">更新</button>
 				</div>
 			</div>
 		</div>

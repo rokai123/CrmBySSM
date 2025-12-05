@@ -78,5 +78,11 @@ public class ClueServiceImpl implements ClueService {
 		Clue clue = clueMapper.selectClueByClueId(id);
 		return clue;
 	}
+
+	@Override
+	public Clue queryClueForEditByClueId(String id) {
+		Clue clue = clueMapper.selectClueForEditByClueId(id);
+		return clue;
+	}
 	
 }
