@@ -84,5 +84,23 @@ public class ClueServiceImpl implements ClueService {
 		Clue clue = clueMapper.selectClueForEditByClueId(id);
 		return clue;
 	}
+
+	@Override
+	public ReturnObject saveEditClue(Clue clue) {
+		ReturnObject returnObject = new ReturnObject();
+		try {
+			int retInt = clueMapper.updateClue(clue);
+			if (retInt>0) {
+				returnObject.setCode(Contants.RETURN_OBJECT_CODE_SUCCESS);
+			}else {
+				returnObject.setCode(Contants.RETURN_OBJECT_CODE_FAIL);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			returnObject.setCode(Contants.RETURN_OBJECT_CODE_FAIL);
+			returnObject.setMessage("システムが混雑中です、しばらくしてから再度お試しください");
+		}
+		return returnObject;
+	}
 	
 }

@@ -125,5 +125,13 @@ public class ClueController {
 		Clue clue = clueService.queryClueForEditByClueId(id);
 		return clue;
 	}
+	
+	@RequestMapping("workbench/clue/saveEditClue.do")
+	@ResponseBody
+	public ReturnObject saveEditClue(Clue clue) {
+		ReturnObject returnObject = clueService.saveEditClue(clue);
+		
+		return returnObject;
+	}
 
 }

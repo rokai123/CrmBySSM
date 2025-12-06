@@ -348,7 +348,38 @@
 			</form>
 		</div>
 	</div>
-	
+	<!-- 修改线索备注的模态窗口 -->
+	<div class="modal fade" id="editRemarkModal" role="dialog">
+		<!-- 备注的id -->
+		<input type="hidden" id="remarkId">
+        <div class="modal-dialog" role="document" style="width: 40%;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">修改备注</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal" role="form">
+						<!-- 将remarkId保存在隐藏域 -->
+						<input type="hidden" id="saveRemarkIdInput"/>
+                        <div class="form-group">
+                            <label for="noteContent" class="col-sm-2 control-label">内容</label>
+                            <div class="col-sm-10" style="width: 81%;">
+								<input type="hidden" id="edit-noteContent-Hidden"/>
+                                <textarea class="form-control" rows="3" id="edit-noteContent"></textarea>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-primary" id="updateRemarkBtn">更新</button>
+                </div>
+            </div>
+        </div>
+    </div>
 	<!-- 市场活动 -->
 	<div>
 		<div style="position: relative; top: 60px; left: 40px;">

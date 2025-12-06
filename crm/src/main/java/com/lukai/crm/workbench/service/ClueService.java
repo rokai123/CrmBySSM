@@ -12,4 +12,5 @@ public interface ClueService {
 	ReturnObject deleteClueByIds(String[] ids);
 	Clue queryClueByClueId(String id);
 	Clue queryClueForEditByClueId(String id);
+	ReturnObject saveEditClue(Clue clue);
 }

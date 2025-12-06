@@ -144,4 +144,28 @@
    	from tbl_clue
    	where id=#{id}
    </select>
+   
+   <!-- リード情報を更新 -->
+   <update id="updateClue" parameterType="com.lukai.crm.workbench.domain.Clue">
+   	    update tbl_clue
+   	    set
+   	    	fullname=#{fullname,jdbcType=VARCHAR},
+   	    	appellation=#{appellation,jdbcType=VARCHAR},
+   	    	owner=#{owner,jdbcType=CHAR},
+   	    	company=#{company,jdbcType=VARCHAR},
+   	    	job=#{job,jdbcType=VARCHAR},
+   	    	email=#{email,jdbcType=VARCHAR},
+   	    	phone=#{phone,jdbcType=VARCHAR},
+   	    	website=#{website,jdbcType=VARCHAR},
+   	    	mphone=#{mphone,jdbcType=VARCHAR},
+   	    	state=#{state,jdbcType=VARCHAR},
+   	    	source=#{source,jdbcType=VARCHAR},
+   	    	edit_by=#{editBy,jdbcType=CHAR},
+   	    	edit_time=#{editTime,jdbcType=CHAR},
+   	    	description=#{description,jdbcType=VARCHAR},
+   	    	contact_summary=#{contactSummary,jdbcType=VARCHAR},
+   	    	next_contact_time=#{nextContactTime,jdbcType=VARCHAR},
+   	    	address=#{address,jdbcType=VARCHAR}
+   	    where id=#{id,jdbcType=CHAR}
+   	</update>
 </mapper>

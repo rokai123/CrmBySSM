@@ -310,6 +310,9 @@
 					if(data.code=="1") {
 						// 編集成功
 						alert("リード編集成功");
+						
+						queryClueByConditionForPage(1,$("#cluePage") .bs_pagination("getOption","rowsPerPage"));
+						$("#editClueModal").modal("hide");
 					}else {
 						data.message;
 					}
