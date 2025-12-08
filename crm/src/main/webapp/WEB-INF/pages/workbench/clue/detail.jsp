@@ -171,6 +171,60 @@
 			})
 		})
 
+		//实现框点击全选复选框改变所有行的复选框的状态
+		$("#checkAll").click(function(){
+			$("input[name='activity']").prop("checked",this.checked);
+		});
+		//实现点击某行复选框，全选框也选中或取消选中
+		$("#tBody").on("click","input[name='activity']",function(){
+			$("#checkAll").prop("checked",$("input[name='activity']").length==$("input[name='activity']:checked").length);
+		});
+
+		//添加市场活动关联
+		$("#btnSaveRelateActivity").click(function(){ 
+			let clueId = "${clue.id}"
+			let activityIds = [];
+			if($("input[name='activity']:checked").length==0){
+				alert("请选择要关联的市场活动");
+				return;
+			}
+			$("input[name='activity']:checked").each(function(index,activity){
+				activityIds.push(activity.value);
+			});
+			$.ajax({
+				url:"workbench/clue/saveCreateActivityRelations.do",
+				data:{
+					"clueId":clueId,
+					"ids":activityIds
+				},
+				type:"post",
+				traditional: true,  // 添加这行，重要！
+				dataType:"json",
+				success:function(data){
+					if(data.code=="1"){
+						//成功
+						//activityTbody
+						let html = "";
+						$.each(data.resultData,function(i,activity){
+							
+							html += "<tr>";
+							html += "<td>"+activity.name+"</td>";
+							html += "<td>"+activity.startDate+"</td>";
+							html += "<td>"+activity.endDate+"</td>";
+							html += "<td>"+activity.owner+"</td>";
+							html += "<td><a href=\"javascript:void(0);\"  style=\"text-decoration: none;\"><span class=\"glyphicon glyphicon-remove\"></span>解除关联</a></td>";
+							html += "</tr>";
+						})
+						$("#activityTbody").append(html);
+						alert("关联市场活动成功");
+						//关闭模态窗口
+						$("#bundModal").modal("hide");
+					}else{
+                        alert(data.message);
+                    }
+				}
+			})
+		});
 	});
 	
 </script>
@@ -200,7 +254,7 @@
 					<table id="activityTable" class="table table-hover" style="width: 900px; position: relative;top: 10px;">
 						<thead>
 							<tr style="color: #B3B3B3;">
-								<td><input type="checkbox"/></td>
+								<td><input type="checkbox" id="checkAll"/></td>
 								<td>名称</td>
 								<td>开始日期</td>
 								<td>结束日期</td>
@@ -221,7 +275,7 @@
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-					<button type="button" class="btn btn-primary" data-dismiss="modal">关联</button>
+					<button type="button" class="btn btn-primary" id="btnSaveRelateActivity">关联</button>
 				</div>
 			</div>
 		</div>
@@ -428,7 +482,7 @@
 							<td></td>
 						</tr>
 					</thead>
-					<tbody>
+					<tbody id="activityTbody">
 						<c:forEach items="${activities}" var="activity"> 
 						<tr>
 							<td>${activity.name}</td>

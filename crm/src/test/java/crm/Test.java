@@ -1,5 +1,6 @@
 package crm;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -14,9 +15,11 @@ import com.lukai.crm.settings.mapper.DicValueMapper;
 import com.lukai.crm.workbench.domain.Activity;
 import com.lukai.crm.workbench.domain.ActivityRemark;
 import com.lukai.crm.workbench.domain.Clue;
+import com.lukai.crm.workbench.domain.ClueActivityRelation;
 import com.lukai.crm.workbench.domain.ClueRemark;
 import com.lukai.crm.workbench.mapper.ActivityMapper;
 import com.lukai.crm.workbench.mapper.ActivityRemarkMapper;
+import com.lukai.crm.workbench.mapper.ClueActivityRelationMapper;
 import com.lukai.crm.workbench.mapper.ClueMapper;
 import com.lukai.crm.workbench.mapper.ClueRemarkMapper;
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -36,6 +39,8 @@ public class Test {
 	DicValueMapper dicValueMapper;
 	@Autowired
 	ClueRemarkMapper clueRemarkMapper;
+	@Autowired
+	ClueActivityRelationMapper clueActivityRelationMapper;
 	
 	@org.junit.Test
 	public void dateUtilsTest() {
@@ -85,6 +90,18 @@ public class Test {
 		map.put("clueId", clueId);
 		List<Activity> activities = activityMapper.selectActivityByNameAndClueId(map);
 		activities.forEach(System.out::println);
+	}
+	
+	@org.junit.Test
+	public void insertClueActivityRelationByList() {
+		ArrayList<ClueActivityRelation> clueActivityRelations = new ArrayList<ClueActivityRelation>();
+		ClueActivityRelation clueActivityRelation = new ClueActivityRelation();
+		clueActivityRelation.setId("1234567");
+		clueActivityRelation.setClueId("asfsadf");
+		clueActivityRelation.setActivityId("fsdfsd");
+		clueActivityRelations.add(clueActivityRelation);
+		int ret = clueActivityRelationMapper.insertClueActivityRelationByList(clueActivityRelations);
+		System.out.println(ret);
 	}
 	
 	

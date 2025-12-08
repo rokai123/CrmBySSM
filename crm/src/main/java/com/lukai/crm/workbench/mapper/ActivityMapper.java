@@ -94,5 +94,9 @@ public interface ActivityMapper {
 	 */
     List<Activity> selectActivityForClueDetailByClueId(String clueId);
     
+    //根据市场活动名称模糊查询未被当前线索关联的市场活动信息
     List<Activity> selectActivityByNameAndClueId(Map<String, Object> map);
+    
+    List<Activity> selectActivityForClueDetailByActivityIds(String[] ids);
+    
 }

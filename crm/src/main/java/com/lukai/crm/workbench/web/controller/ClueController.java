@@ -1,5 +1,6 @@
 package com.lukai.crm.workbench.web.controller;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -22,8 +23,10 @@ import com.lukai.crm.settings.service.DicValueService;
 import com.lukai.crm.settings.service.UserService;
 import com.lukai.crm.workbench.domain.Activity;
 import com.lukai.crm.workbench.domain.Clue;
+import com.lukai.crm.workbench.domain.ClueActivityRelation;
 import com.lukai.crm.workbench.domain.ClueRemark;
 import com.lukai.crm.workbench.service.ActivityService;
+import com.lukai.crm.workbench.service.ClueActivityRelationService;
 import com.lukai.crm.workbench.service.ClueRemarkService;
 import com.lukai.crm.workbench.service.ClueService;
 
@@ -39,6 +42,8 @@ public class ClueController {
 	ClueRemarkService clueRemarkService;
 	@Autowired
 	ActivityService activityService;
+	@Autowired
+	ClueActivityRelationService clueActivityRelationService;
 	/**
 	 * 进入线索首页
 	 * @param request
@@ -145,6 +150,22 @@ public class ClueController {
 		List<Activity> activities = activityService.queryActivityByNameAndClueId(map);
 		
 		return activities;
+	}
+	
+	@RequestMapping("/workbench/clue/saveCreateActivityRelations.do")
+	@ResponseBody
+	public ReturnObject saveCreateActivityRelations(String[] ids,String clueId) {
+		ArrayList<ClueActivityRelation> arrayList = new ArrayList<>();
+		ClueActivityRelation clueActivityRelation;
+		for (String activityId : ids) {
+			clueActivityRelation = new ClueActivityRelation();
+			clueActivityRelation.setId(UUIdUtils.getUUId());
+			clueActivityRelation.setActivityId(activityId);
+			clueActivityRelation.setClueId(clueId);
+			arrayList.add(clueActivityRelation);
+		}
+		ReturnObject returnObject = clueActivityRelationService.saveActivityRelations(arrayList, ids);
+		return returnObject;
 	}
 
 }
