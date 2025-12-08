@@ -185,7 +185,7 @@
 			let clueId = "${clue.id}"
 			let activityIds = [];
 			if($("input[name='activity']:checked").length==0){
-				alert("请选择要关联的市场活动");
+				alert("関連付けたいキャンペーンを選択してください");
 				return;
 			}
 			$("input[name='activity']:checked").each(function(index,activity){
@@ -207,12 +207,12 @@
 						let html = "";
 						$.each(data.resultData,function(i,activity){
 							
-							html += "<tr>";
+							html += "<tr id=\"tr_"+activity.id+"\">";
 							html += "<td>"+activity.name+"</td>";
 							html += "<td>"+activity.startDate+"</td>";
 							html += "<td>"+activity.endDate+"</td>";
 							html += "<td>"+activity.owner+"</td>";
-							html += "<td><a href=\"javascript:void(0);\"  style=\"text-decoration: none;\"><span class=\"glyphicon glyphicon-remove\"></span>解除关联</a></td>";
+							html += "<td><a href=\"javascript:void(0);\" name=\"removeBund\" data-activity-id=\""+activity.id+"\" style=\"text-decoration: none;\"><span class=\"glyphicon glyphicon-remove\"></span>解除关联</a></td>";
 							html += "</tr>";
 						})
 						$("#activityTbody").append(html);
@@ -225,13 +225,41 @@
 				}
 			})
 		});
+
+		//解除关联
+		$("#activityTbody").on("click","a[name='removeBund']",function(){
+			let acId = $(this).data("activity-id")
+			//$("#tr_"+acId).remove();
+			if(window.confirm("関連解除よろしいですか")){
+				$.ajax({
+					url:"workbench/clue/removeClueActivityRelation.do",
+					data:{
+						"clueId":"${clue.id}",
+						"activityId":acId
+					},
+					type:"post",
+					dataType:"json",
+					success:function(data){
+						if(data.code=="1"){
+							//成功
+							//activityTbody
+							$("#tr_"+acId).remove();
+						}else{
+                            alert(data.message);
+                        }
+					}
+				});
+			}
+		});
+
+
+		
 	});
 	
 </script>
 
 </head>
 <body>
-
 	<!-- 关联市场活动的模态窗口 -->
 	<div class="modal fade" id="bundModal" role="dialog">
 		<div class="modal-dialog" role="document" style="width: 80%;">
@@ -484,12 +512,12 @@
 					</thead>
 					<tbody id="activityTbody">
 						<c:forEach items="${activities}" var="activity"> 
-						<tr>
+						<tr id="tr_${activity.id}">
 							<td>${activity.name}</td>
 							<td>${activity.startDate}</td>
 							<td>${activity.endDate}</td>
 							<td>${activity.owner}</td>
-							<td><a href="javascript:void(0);"  style="text-decoration: none;"><span class="glyphicon glyphicon-remove"></span>解除关联</a></td>
+							<td><a href="javascript:void(0);" name="removeBund" data-activity-id="${activity.id}"  style="text-decoration: none;"><span class="glyphicon glyphicon-remove"></span>解除关联</a></td>
 						</tr>
 						</c:forEach>
 					</tbody>

@@ -167,5 +167,14 @@ public class ClueController {
 		ReturnObject returnObject = clueActivityRelationService.saveActivityRelations(arrayList, ids);
 		return returnObject;
 	}
-
+	
+	@RequestMapping("/workbench/clue/removeClueActivityRelation.do")
+	@ResponseBody
+	public ReturnObject removeClueActivityRelation(String clueId,String activityId) {
+		HashMap<String, String> hashMap = new HashMap<String, String>();
+		hashMap.put("clueId", clueId);
+		hashMap.put("activityId", activityId);
+		ReturnObject returnObject = clueActivityRelationService.deleteClueActivityRelationByClueIdAndActId(hashMap);
+		return returnObject;
+	}
 }

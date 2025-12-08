@@ -17,4 +17,8 @@
 			(#{car.id},#{car.clueId},#{car.activityId})
 		</foreach>
 	</insert>
+	
+	<delete id="deleteClueActivityRelationByClueIdAndActId" parameterType="map">
+		delete from tbl_clue_activity_relation where clue_id=#{clueId} and activity_id=#{activityId}
+	</delete>
 </mapper>

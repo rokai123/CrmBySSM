@@ -1,6 +1,7 @@
 package com.lukai.crm.workbench.service.Impl;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,6 +35,25 @@ public class ClueActivityRelationServiceImpl implements ClueActivityRelationServ
 				List<Activity> activities = activityMapper.selectActivityForClueDetailByActivityIds(activityIds);
 				returnObject.setCode(Contants.RETURN_OBJECT_CODE_SUCCESS);
 				returnObject.setResultData(activities);
+			}else {
+				returnObject.setCode(Contants.RETURN_OBJECT_CODE_FAIL);
+				returnObject.setMessage("システム混雑中、しばらくしてまたお試してみてください");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			returnObject.setCode(Contants.RETURN_OBJECT_CODE_FAIL);
+			returnObject.setMessage("システム混雑中、しばらくしてまたお試してみてください");
+		}
+		return returnObject;
+	}
+	
+	@Override
+	public ReturnObject deleteClueActivityRelationByClueIdAndActId(Map<String, String> map) {
+		ReturnObject returnObject = new ReturnObject();
+		try {
+			int retInt = clueActivityRelationMapper.deleteClueActivityRelationByClueIdAndActId(map);
+			if (retInt>0) {
+				returnObject.setCode(Contants.RETURN_OBJECT_CODE_SUCCESS);
 			}else {
 				returnObject.setCode(Contants.RETURN_OBJECT_CODE_FAIL);
 				returnObject.setMessage("システム混雑中、しばらくしてまたお試してみてください");
