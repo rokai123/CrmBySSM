@@ -22,4 +22,5 @@ public interface ActivityService {
 	ReturnObject saveCreateActivityByList(MultipartFile activityFile,HttpSession session);
 	Activity queryActivityForDetailById(String id);
 	List<Activity> queryActivityForClueDetailByClueId(String clueId);
+	List<Activity> queryActivityByNameAndClueId(Map<String, Object> map);
 }

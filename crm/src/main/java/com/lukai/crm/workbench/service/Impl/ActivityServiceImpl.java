@@ -184,5 +184,17 @@ public class ActivityServiceImpl implements ActivityService{
 		List<Activity> activities = activityMapper.selectActivityForClueDetailByClueId(clueId);
 		return activities;
 	}
+	
+	/**
+	 * 名称によるあいまい検索を行い、指定されたリードに未関連のマーケティングキャンペーン情報を取得
+	 * @param clueId
+	 */
+	@Override
+	public List<Activity> queryActivityByNameAndClueId(Map<String, Object> map) {
+		List<Activity> activities = activityMapper.selectActivityByNameAndClueId(map);
+		return activities;
+	}
+	
+	
 
 }

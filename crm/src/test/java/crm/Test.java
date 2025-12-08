@@ -76,6 +76,16 @@ public class Test {
 		List<ClueRemark> clues = clueRemarkMapper.selectClueRemarkForDetailByClueId(clueId);
 		clues.forEach(System.out::println);
 	}
+	@org.junit.Test
+	public void selectActivityByNameAndClueIdTest() {
+		String name = "03";
+		String clueId ="66ca2b3686574e7e9a38973ca6f0637e";
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		map.put("name", name);
+		map.put("clueId", clueId);
+		List<Activity> activities = activityMapper.selectActivityByNameAndClueId(map);
+		activities.forEach(System.out::println);
+	}
 	
 	
 }

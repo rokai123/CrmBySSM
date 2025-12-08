@@ -93,4 +93,6 @@ public interface ActivityMapper {
 	 * @param clueId
 	 */
     List<Activity> selectActivityForClueDetailByClueId(String clueId);
+    
+    List<Activity> selectActivityByNameAndClueId(Map<String, Object> map);
 }

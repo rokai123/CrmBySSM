@@ -332,4 +332,20 @@
   								join tbl_clue_activity_relation car on car.activity_id=a.id
   	where car.clue_id=#{clueId}
   </select>
+  
+  <!-- 名称によるあいまい検索を行い、指定されたリードに未関連のマーケティングキャンペーン情報を取得 -->
+  <select id="selectActivityByNameAndClueId" parameterType="map" resultMap="BaseResultMap">
+  <bind name="namePattern" value="'%' + name + '%'"/>
+
+  	select a.id,a.name,a.start_date,a.end_date,u1.name as owner
+  	from tbl_activity a 
+  			join tbl_user u1 on a.owner = u1.id
+  	where a.name like #{namePattern}
+  			  and 
+  			  a.id not in 
+  			  (
+  			  	select activity_id
+  			  	from tbl_clue_activity_relation where clue_id=#{clueId}
+  			  )
+  </select>
 </mapper>

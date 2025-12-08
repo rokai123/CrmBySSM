@@ -133,5 +133,18 @@ public class ClueController {
 		
 		return returnObject;
 	}
+	/**
+	 * 名称によるあいまい検索を行い、指定されたリードに未関連のマーケティングキャンペーン情報を取得
+	 */
+	@RequestMapping("/workbench/clue/queryActivityByNameAndClueId.do")
+	@ResponseBody
+	public List<Activity> queryActivityByNameAndClueId(String name,String clueId) {
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		map.put("name", name);
+		map.put("clueId", clueId);
+		List<Activity> activities = activityService.queryActivityByNameAndClueId(map);
+		
+		return activities;
+	}
 
 }
