@@ -1,0 +1,12 @@
+.table-wrapper {
+    max-height: 195px;  /* 4 行的高度，按你行高约 40~50px 调整 */
+    overflow-y: auto;
+}
+
+/* 让 thead 固定 */
+.table-wrapper thead {
+    position: sticky;
+    top: 0;
+    background: white; /* 背景避免被数据遮住 */
+    z-index: 10;
+}

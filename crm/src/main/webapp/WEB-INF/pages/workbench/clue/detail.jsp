@@ -8,7 +8,7 @@
 <head>
 <base href="<%=basePath%>">
 <meta charset="UTF-8">
-
+<link href="CSS/clueDetail.css" type="text/css" rel="stylesheet" />
 <link href="jquery/bootstrap_3.3.0/css/bootstrap.min.css" type="text/css" rel="stylesheet" />
 <script type="text/javascript" src="jquery/jquery-1.11.1-min.js"></script>
 <script type="text/javascript" src="jquery/bootstrap_3.3.0/js/bootstrap.min.js"></script>
@@ -318,7 +318,7 @@
 	<!-- 大标题 -->
 	<div style="position: relative; left: 40px; top: -30px;">
 		<div class="page-header">
-			<h3>${clue.fullname}${clue.appellation} <small>动力节点</small></h3>
+			<h3>${clue.fullname}${clue.appellation} <small>${clue.company}</small></h3>
 		</div>
 		<div style="position: relative; height: 50px; width: 500px;  top: -72px; left: 700px;">
 			<button type="button" class="btn btn-default" onclick="window.location.href='convert.html';"><span class="glyphicon glyphicon-retweet"></span> 转换</button>
@@ -500,30 +500,38 @@
 				<h4>ﾏｰｹﾃｨﾝｸﾞｷｬﾝﾍﾟｰﾝ</h4>
 			</div>
 			<div style="position: relative;top: 0px;">
-				<table class="table table-hover" style="width: 900px;">
-					<thead>
-						<tr style="color: #B3B3B3;">
-							<td>キャンペン名</td>
-							<td>開始日</td>
-							<td>終了日</td>
-							<td>所有者</td>
-							<td></td>
-						</tr>
-					</thead>
-					<tbody id="activityTbody">
-						<c:forEach items="${activities}" var="activity"> 
-						<tr id="tr_${activity.id}">
-							<td>${activity.name}</td>
-							<td>${activity.startDate}</td>
-							<td>${activity.endDate}</td>
-							<td>${activity.owner}</td>
-							<td><a href="javascript:void(0);" name="removeBund" data-activity-id="${activity.id}"  style="text-decoration: none;"><span class="glyphicon glyphicon-remove"></span>解除关联</a></td>
-						</tr>
-						</c:forEach>
-					</tbody>
-				</table>
+				<div class="table-wrapper" style="width: 900px;">
+				    <table class="table table-hover" style="width: 900px;">
+				        <thead>
+				            <tr style="color: #B3B3B3;">
+				                <td>キャンペン名</td>
+				                <td>開始日</td>
+				                <td>終了日</td>
+				                <td>所有者</td>
+				                <td></td>
+				            </tr>
+				        </thead>
+				        <!-- tbody 保持不变 -->
+				        <tbody id="activityTbody">
+				            <c:forEach items="${activities}" var="activity"> 
+				            <tr id="tr_${activity.id}">
+				                <td>${activity.name}</td>
+				                <td>${activity.startDate}</td>
+				                <td>${activity.endDate}</td>
+				                <td>${activity.owner}</td>
+				                <td>
+				                    <a href="javascript:void(0);" name="removeBund"
+				                       data-activity-id="${activity.id}"
+				                       style="text-decoration: none;">
+				                        <span class="glyphicon glyphicon-remove"></span>解除关联
+				                    </a>
+				                </td>
+				            </tr>
+				            </c:forEach>
+				        </tbody>
+				    </table>
+				</div>
 			</div>
-			
 			<div>
 				<a href="javascript:void(0);" id="btnRelateActivity" style="text-decoration: none;"><span class="glyphicon glyphicon-plus"></span>关联市场活动</a>
 			</div>
