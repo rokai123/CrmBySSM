@@ -253,6 +253,10 @@
 		});
 
 
+		//为转换按钮添加点击事件，跳转到转换页面
+		$("#btnToConvert").click(function (){
+			window.location.href="workbench/clue/toConvert.do?clueId=${clue.id}"
+		});
 		
 	});
 	
@@ -321,7 +325,7 @@
 			<h3>${clue.fullname}${clue.appellation} <small>${clue.company}</small></h3>
 		</div>
 		<div style="position: relative; height: 50px; width: 500px;  top: -72px; left: 700px;">
-			<button type="button" class="btn btn-default" onclick="window.location.href='convert.html';"><span class="glyphicon glyphicon-retweet"></span> 转换</button>
+			<button type="button" class="btn btn-default" id="btnToConvert"><span class="glyphicon glyphicon-retweet"></span> 转换</button>
 			
 		</div>
 	</div>

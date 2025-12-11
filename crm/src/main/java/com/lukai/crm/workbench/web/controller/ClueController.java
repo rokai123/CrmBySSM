@@ -177,4 +177,33 @@ public class ClueController {
 		ReturnObject returnObject = clueActivityRelationService.deleteClueActivityRelationByClueIdAndActId(hashMap);
 		return returnObject;
 	}
+	
+	/**
+	 * 线索详情页面点击转换按钮后跳转到线索转换页面
+	 * @param clueId
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/workbench/clue/toConvert.do")
+	public String toConvert(String clueId,HttpServletRequest request) {
+		Clue clue = clueService.queryClueByClueId(clueId);
+		request.setAttribute("clue", clue);
+		List<DicValue> stage = dicValueService.queryDicValueByTypeCode("stage");
+		request.setAttribute("stageList", stage);
+		return "workbench/clue/convert";
+	}
+	
+	@RequestMapping("/workbench/clue/queryActivityForConvertByNameAndClueId.do")
+	@ResponseBody
+	public List<Activity> queryActivityForConvertByNameAndClueId(String name,String clueId) {
+		HashMap<String, Object> map = new HashMap<>();
+		map.put("name", name);
+		map.put("clueId", clueId);
+		
+		List<Activity> activities = activityService.queryActivityForConvertByNameAndClueId(map);
+		
+		
+		return activities;
+
+	}
 }

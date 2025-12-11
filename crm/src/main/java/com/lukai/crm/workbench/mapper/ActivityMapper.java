@@ -98,5 +98,11 @@ public interface ActivityMapper {
     List<Activity> selectActivityByNameAndClueId(Map<String, Object> map);
     
     List<Activity> selectActivityForClueDetailByActivityIds(String[] ids);
+    /**
+     * 根据市场活动名称模糊查询已经关联过线索的市场活动
+     * @param map
+     * @return
+     */
+    List<Activity> selectActivityForConvertByNameAndClueId(Map<String,Object> map);
     
 }
