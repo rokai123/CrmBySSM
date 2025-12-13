@@ -39,4 +39,6 @@ public interface ClueMapper {
 	
 	int updateClue(Clue clue);
 	
+	Clue selectClueForConvertById(String id);
+	
 }

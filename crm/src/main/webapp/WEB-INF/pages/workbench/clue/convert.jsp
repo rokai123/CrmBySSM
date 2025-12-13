@@ -69,6 +69,53 @@
 			$("#activityId").val(this.value);
 			$("#searchActivityModal").modal("hide");
 		});
+
+		//点击保存按钮，将要转换的数据保存到数据库中
+		$("#saveConvertClueBtn").click(function(){
+			var clueId = "${clue.id}";
+			var money=$("#amountOfMoney").val().replace(/,/g, "");//金额去掉格式化的逗号再提交
+			var name = $("#tradeName").val();
+			var expectedDate = $("#expectedClosingDate").val();
+			var stage = $("#stage").val();
+			var activityId = $("#activityId").val();
+			var isCreateTran = $("#isCreateTransaction").prop("checked");
+			//表单验证暂且不做
+					
+					
+			$.ajax({
+				url:"workbench/clue/saveConvertClue.do",
+				data:{
+					"clueId":clueId,
+					"money":money,
+					"name":name,
+					"expectedDate":expectedDate,
+					"stage":stage,
+					"activityId":activityId,
+					"isCreateTran":isCreateTran
+				},
+				type:"post",
+				dataType:"json",
+				success:function(data){
+					if(data.code == "1"){
+						alert("转换成功");
+						window.location.href="workbench/clue/index.do";
+					}else{
+						alert(data.message);
+					}
+				}
+			})
+		});
+
+		//监听输入事件，只允许输入 0–9 的数字，其它字符一律自动删除。
+		$("#amountOfMoney").on("input", function () {
+		    this.value = this.value.replace(/[^0-9]/g, "");
+		});
+		//失去焦点后金额格式化
+		$("#amountOfMoney").on("blur", function () {
+		    if (this.value) {
+		        this.value = Number(this.value).toLocaleString("ja-JP");
+		    }
+		});
 	});
 </script>
 
@@ -178,7 +225,7 @@
 		<b>${clue.owner}</b>
 	</div>
 	<div id="operation" style="position: relative; left: 40px; height: 35px; top: 100px;">
-		<input class="btn btn-primary" type="button" value="转换">
+		<input class="btn btn-primary" type="button" id="saveConvertClueBtn" value="转换">
 		&nbsp;&nbsp;&nbsp;&nbsp;
 		<input class="btn btn-default" type="button" value="取消">
 	</div>

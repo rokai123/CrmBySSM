@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -205,5 +206,35 @@ public class ClueController {
 		
 		return activities;
 
+	}
+	
+	@RequestMapping("/workbench/clue/saveConvertClue.do")
+	@ResponseBody
+	public ReturnObject saveConvertClue
+		(
+			String clueId,String money,String name,String expectedDate,
+			String stage,String activityId,String isCreateTran,HttpSession session
+		) {
+		// 画面側から渡されたデータをMapに格納する
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		map.put("clueId", clueId);
+		map.put("money", money);
+		map.put("name", name);
+		map.put("expectedDate", expectedDate);
+		map.put("stage", stage);
+		map.put("activityId", activityId);
+		map.put("isCreateTran", isCreateTran);
+		map.put(Contants.SESSION_USER,session.getAttribute(Contants.SESSION_USER));
+		ReturnObject returnObject = new ReturnObject();
+		try {
+			clueService.saveConvertClue(map);
+			returnObject.setCode(Contants.RETURN_OBJECT_CODE_SUCCESS);
+		} catch (Exception e) {
+			e.printStackTrace();
+			returnObject.setCode(Contants.RETURN_OBJECT_CODE_FAIL);
+			returnObject.setMessage("システムが混雑中です、しばらくしてから再度お試しください");
+		}
+		
+		return returnObject;
 	}
 }

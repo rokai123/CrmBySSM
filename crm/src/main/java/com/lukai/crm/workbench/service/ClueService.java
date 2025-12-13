@@ -13,4 +13,5 @@ public interface ClueService {
 	Clue queryClueByClueId(String id);
 	Clue queryClueForEditByClueId(String id);
 	ReturnObject saveEditClue(Clue clue);
+	void saveConvertClue(Map<String, Object> map);
 }

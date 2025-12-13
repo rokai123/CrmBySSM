@@ -168,4 +168,10 @@
    	    	address=#{address,jdbcType=VARCHAR}
    	    where id=#{id,jdbcType=CHAR}
    	</update>
+   	
+   	<select id="selectClueForConvertById" parameterType="String" >
+   		select <include refid="Base_Column_List"/>
+   			from tbl_clue
+   			where id=#{id}
+   	</select>
 </mapper>

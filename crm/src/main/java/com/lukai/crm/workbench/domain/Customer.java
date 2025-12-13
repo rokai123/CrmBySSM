@@ -3,19 +3,19 @@ package com.lukai.crm.workbench.domain;
 import java.util.Objects;
 
 public class Customer {
-	String id;
-	String owner;
-	String name;
-	String website;
-	String phone;
-	String createBy;
-	String createTime;
-	String editBy;
-	String editTime;
-	String contactSummary;
-	String nextContactTime;
-	String description;
-	String address;
+	private String id;
+	private String owner;
+	private String name;
+	private String website;
+	private String phone;
+	private String createBy;
+	private String createTime;
+	private String editBy;
+	private String editTime;
+	private String contactSummary;
+	private String nextContactTime;
+	private String description;
+	private String address;
 	
 	
 	
