@@ -11,4 +11,5 @@ public interface ClueRemarkService {
 	List<ClueRemark> queryClueRemarkByClueId(String ClueId);
 	ReturnObject saveCreateClueRemark(ClueRemark clueRemark,HttpSession session);
 	ReturnObject deleteClueRemarkById(String id);
+	List<ClueRemark> queryClueRemarkForClueConvertByClueId(String clueId);
 }

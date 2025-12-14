@@ -1,5 +1,6 @@
 package com.lukai.crm.workbench.service.Impl;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -14,11 +15,14 @@ import com.lukai.crm.commons.utils.DateUtils;
 import com.lukai.crm.commons.utils.UUIdUtils;
 import com.lukai.crm.settings.domain.User;
 import com.lukai.crm.workbench.domain.Clue;
+import com.lukai.crm.workbench.domain.ClueRemark;
 import com.lukai.crm.workbench.domain.Contacts;
 import com.lukai.crm.workbench.domain.Customer;
+import com.lukai.crm.workbench.domain.CustomerRemark;
 import com.lukai.crm.workbench.mapper.ClueMapper;
 import com.lukai.crm.workbench.mapper.ContactsMapper;
 import com.lukai.crm.workbench.mapper.CustomerMapper;
+import com.lukai.crm.workbench.service.ClueRemarkService;
 import com.lukai.crm.workbench.service.ClueService;
 @Service("clueService")
 public class ClueServiceImpl implements ClueService {
@@ -29,6 +33,8 @@ public class ClueServiceImpl implements ClueService {
 	CustomerMapper customerMapper;
 	@Autowired
 	ContactsMapper contactsMapper;
+	@Autowired
+	ClueRemarkService clueRemarkService;
 	
 	public Map<String,Object> queryClueByConditionForPage(Map<String,Object> map) {
 		List<Clue> clues = clueMapper.selectClueByConditionForPage(map);
@@ -118,7 +124,8 @@ public class ClueServiceImpl implements ClueService {
 	@Override
 	public void saveConvertClue(Map<String, Object> map) {
 		//idに基づいてリードを検索し、取り出す
-		Clue clue = clueMapper.selectClueForConvertById((String)map.get("clueId"));
+		String clueId = (String)map.get("clueId");
+		Clue clue = clueMapper.selectClueForConvertById(clueId);
 		//顧客に関するデータをカプセル化して挿入する
 		Customer customer = new Customer();
 		customer.setId(UUIdUtils.getUUId());
@@ -153,6 +160,27 @@ public class ClueServiceImpl implements ClueService {
 		contacts.setSource(clue.getSource());
 		contacts.setAddress(clue.getAddress());
 		contactsMapper.insertContacts(contacts);
+		
+		//根据clueId查询出该线索的所有备注信息
+		List<ClueRemark> clueRemarks = clueRemarkService.queryClueRemarkForClueConvertByClueId(clueId);
+		//判断该线索是否有备注，没有的话则不必转换给客户或联系人
+		if (clueRemarks!=null&&clueRemarks.size()>0) {
+			CustomerRemark customerRemark = null;
+			List<CustomerRemark> customerList = new ArrayList<CustomerRemark>();
+			for (ClueRemark clueRemark : clueRemarks) {
+				customerRemark = new CustomerRemark();
+				customerRemark.setId(UUIdUtils.getUUId());
+				customerRemark.setNoteContent(clueRemark.getNoteContent());
+				customerRemark.setCreateBy(clueRemark.getCreateBy());
+				customerRemark.setCreateTime(DateUtils.formateDateTime(new Date()));
+				customerRemark.setEditBy(clueRemark.getEditBy());
+				customerRemark.setEditTime(clueRemark.getEditTime());
+				customerRemark.setEditFlag(clueRemark.getEditFlag());
+				customerRemark.setCustomerId(customer.getId());
+				customerList.add(customerRemark);
+			}
+		}
+		
 		
 	}
 	

@@ -104,5 +104,12 @@ public class Test {
 		System.out.println(ret);
 	}
 	
+	@org.junit.Test
+	public void selectClueRemarkForClueConvertByClueId() {
+		String clueId = "asfsad";
+		List<ClueRemark> clueRemarks = clueRemarkMapper.selectClueRemarkForClueConvertByClueId(clueId);
+		clueRemarks.forEach(System.out::println);
+	}
+	
 	
 }

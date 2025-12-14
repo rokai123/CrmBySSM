@@ -68,4 +68,11 @@ public class ClueRemarkServiceImpl implements ClueRemarkService{
 		return returnObject;
 	}
 
+
+	@Override
+	public List<ClueRemark> queryClueRemarkForClueConvertByClueId(String clueId) {
+		
+		return clueRemarkMapper.selectClueRemarkForClueConvertByClueId(clueId);
+	}
+
 }

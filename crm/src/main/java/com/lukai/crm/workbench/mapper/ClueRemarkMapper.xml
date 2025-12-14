@@ -6,10 +6,10 @@
   	<resultMap id="BaseResultMap" type="com.lukai.crm.workbench.domain.ClueRemark">
    
     <id column="id" jdbcType="CHAR" property="id" />
-    <result column="note_content" jdbcType="CHAR" property="noteContent" />
-    <result column="create_by" jdbcType="CHAR" property="createBy" />
+    <result column="note_content" jdbcType="VARCHAR" property="noteContent" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
     <result column="create_time" jdbcType="CHAR" property="createTime" />
-    <result column="edit_by" jdbcType="CHAR" property="editBy" />
+    <result column="edit_by" jdbcType="VARCHAR" property="editBy" />
     <result column="edit_time" jdbcType="CHAR" property="editTime" />
     <result column="edit_flag" jdbcType="CHAR" property="editFlag" />
     <result column="clue_id" jdbcType="CHAR" property="clueId" />
@@ -38,4 +38,10 @@
   	<delete id="deleteClueRemarkByClueId" parameterType="String">
   	    delete from tbl_clue_remark where id = #{id}
   	</delete>
+  	
+  	<select id="selectClueRemarkForClueConvertByClueId" parameterType="String" resultMap="BaseResultMap">
+  		select	<include refid="Base_Column_List"></include>
+  			from tbl_clue_remark
+  			where clue_id=#{clueId}
+  	</select>
   </mapper>
