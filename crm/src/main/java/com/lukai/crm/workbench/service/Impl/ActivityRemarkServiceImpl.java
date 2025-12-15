@@ -19,7 +19,7 @@ import com.lukai.crm.workbench.service.ActivityRemarkService;
 @Service("activityRemarkServiceImpl")
 public class ActivityRemarkServiceImpl implements ActivityRemarkService{
 	@Autowired
-	ActivityRemarkMapper activityRemarkMapper;
+	private ActivityRemarkMapper activityRemarkMapper;
 	
 	/**
 	 * 

@@ -17,9 +17,9 @@ import com.lukai.crm.workbench.service.ClueActivityRelationService;
 public class ClueActivityRelationServiceImpl implements ClueActivityRelationService{
 	
 	@Autowired
-	ClueActivityRelationMapper clueActivityRelationMapper;
+	private ClueActivityRelationMapper clueActivityRelationMapper;
 	@Autowired
-	ActivityMapper activityMapper;
+	private ActivityMapper activityMapper;
 	
 	/**
 	 * 线索与市场活动关联

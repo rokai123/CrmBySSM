@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lukai.crm.workbench.mapper.ContactsActivityRelationMapper">
+	<resultMap id="BaseResultMap" type="com.lukai.crm.workbench.domain.ContactsActivityRelation">
+	    <id column="id" jdbcType="CHAR" property="id" />
+	    <result column="clue_id" jdbcType="CHAR" property="clueId" />
+	    <result column="contacts_id" jdbcType="CHAR" property="contactsId" />
+  	</resultMap>
+  
+    <sql id="Base_Column_List">
+   		id,clue_id,contacts_id
+  	</sql>
+  	<!-- 批量保存联系人和市场活动关系-->
+  	<insert id="insertContactsActivityRelationByList" parameterType="com.lukai.crm.workbench.domain.ContactsActivityRelation">
+  		insert into tbl_contacts_activity_relation (id,activity_id,contacts_id)
+  		values
+        <foreach item="c" collection="list" separator=",">
+        	(#{c.id},#{c.activityId},#{c.contactsId})
+        </foreach>
+  	</insert>
+ </mapper>

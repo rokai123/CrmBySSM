@@ -11,4 +11,5 @@ import com.lukai.crm.workbench.domain.ClueActivityRelation;
 public interface ClueActivityRelationMapper {
 	int insertClueActivityRelationByList(List<ClueActivityRelation> clueActivityRelations);
 	int deleteClueActivityRelationByClueIdAndActId(Map<String, String> map);
+	List<ClueActivityRelation> selectClueActivityRelationByClueId(String clueId);
 }

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.lukai.crm.workbench.mapper.CustomerRemarkMapper">
+<mapper namespace="com.lukai.crm.workbench.mapper.ContactsRemarkMapper">
 	<!-- 通用查询结果列-->
-  	<resultMap id="BaseResultMap" type="com.lukai.crm.workbench.domain.CustomerRemark">
+  	<resultMap id="BaseResultMap" type="com.lukai.crm.workbench.domain.ContactsRemark">
    
     <id column="id" jdbcType="CHAR" property="id" />
     <result column="note_content" jdbcType="VARCHAR" property="noteContent" />
@@ -11,19 +11,19 @@
     <result column="edit_by" jdbcType="VARCHAR" property="editBy" />
     <result column="edit_time" jdbcType="CHAR" property="editTime" />
     <result column="edit_flag" jdbcType="CHAR" property="editFlag" />
-    <result column="customer_id" jdbcType="CHAR" property="customerId" />
+    <result column="contacts_id" jdbcType="CHAR" property="contactsId" />
     
   </resultMap>
   	
   <sql id="Base_Column_List">
-  	    id, note_content, create_by, create_time, edit_by, edit_time, edit_flag, customer_id
+  	    id, note_content, create_by, create_time, edit_by, edit_time, edit_flag, contacts_id
   </sql>
   
-  <insert id="insertCustomerRemarkBatch" parameterType="java.util.List">
-  	insert into tbl_customer_remark (id, note_content, create_by, create_time, edit_by, edit_time, edit_flag, customer_id)
+  <insert id="insertContactsRemarkBatch" parameterType="com.lukai.crm.workbench.domain.ContactsRemark">
+  	insert into tbl_contacts_remark (id, note_content, create_by, create_time, edit_by, edit_time, edit_flag, contacts_id)
   		values
-        <foreach item="crm" collection="list" separator=",">
-        	(#{crm.id},#{crm.noteContent},#{crm.createBy},#{crm.createTime},#{crm.editBy},#{crm.editTime},#{crm.editFlag},#{crm.customerId})
+        <foreach item="obj" collection="list" separator=",">
+        	(#{obj.id},#{obj.noteContent},#{obj.createBy},#{obj.createTime},#{obj.editBy},#{obj.editTime},#{obj.editFlag},#{obj.contactsId})
         </foreach>
   </insert>
 

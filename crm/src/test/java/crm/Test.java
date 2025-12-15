@@ -30,18 +30,17 @@ import com.lukai.crm.workbench.mapper.ClueRemarkMapper;
 public class Test {
 	
 	@Autowired
-	ActivityMapper activityMapper;
+	private ActivityMapper activityMapper;
 	@Autowired
-	ActivityRemarkMapper activityRemarkMapper;
+	private ActivityRemarkMapper activityRemarkMapper;
 	@Autowired
-	ClueMapper clueMapper;
+	private ClueMapper clueMapper;
 	@Autowired
-	DicValueMapper dicValueMapper;
+	private DicValueMapper dicValueMapper;
 	@Autowired
-	ClueRemarkMapper clueRemarkMapper;
+	private ClueRemarkMapper clueRemarkMapper;
 	@Autowired
-	ClueActivityRelationMapper clueActivityRelationMapper;
-	
+	private ClueActivityRelationMapper clueActivityRelationMapper;
 	@org.junit.Test
 	public void dateUtilsTest() {
 		String formateDateTime = DateUtils.formateDateTime(new Date());
@@ -105,11 +104,15 @@ public class Test {
 	}
 	
 	@org.junit.Test
-	public void selectClueRemarkForClueConvertByClueId() {
+	public void selectClueRemarkForClueConvertByClueIdTest() {
 		String clueId = "asfsad";
 		List<ClueRemark> clueRemarks = clueRemarkMapper.selectClueRemarkForClueConvertByClueId(clueId);
 		clueRemarks.forEach(System.out::println);
 	}
-	
-	
+	@org.junit.Test
+	public void selectClueActivityRelationByClueIdTest() {
+		String clueId ="asfsad";
+		List<ClueActivityRelation> carList = clueActivityRelationMapper.selectClueActivityRelationByClueId(clueId);
+		carList.forEach(System.out::println);
+	}
 }

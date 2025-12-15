@@ -29,7 +29,7 @@ import com.lukai.crm.workbench.service.ActivityService;
 public class ActivityServiceImpl implements ActivityService{
 
 	@Autowired
-	ActivityMapper activityMapper;
+	private ActivityMapper activityMapper;
 	
 	@Override
 	public ReturnObject saveCreateActivity(Activity activity) {

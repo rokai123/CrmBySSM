@@ -16,7 +16,7 @@ import com.lukai.crm.workbench.service.ClueRemarkService;
 @Service("clueRemarkService")
 public class ClueRemarkServiceImpl implements ClueRemarkService{
 	@Autowired
-	ClueRemarkMapper clueRemarkMapper;
+	private ClueRemarkMapper clueRemarkMapper;
 	
 	
 	@Override

@@ -15,26 +15,49 @@ import com.lukai.crm.commons.utils.DateUtils;
 import com.lukai.crm.commons.utils.UUIdUtils;
 import com.lukai.crm.settings.domain.User;
 import com.lukai.crm.workbench.domain.Clue;
+import com.lukai.crm.workbench.domain.ClueActivityRelation;
 import com.lukai.crm.workbench.domain.ClueRemark;
 import com.lukai.crm.workbench.domain.Contacts;
+import com.lukai.crm.workbench.domain.ContactsActivityRelation;
+import com.lukai.crm.workbench.domain.ContactsRemark;
 import com.lukai.crm.workbench.domain.Customer;
 import com.lukai.crm.workbench.domain.CustomerRemark;
+import com.lukai.crm.workbench.domain.Tran;
+import com.lukai.crm.workbench.domain.TranRemark;
+import com.lukai.crm.workbench.mapper.ClueActivityRelationMapper;
 import com.lukai.crm.workbench.mapper.ClueMapper;
+import com.lukai.crm.workbench.mapper.ContactsActivityRelationMapper;
 import com.lukai.crm.workbench.mapper.ContactsMapper;
+import com.lukai.crm.workbench.mapper.ContactsRemarkMapper;
 import com.lukai.crm.workbench.mapper.CustomerMapper;
+import com.lukai.crm.workbench.mapper.CustomerRemarkMapper;
+import com.lukai.crm.workbench.mapper.TranMapper;
+import com.lukai.crm.workbench.mapper.TranRemarkMapper;
 import com.lukai.crm.workbench.service.ClueRemarkService;
 import com.lukai.crm.workbench.service.ClueService;
 @Service("clueService")
 public class ClueServiceImpl implements ClueService {
 	
 	@Autowired
-	ClueMapper clueMapper;
+	private ClueMapper clueMapper;
 	@Autowired
-	CustomerMapper customerMapper;
+	private CustomerMapper customerMapper;
 	@Autowired
-	ContactsMapper contactsMapper;
+	private ContactsMapper contactsMapper;
 	@Autowired
-	ClueRemarkService clueRemarkService;
+	private ClueRemarkService clueRemarkService;
+	@Autowired
+	private CustomerRemarkMapper customerRemarkMapper;
+	@Autowired
+	private ContactsRemarkMapper contactsRemarkMapper;
+	@Autowired
+	private ClueActivityRelationMapper clueActivityRelationMapper;
+	@Autowired
+	private ContactsActivityRelationMapper contActRelMapper;
+	@Autowired
+	private TranMapper tranMapper;
+	@Autowired
+	private TranRemarkMapper tranRemarkMapper;
 	
 	public Map<String,Object> queryClueByConditionForPage(Map<String,Object> map) {
 		List<Clue> clues = clueMapper.selectClueByConditionForPage(map);
@@ -163,24 +186,90 @@ public class ClueServiceImpl implements ClueService {
 		
 		//根据clueId查询出该线索的所有备注信息
 		List<ClueRemark> clueRemarks = clueRemarkService.queryClueRemarkForClueConvertByClueId(clueId);
-		//判断该线索是否有备注，没有的话则不必转换给客户或联系人
+		//判断该线索是否有备注，没有的话则不必转换给客户和联系人
 		if (clueRemarks!=null&&clueRemarks.size()>0) {
 			CustomerRemark customerRemark = null;
-			List<CustomerRemark> customerList = new ArrayList<CustomerRemark>();
+			ContactsRemark contactsRemark =null;
+			List<CustomerRemark> customerRemarkList = new ArrayList<>();
+			List<ContactsRemark> contactsRemarkList = new ArrayList<>();
 			for (ClueRemark clueRemark : clueRemarks) {
 				customerRemark = new CustomerRemark();
 				customerRemark.setId(UUIdUtils.getUUId());
 				customerRemark.setNoteContent(clueRemark.getNoteContent());
 				customerRemark.setCreateBy(clueRemark.getCreateBy());
-				customerRemark.setCreateTime(DateUtils.formateDateTime(new Date()));
+				customerRemark.setCreateTime(clueRemark.getCreateTime());
 				customerRemark.setEditBy(clueRemark.getEditBy());
 				customerRemark.setEditTime(clueRemark.getEditTime());
 				customerRemark.setEditFlag(clueRemark.getEditFlag());
 				customerRemark.setCustomerId(customer.getId());
-				customerList.add(customerRemark);
+				customerRemarkList.add(customerRemark);
+				
+				contactsRemark=new ContactsRemark();
+				contactsRemark.setId(UUIdUtils.getUUId());
+				contactsRemark.setNoteContent(clueRemark.getNoteContent());
+				contactsRemark.setCreateBy(clueRemark.getCreateBy());
+				contactsRemark.setCreateTime(clueRemark.getCreateTime());
+				contactsRemark.setEditBy(clueRemark.getEditBy());
+				contactsRemark.setEditTime(clueRemark.getEditTime());
+				contactsRemark.setEditFlag(clueRemark.getEditFlag());
+				contactsRemark.setContactsId(contacts.getId());
+				contactsRemarkList.add(contactsRemark);
 			}
+			customerRemarkMapper.insertCustomerRemarkBatch(customerRemarkList);
+			contactsRemarkMapper.insertContactsRemarkBatch(contactsRemarkList);	
 		}
 		
+		//根据clueId查询当前线索与市场活动的关联关系数据
+		List<ClueActivityRelation> carList = clueActivityRelationMapper.selectClueActivityRelationByClueId(clueId);
+		if (carList!=null&&carList.size()>0) {
+			
+			ContactsActivityRelation conActRel = null;
+			List<ContactsActivityRelation> conActRelList = new ArrayList<>();
+			for (ClueActivityRelation car : carList) {
+				conActRel = new ContactsActivityRelation();
+				conActRel.setId(UUIdUtils.getUUId());
+				conActRel.setActivityId(car.getActivityId());
+				conActRel.setContactsId(contacts.getId());
+				conActRelList.add(conActRel);
+			}
+			contActRelMapper.insertContactsActivityRelationByList(conActRelList);
+			
+		}
+		
+		String  isCreateTran =(String)map.get("isCreateTran");
+		boolean createTran = Boolean.parseBoolean(isCreateTran);
+		if (createTran) {
+			Tran tran = new Tran();
+			tran.setId(UUIdUtils.getUUId());
+			tran.setOwner(((User)map.get(Contants.SESSION_USER)).getId());
+			tran.setMoney((String)map.get("money"));
+			tran.setName((String)map.get("name"));
+			tran.setExpectedDate((String)map.get("expectedDate"));
+			tran.setCustomerId(customer.getId());
+			tran.setStage((String)map.get("stage"));
+			tran.setActivityId((String)map.get("activityId"));
+			tran.setContactsId(contacts.getId());
+			tran.setCreateBy(((User)map.get(Contants.SESSION_USER)).getId());
+			tran.setCreateTime(DateUtils.formateDateTime(new Date()));
+			tranMapper.insertTran(tran);
+			
+			TranRemark tranRemark = null;
+			List<TranRemark> tranRemarkList = new ArrayList<>();
+			for (ClueRemark clueRemark : clueRemarks) {
+				tranRemark=new TranRemark();
+				tranRemark.setId(UUIdUtils.getUUId());
+				tranRemark.setNoteContent(clueRemark.getNoteContent());
+				tranRemark.setCreateBy(clueRemark.getCreateBy());
+				tranRemark.setCreateTime(clueRemark.getCreateTime());
+				tranRemark.setEditBy(clueRemark.getEditBy());
+				tranRemark.setEditTime(clueRemark.getEditTime());
+				tranRemark.setEditFlag(clueRemark.getEditFlag());
+				tranRemark.setTranId(tran.getId());
+				tranRemarkList.add(tranRemark);
+			}
+			tranRemarkMapper.insertTranRemarkByList(tranRemarkList);
+			
+		}
 		
 	}
 	

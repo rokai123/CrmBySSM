@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.lukai.crm.workbench.mapper.TranMapper">
+
+    <!-- ==================== ResultMap ==================== -->
+    <resultMap id="BaseResultMap" type="com.lukai.crm.workbench.domain.Tran">
+        <id     column="id"               property="id" jdbcType="CHAR"/>
+        <result column="owner"            property="owner"/>
+        <result column="money"            property="money"/>
+        <result column="name"             property="name"/>
+        <result column="expected_date"    property="expectedDate"/>
+        <result column="customer_id"      property="customerId"/>
+        <result column="stage"            property="stage"/>
+        <result column="type"             property="type"/>
+        <result column="source"           property="source"/>
+        <result column="activity_id"      property="activityId"/>
+        <result column="contacts_id"      property="contactsId"/>
+        <result column="create_by"        property="createBy"/>
+        <result column="create_time"      property="createTime"/>
+        <result column="edit_by"          property="editBy"/>
+        <result column="edit_time"        property="editTime"/>
+        <result column="description"      property="description"/>
+        <result column="contact_summary"  property="contactSummary"/>
+        <result column="next_contact_time" property="nextContactTime"/>
+    </resultMap>
+
+    <!-- ==================== Base Column List ==================== -->
+    <sql id="Base_Column_List">
+        id,
+        owner,
+        money,
+        name,
+        expected_date,
+        customer_id,
+        stage,
+        type,
+        source,
+        activity_id,
+        contacts_id,
+        create_by,
+        create_time,
+        edit_by,
+        edit_time,
+        description,
+        contact_summary,
+        next_contact_time
+    </sql>
+
+    <!-- ==================== 常用 CRUD（可选） ==================== -->
+
+    <!-- 根据ID查询交易 -->
+    <select id="selectByPrimaryKey"
+            parameterType="string"
+            resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM tbl_tran
+        WHERE id = #{id}
+    </select>
+
+    <!-- 新增交易 -->
+    <insert id="insertTran"
+            parameterType="com.lukai.crm.workbench.domain.Tran">
+        INSERT INTO tbl_tran (
+            <include refid="Base_Column_List"/>
+        ) VALUES (
+            #{id},
+            #{owner},
+            #{money},
+            #{name},
+            #{expectedDate},
+            #{customerId},
+            #{stage},
+            #{type},
+            #{source},
+            #{activityId},
+            #{contactsId},
+            #{createBy},
+            #{createTime},
+            #{editBy},
+            #{editTime},
+            #{description},
+            #{contactSummary},
+            #{nextContactTime}
+        )
+    </insert>
+
+</mapper>
