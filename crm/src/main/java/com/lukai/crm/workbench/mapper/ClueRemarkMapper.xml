@@ -34,8 +34,8 @@
   	    insert into tbl_clue_remark (id, note_content, create_by, create_time, edit_by, edit_time, edit_flag, clue_id)
         values (#{id}, #{noteContent}, #{createBy}, #{createTime}, #{editBy}, #{editTime}, #{editFlag}, #{clueId})
  	</insert>
-  	<!--删除线索备注-->
-  	<delete id="deleteClueRemarkByClueId" parameterType="String">
+  	<!--根据线索备注ID删除线索备注-->
+  	<delete id="deleteClueRemarkById" parameterType="String">
   	    delete from tbl_clue_remark where id = #{id}
   	</delete>
   	
@@ -44,4 +44,8 @@
   			from tbl_clue_remark
   			where clue_id=#{clueId}
   	</select>
+  	<!--根据线索ID删除线索备注-->
+  	<delete id="deleteClueRemarkByClueId" parameterType="String">
+  	    delete from tbl_clue_remark where clue_id = #{clueId}
+  	</delete>
   </mapper>

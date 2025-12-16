@@ -16,10 +16,23 @@
 
 <link href="jquery/bootstrap-datetimepicker-master/css/bootstrap-datetimepicker.min.css" type="text/css" rel="stylesheet" />
 <script type="text/javascript" src="jquery/bootstrap-datetimepicker-master/js/bootstrap-datetimepicker.js"></script>
-<script type="text/javascript" src="jquery/bootstrap-datetimepicker-master/locale/bootstrap-datetimepicker.zh-CN.js"></script>
+<script type="text/javascript" src="jquery/bootstrap-datetimepicker-master/locale/bootstrap-datetimepicker.ja.js"></script>
 
 <script type="text/javascript">
 	$(function(){
+
+		// ページの読み込み完了後、コンテナに対してカレンダーツール関数を呼び出す
+		$(".myDate").datetimepicker({
+		    language: "ja",          // 言語（日本語に設定）
+		    format: "yyyy-mm-dd",    // 日付フォーマット
+		    minView: "month",        // 月単位で表示
+		    initialDate: new Date(), // デフォルトで現在の日付を表示
+		    autoclose: true,         // 日付選択後にカレンダーを自動閉じる
+		    todayBtn: true,          // 「今日」ボタンを表示
+		    clearBtn: true           // 「クリア」ボタンを表示
+		});
+
+		
 		$("#isCreateTransaction").click(function(){
 			if(this.checked){
 				$("#create-transaction2").show(200);
@@ -116,6 +129,12 @@
 		        this.value = Number(this.value).toLocaleString("ja-JP");
 		    }
 		});
+
+		$("#BtnCancel").click(function(){
+			//回退到上一个页面(线索详情页面)
+			window.history.back();
+		});
+		
 	});
 </script>
 
@@ -200,7 +219,7 @@
 		  </div>
 		  <div class="form-group" style="width: 400px;position: relative; left: 20px;">
 		    <label for="expectedClosingDate">预计成交日期</label>
-		    <input type="text" class="form-control" id="expectedClosingDate">
+		    <input type="text" class="form-control myDate" id="expectedClosingDate">
 		  </div>
 		  <div class="form-group" style="width: 400px;position: relative; left: 20px;">
 		    <label for="stage">阶段</label>
@@ -227,7 +246,7 @@
 	<div id="operation" style="position: relative; left: 40px; height: 35px; top: 100px;">
 		<input class="btn btn-primary" type="button" id="saveConvertClueBtn" value="转换">
 		&nbsp;&nbsp;&nbsp;&nbsp;
-		<input class="btn btn-default" type="button" value="取消">
+		<input class="btn btn-default" type="button" id="BtnCancel" value="取消">
 	</div>
 </body>
 </html>

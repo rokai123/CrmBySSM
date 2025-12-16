@@ -53,7 +53,7 @@ public class ClueRemarkServiceImpl implements ClueRemarkService{
 	public ReturnObject deleteClueRemarkById(String id) {
 		ReturnObject returnObject = new ReturnObject();
 		try {
-			int ret = clueRemarkMapper.deleteClueRemarkByClueId(id);
+			int ret = clueRemarkMapper.deleteClueRemarkById(id);
 			if(ret>0) {
 				returnObject.setCode(Contants.RETURN_OBJECT_CODE_SUCCESS);
 			}else {

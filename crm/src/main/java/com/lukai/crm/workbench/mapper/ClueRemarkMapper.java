@@ -20,7 +20,11 @@ public interface ClueRemarkMapper {
 	/**
 	 * リード備考情報を削除
 	 */
-	int deleteClueRemarkByClueId(String id);
+	int deleteClueRemarkById(String id);
 	
 	List<ClueRemark> selectClueRemarkForClueConvertByClueId(String clueId);
+	/**
+	 * リードIDに基づきリード備考情報を削除
+	 */
+	int deleteClueRemarkByClueId(String clueId);
 }

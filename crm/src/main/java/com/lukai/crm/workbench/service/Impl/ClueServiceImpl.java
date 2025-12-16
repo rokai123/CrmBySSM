@@ -8,6 +8,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.lukai.crm.commons.contants.Contants;
 import com.lukai.crm.commons.domain.ReturnObject;
@@ -26,6 +27,7 @@ import com.lukai.crm.workbench.domain.Tran;
 import com.lukai.crm.workbench.domain.TranRemark;
 import com.lukai.crm.workbench.mapper.ClueActivityRelationMapper;
 import com.lukai.crm.workbench.mapper.ClueMapper;
+import com.lukai.crm.workbench.mapper.ClueRemarkMapper;
 import com.lukai.crm.workbench.mapper.ContactsActivityRelationMapper;
 import com.lukai.crm.workbench.mapper.ContactsMapper;
 import com.lukai.crm.workbench.mapper.ContactsRemarkMapper;
@@ -58,6 +60,8 @@ public class ClueServiceImpl implements ClueService {
 	private TranMapper tranMapper;
 	@Autowired
 	private TranRemarkMapper tranRemarkMapper;
+	@Autowired
+	private ClueRemarkMapper clueRemarkMapper;
 	
 	public Map<String,Object> queryClueByConditionForPage(Map<String,Object> map) {
 		List<Clue> clues = clueMapper.selectClueByConditionForPage(map);
@@ -145,6 +149,7 @@ public class ClueServiceImpl implements ClueService {
 	}
 
 	@Override
+	@Transactional(rollbackFor = Exception.class)
 	public void saveConvertClue(Map<String, Object> map) {
 		//idに基づいてリードを検索し、取り出す
 		String clueId = (String)map.get("clueId");
@@ -255,22 +260,28 @@ public class ClueServiceImpl implements ClueService {
 			
 			TranRemark tranRemark = null;
 			List<TranRemark> tranRemarkList = new ArrayList<>();
-			for (ClueRemark clueRemark : clueRemarks) {
-				tranRemark=new TranRemark();
-				tranRemark.setId(UUIdUtils.getUUId());
-				tranRemark.setNoteContent(clueRemark.getNoteContent());
-				tranRemark.setCreateBy(clueRemark.getCreateBy());
-				tranRemark.setCreateTime(clueRemark.getCreateTime());
-				tranRemark.setEditBy(clueRemark.getEditBy());
-				tranRemark.setEditTime(clueRemark.getEditTime());
-				tranRemark.setEditFlag(clueRemark.getEditFlag());
-				tranRemark.setTranId(tran.getId());
-				tranRemarkList.add(tranRemark);
+			if (carList!=null&&carList.size()>0) {
+				for (ClueRemark clueRemark : clueRemarks) {
+					tranRemark=new TranRemark();
+					tranRemark.setId(UUIdUtils.getUUId());
+					tranRemark.setNoteContent(clueRemark.getNoteContent());
+					tranRemark.setCreateBy(clueRemark.getCreateBy());
+					tranRemark.setCreateTime(clueRemark.getCreateTime());
+					tranRemark.setEditBy(clueRemark.getEditBy());
+					tranRemark.setEditTime(clueRemark.getEditTime());
+					tranRemark.setEditFlag(clueRemark.getEditFlag());
+					tranRemark.setTranId(tran.getId());
+					tranRemarkList.add(tranRemark);
+				}
+				tranRemarkMapper.insertTranRemarkByList(tranRemarkList);
 			}
-			tranRemarkMapper.insertTranRemarkByList(tranRemarkList);
-			
 		}
-		
+		//删除线索的备注信息
+		clueRemarkMapper.deleteClueRemarkByClueId(clueId);
+		//删除线索与市场活动的关联关系
+		clueActivityRelationMapper.deleteClueActivityRelationByClueId(clueId);
+		//删除线索
+		clueMapper.deleteClueById(clueId);
 	}
 	
 }
