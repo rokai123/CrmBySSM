@@ -168,30 +168,30 @@
 		
   	<ul id="no1" class="nav nav-pills nav-stacked">
 		<li class="liClass"><a href="workbench/main/index.do" target="workareaFrame"><span class="glyphicon glyphicon-home"></span> ワークベンチ</a></li>
-		<li class="liClass"><a href="javascript:void(0);" target="workareaFrame"><span class="glyphicon glyphicon-tag"></span> ダイナミック</a></li>
+		<li class="liClass"><a href="javascript:void(0);" target="workareaFrame"><span class="glyphicon glyphicon-tag"></span> 活動履歴</a></li>
 		<li class="liClass"><a href="javascript:void(0);" target="workareaFrame"><span class="glyphicon glyphicon-time"></span> 承認</a></li>
-		<li class="liClass"><a href="javascript:void(0);" target="workareaFrame"><span class="glyphicon glyphicon-user"></span> カスタマープール</a></li>
-		<li class="liClass"><a href="workbench/activity/index.do" target="workareaFrame"><span class="glyphicon glyphicon-play-circle"></span> マーケティングキャンペーン</a></li>
-		<li class="liClass"><a href="workbench/clue/index.do" target="workareaFrame"><span class="glyphicon glyphicon-search"></span> リード（見込み客）</a></li>
-		<li class="liClass"><a href="customer/index.html" target="workareaFrame"><span class="glyphicon glyphicon-user"></span> 顧客</a></li>
-		<li class="liClass"><a href="contacts/index.html" target="workareaFrame"><span class="glyphicon glyphicon-earphone"></span> 連絡先</a></li>
-		<li class="liClass"><a href="transaction/index.html" target="workareaFrame"><span class="glyphicon glyphicon-usd"></span> 取引（商機）</a></li>
-		<li class="liClass"><a href="visit/index.html" target="workareaFrame"><span class="glyphicon glyphicon-phone-alt"></span> アフターフォロー</a></li>
+		<li class="liClass"><a href="javascript:void(0);" target="workareaFrame"><span class="glyphicon glyphicon-user"></span> 未割当顧客</a></li>
+		<li class="liClass"><a href="workbench/activity/index.do" target="workareaFrame"><span class="glyphicon glyphicon-play-circle"></span>キャンペーン</a></li>
+		<li class="liClass"><a href="workbench/clue/index.do" target="workareaFrame"><span class="glyphicon glyphicon-search"></span> リード</a></li>
+		<li class="liClass"><a href="customer/index.html" target="workareaFrame"><span class="glyphicon glyphicon-user"></span> 取引先</a></li>
+		<li class="liClass"><a href="contacts/index.html" target="workareaFrame"><span class="glyphicon glyphicon-earphone"></span> 取引先責任者</a></li>
+		<li class="liClass"><a href="transaction/index.html" target="workareaFrame"><span class="glyphicon glyphicon-usd"></span> 商談</a></li>
+		<li class="liClass"><a href="visit/index.html" target="workareaFrame"><span class="glyphicon glyphicon-phone-alt"></span> フォロー履歴</a></li>
 		<li class="liClass">
-			<a href="#no2" class="collapsed" data-toggle="collapse"><span class="glyphicon glyphicon-stats"></span> 統計グラフ</a>
+			<a href="#no2" class="collapsed" data-toggle="collapse"><span class="glyphicon glyphicon-stats"></span>分析</a>
 			<ul id="no2" class="nav nav-pills nav-stacked collapse">
-				<li class="liClass"><a href="chart/activity/index.html" target="workareaFrame">&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-chevron-right"></span> マーケティングキャンペーン統計グラフ</a></li>
-				<li class="liClass"><a href="chart/clue/index.html" target="workareaFrame">&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-chevron-right"></span> リード統計グラフ</a></li>
-				<li class="liClass"><a href="chart/customerAndContacts/index.html" target="workareaFrame">&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-chevron-right"></span> 顧客と連絡先統計グラフ</a></li>
-				<li class="liClass"><a href="chart/transaction/index.html" target="workareaFrame">&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-chevron-right"></span> 取引統計グラフ</a></li>
+				<li class="liClass"><a href="chart/activity/index.html" target="workareaFrame">&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-chevron-right"></span> キャンペーン分析</a></li>
+				<li class="liClass"><a href="chart/clue/index.html" target="workareaFrame">&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-chevron-right"></span> リード分析</a></li>
+				<li class="liClass"><a href="chart/customerAndContacts/index.html" target="workareaFrame">&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-chevron-right"></span> 取引先・取引先責任者分析</a></li>
+				<li class="liClass"><a href="chart/transaction/index.html" target="workareaFrame">&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-chevron-right"></span> 商談分析</a></li>
 			</ul>
 		</li>
 		<li class="liClass"><a href="javascript:void(0);" target="workareaFrame"><span class="glyphicon glyphicon-file"></span> レポート</a></li>
-		<li class="liClass"><a href="javascript:void(0);" target="workareaFrame"><span class="glyphicon glyphicon-shopping-cart"></span> 販売注文</a></li>
-		<li class="liClass"><a href="javascript:void(0);" target="workareaFrame"><span class="glyphicon glyphicon-send"></span> 出荷書</a></li>
+		<li class="liClass"><a href="javascript:void(0);" target="workareaFrame"><span class="glyphicon glyphicon-shopping-cart"></span> 受注</a></li>
+		<li class="liClass"><a href="javascript:void(0);" target="workareaFrame"><span class="glyphicon glyphicon-send"></span>出荷管理</a></li>
 		<li class="liClass"><a href="javascript:void(0);" target="workareaFrame"><span class="glyphicon glyphicon-earphone"></span> フォローアップ</a></li>
 		<li class="liClass"><a href="javascript:void(0);" target="workareaFrame"><span class="glyphicon glyphicon-leaf"></span> 製品</a></li>
-		<li class="liClass"><a href="javascript:void(0);" target="workareaFrame"><span class="glyphicon glyphicon-usd"></span> 見積もり</a></li>
+		<li class="liClass"><a href="javascript:void(0);" target="workareaFrame"><span class="glyphicon glyphicon-usd"></span> 見積</a></li>
  	</ul>
 			
 			<!-- 分割线 -->

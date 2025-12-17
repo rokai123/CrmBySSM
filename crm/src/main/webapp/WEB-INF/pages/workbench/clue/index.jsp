@@ -91,7 +91,7 @@
 			let address = $.trim($("#create-address").val());
 			//必須入力項目チェック
 			if(owner == "") {
-				alert("所有者は必須入力です");
+				alert("担当者は必須入力です");
 				return;
 			}else if(company==""){
 				alert("会社名は必須入力です");
@@ -260,7 +260,7 @@
 
 			//必須入力項目チェック
 			if(owner == "") {
-				alert("所有者は必須入力です");
+				alert("担当者は必須入力です");
 				return;
 			}else if(company==""){
 				alert("会社名は必須入力です");
@@ -420,13 +420,13 @@
 					<button type="button" class="close" data-dismiss="modal">
 						<span aria-hidden="true">×</span>
 					</button>
-					<h4 class="modal-title" id="myModalLabel">创建线索</h4>
+					<h4 class="modal-title" id="myModalLabel">リード作成</h4>
 				</div>
 				<div class="modal-body">
 					<form class="form-horizontal" role="form" id="createClueForm">
 					
 						<div class="form-group">
-							<label for="create-clueOwner" class="col-sm-2 control-label">所有者<span style="font-size: 15px; color: red;">*</span></label>
+							<label for="create-clueOwner" class="col-sm-2 control-label">担当者<span style="font-size: 15px; color: red;">*</span></label>
 							<div class="col-sm-10" style="width: 300px;">
 								<select class="form-control" id="create-clueOwner">
 									<c:forEach items="${userList}" var="user">
@@ -434,14 +434,14 @@
 									</c:forEach>
 								</select>
 							</div>
-							<label for="create-company" class="col-sm-2 control-label">公司<span style="font-size: 15px; color: red;">*</span></label>
+							<label for="create-company" class="col-sm-2 control-label">会社名<span style="font-size: 15px; color: red;">*</span></label>
 							<div class="col-sm-10" style="width: 300px;">
 								<input type="text" class="form-control" id="create-company">
 							</div>
 						</div>
 						
 						<div class="form-group">
-							<label for="create-call" class="col-sm-2 control-label">称呼</label>
+							<label for="create-call" class="col-sm-2 control-label">敬称</label>
 							<div class="col-sm-10" style="width: 300px;">
 								<select class="form-control" id="create-call">
 								  		<option></option>
@@ -450,40 +450,40 @@
 								  	</c:forEach>
 								</select>
 							</div>
-							<label for="create-surname" class="col-sm-2 control-label">姓名<span style="font-size: 15px; color: red;">*</span></label>
+							<label for="create-surname" class="col-sm-2 control-label">氏名<span style="font-size: 15px; color: red;">*</span></label>
 							<div class="col-sm-10" style="width: 300px;">
 								<input type="text" class="form-control" id="create-surname">
 							</div>
 						</div>
 						
 						<div class="form-group">
-							<label for="create-job" class="col-sm-2 control-label">职位</label>
+							<label for="create-job" class="col-sm-2 control-label">役職</label>
 							<div class="col-sm-10" style="width: 300px;">
 								<input type="text" class="form-control" id="create-job">
 							</div>
-							<label for="create-email" class="col-sm-2 control-label">邮箱</label>
+							<label for="create-email" class="col-sm-2 control-label">メールアドレス</label>
 							<div class="col-sm-10" style="width: 300px;">
 								<input type="text" class="form-control" id="create-email">
 							</div>
 						</div>
 						
 						<div class="form-group">
-							<label for="create-phone" class="col-sm-2 control-label">公司座机</label>
+							<label for="create-phone" class="col-sm-2 control-label">会社電話</label>
 							<div class="col-sm-10" style="width: 300px;">
 								<input type="text" class="form-control" id="create-phone">
 							</div>
-							<label for="create-website" class="col-sm-2 control-label">公司网站</label>
+							<label for="create-website" class="col-sm-2 control-label">会社Webサイト</label>
 							<div class="col-sm-10" style="width: 300px;">
 								<input type="text" class="form-control" id="create-website">
 							</div>
 						</div>
 						
 						<div class="form-group">
-							<label for="create-mphone" class="col-sm-2 control-label">手机</label>
+							<label for="create-mphone" class="col-sm-2 control-label">携帯電話</label>
 							<div class="col-sm-10" style="width: 300px;">
 								<input type="text" class="form-control" id="create-mphone">
 							</div>
-							<label for="create-status" class="col-sm-2 control-label">线索状态</label>
+							<label for="create-status" class="col-sm-2 control-label">リードステータス</label>
 							<div class="col-sm-10" style="width: 300px;">
 								<select class="form-control" id="create-status">
 								 	    <option></option>
@@ -495,7 +495,7 @@
 						</div>
 						
 						<div class="form-group">
-							<label for="create-source" class="col-sm-2 control-label">线索来源</label>
+							<label for="create-source" class="col-sm-2 control-label">リードソース</label>
 							<div class="col-sm-10" style="width: 300px;">
 								<select class="form-control" id="create-source">
 								  		<option></option>
@@ -508,7 +508,7 @@
 						
 
 						<div class="form-group">
-							<label for="create-describe" class="col-sm-2 control-label">线索描述</label>
+							<label for="create-describe" class="col-sm-2 control-label">リード説明</label>
 							<div class="col-sm-10" style="width: 81%;">
 								<textarea class="form-control" rows="3" id="create-describe"></textarea>
 							</div>
@@ -518,13 +518,13 @@
 						
 						<div style="position: relative;top: 15px;">
 							<div class="form-group">
-								<label for="create-contactSummary" class="col-sm-2 control-label">联系纪要</label>
+								<label for="create-contactSummary" class="col-sm-2 control-label">対応履歴</label>
 								<div class="col-sm-10" style="width: 81%;">
 									<textarea class="form-control" rows="3" id="create-contactSummary"></textarea>
 								</div>
 							</div>
 							<div class="form-group">
-								<label for="create-nextContactTime" class="col-sm-2 control-label">下次联系时间</label>
+								<label for="create-nextContactTime" class="col-sm-2 control-label">次回連絡日時</label>
 								<div class="col-sm-10" style="width: 300px;">
 									<input type="text" class="form-control myDate" id="create-nextContactTime">
 								</div>
@@ -535,7 +535,7 @@
 						
 						<div style="position: relative;top: 20px;">
 							<div class="form-group">
-                                <label for="create-address" class="col-sm-2 control-label">详细地址</label>
+                                <label for="create-address" class="col-sm-2 control-label">住所（詳細）</label>
                                 <div class="col-sm-10" style="width: 81%;">
                                     <textarea class="form-control" rows="1" id="create-address"></textarea>
                                 </div>
@@ -545,8 +545,8 @@
 					
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-					<button type="button" class="btn btn-primary" id="saveCreateClueBtn">保存</button>
+					<button type="button" class="btn btn-default" data-dismiss="modal">閉じる</button>
+					<button type="button" class="btn btn-primary" id="saveCreateClueBtn">登録</button>
 				</div>
 			</div>
 		</div>
@@ -560,13 +560,13 @@
 					<button type="button" class="close" data-dismiss="modal">
 						<span aria-hidden="true">×</span>
 					</button>
-					<h4 class="modal-title">修改线索</h4>
+					<h4 class="modal-title">リード編集</h4>
 				</div>
 				<div class="modal-body">
 					<form class="form-horizontal" role="form">
 						<input type="hidden" id="edit-id">
 						<div class="form-group">
-							<label for="edit-clueOwner" class="col-sm-2 control-label">所有者<span style="font-size: 15px; color: red;">*</span></label>
+							<label for="edit-clueOwner" class="col-sm-2 control-label">担当者<span style="font-size: 15px; color: red;">*</span></label>
 							<div class="col-sm-10" style="width: 300px;">
 								<select class="form-control" id="edit-clueOwner">
 									<c:forEach items="${userList}" var="user">
@@ -574,14 +574,14 @@
 									</c:forEach>
 								</select>
 							</div>
-							<label for="edit-company" class="col-sm-2 control-label">公司<span style="font-size: 15px; color: red;">*</span></label>
+							<label for="edit-company" class="col-sm-2 control-label">会社名<span style="font-size: 15px; color: red;">*</span></label>
 							<div class="col-sm-10" style="width: 300px;">
-								<input type="text" class="form-control" id="edit-company" value="动力节点">
+								<input type="text" class="form-control" id="edit-company" value="">
 							</div>
 						</div>
 						
 						<div class="form-group">
-							<label for="edit-call" class="col-sm-2 control-label">称呼</label>
+							<label for="edit-call" class="col-sm-2 control-label">敬称</label>
 							<div class="col-sm-10" style="width: 300px;">
 								<select class="form-control" id="edit-call">
 									<option></option>
@@ -590,40 +590,40 @@
 									</c:forEach>
 								</select>
 							</div>
-							<label for="edit-surname" class="col-sm-2 control-label">姓名<span style="font-size: 15px; color: red;">*</span></label>
+							<label for="edit-surname" class="col-sm-2 control-label">氏名<span style="font-size: 15px; color: red;">*</span></label>
 							<div class="col-sm-10" style="width: 300px;">
-								<input type="text" class="form-control" id="edit-surname" value="李四">
+								<input type="text" class="form-control" id="edit-surname" value="">
 							</div>
 						</div>
 						
 						<div class="form-group">
-							<label for="edit-job" class="col-sm-2 control-label">职位</label>
+							<label for="edit-job" class="col-sm-2 control-label">役職</label>
 							<div class="col-sm-10" style="width: 300px;">
 								<input type="text" class="form-control" id="edit-job" value="CTO">
 							</div>
-							<label for="edit-email" class="col-sm-2 control-label">邮箱</label>
+							<label for="edit-email" class="col-sm-2 control-label">メールアドレス</label>
 							<div class="col-sm-10" style="width: 300px;">
-								<input type="text" class="form-control" id="edit-email" value="lisi@bjpowernode.com">
+								<input type="text" class="form-control" id="edit-email" value="">
 							</div>
 						</div>
 						
 						<div class="form-group">
-							<label for="edit-phone" class="col-sm-2 control-label">公司座机</label>
+							<label for="edit-phone" class="col-sm-2 control-label">会社電話</label>
 							<div class="col-sm-10" style="width: 300px;">
 								<input type="text" class="form-control" id="edit-phone" value="010-84846003">
 							</div>
-							<label for="edit-website" class="col-sm-2 control-label">公司网站</label>
+							<label for="edit-website" class="col-sm-2 control-label">会社webサイト</label>
 							<div class="col-sm-10" style="width: 300px;">
 								<input type="text" class="form-control" id="edit-website" value="http://www.bjpowernode.com">
 							</div>
 						</div>
 						
 						<div class="form-group">
-							<label for="edit-mphone" class="col-sm-2 control-label">手机</label>
+							<label for="edit-mphone" class="col-sm-2 control-label">携帯電話</label>
 							<div class="col-sm-10" style="width: 300px;">
 								<input type="text" class="form-control" id="edit-mphone" value="12345678901">
 							</div>
-							<label for="edit-status" class="col-sm-2 control-label">线索状态</label>
+							<label for="edit-status" class="col-sm-2 control-label">リードステータス</label>
 							<div class="col-sm-10" style="width: 300px;">
 								<select class="form-control" id="edit-status">
 									<option></option>
@@ -635,7 +635,7 @@
 						</div>
 						
 						<div class="form-group">
-							<label for="edit-source" class="col-sm-2 control-label">线索来源</label>
+							<label for="edit-source" class="col-sm-2 control-label">リードソース</label>
 							<div class="col-sm-10" style="width: 300px;">
 								<select class="form-control" id="edit-source">
 									<option></option>
@@ -647,7 +647,7 @@
 						</div>
 						
 						<div class="form-group">
-							<label for="edit-describe" class="col-sm-2 control-label">描述</label>
+							<label for="edit-describe" class="col-sm-2 control-label">リード説明</label>
 							<div class="col-sm-10" style="width: 81%;">
 								<textarea class="form-control" rows="3" id="edit-describe">这是一条线索的描述信息</textarea>
 							</div>
@@ -657,13 +657,13 @@
 						
 						<div style="position: relative;top: 15px;">
 							<div class="form-group">
-								<label for="edit-contactSummary" class="col-sm-2 control-label">联系纪要</label>
+								<label for="edit-contactSummary" class="col-sm-2 control-label">対応履歴</label>
 								<div class="col-sm-10" style="width: 81%;">
-									<textarea class="form-control" rows="3" id="edit-contactSummary">这个线索即将被转换</textarea>
+									<textarea class="form-control" rows="3" id="edit-contactSummary"></textarea>
 								</div>
 							</div>
 							<div class="form-group">
-								<label for="edit-nextContactTime" class="col-sm-2 control-label">下次联系时间</label>
+								<label for="edit-nextContactTime" class="col-sm-2 control-label">次回連絡日時</label>
 								<div class="col-sm-10" style="width: 300px;">
 									<input type="text" class="form-control" id="edit-nextContactTime" value="2017-05-01">
 								</div>
@@ -674,9 +674,9 @@
 
                         <div style="position: relative;top: 20px;">
                             <div class="form-group">
-                                <label for="edit-address" class="col-sm-2 control-label">详细地址</label>
+                                <label for="edit-address" class="col-sm-2 control-label">住所(詳細)</label>
                                 <div class="col-sm-10" style="width: 81%;">
-                                    <textarea class="form-control" rows="1" id="edit-address">北京大兴区大族企业湾</textarea>
+                                    <textarea class="form-control" rows="1" id="edit-address"></textarea>
                                 </div>
                             </div>
                         </div>
@@ -684,7 +684,7 @@
 					
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+					<button type="button" class="btn btn-default" data-dismiss="modal">閉じる</button>
 					<!-- <button type="button" class="btn btn-primary" data-dismiss="modal" id="saveEditBtn">更新</button> -->
 					 <!-- 删除了data-dismiss="modal"，使点击更新按钮时不会自动关闭模态窗口 -->
 					<button type="button" class="btn btn-primary" id="saveEditBtn">更新</button>
@@ -699,7 +699,7 @@
 	<div>
 		<div style="position: relative; left: 10px; top: -10px;">
 			<div class="page-header">
-				<h3>线索列表</h3>
+				<h3>リード一覧</h3>
 			</div>
 		</div>
 	</div>
@@ -707,34 +707,38 @@
 	<div style="position: relative; top: -20px; left: 0px; width: 100%; height: 100%;">
 	
 		<div style="width: 100%; position: absolute;top: 5px; left: 10px;">
-		
+			<h4>検索条件</h4>
 			<div class="btn-toolbar" role="toolbar" style="height: 80px;">
 				<form class="form-inline" role="form" style="position: relative;top: 8%; left: 5px;">
-				  
+				  <div class="form-group">
+                    <div class="input-group">
+                      <div class="input-group-addon">客様</div>
+                      <input class="form-control" id="fullname" type="text">
+                    </div>
 				  <div class="form-group">
 				    <div class="input-group">
-				      <div class="input-group-addon">名称</div>
+				      <div class="input-group-addon">氏名</div>
 				      <input class="form-control" id="fullname" type="text">
 				    </div>
 				  </div>
 				  
 				  <div class="form-group">
 				    <div class="input-group">
-				      <div class="input-group-addon">公司</div>
+				      <div class="input-group-addon">会社名</div>
 				      <input class="form-control" id="company" type="text">
 				    </div>
 				  </div>
 				  
 				  <div class="form-group">
 				    <div class="input-group">
-				      <div class="input-group-addon">公司座机</div>
+				      <div class="input-group-addon">会社電話</div>
 				      <input class="form-control" id="companyPhone" type="text">
 				    </div>
 				  </div>
 				  
 				  <div class="form-group">
 				    <div class="input-group">
-				      <div class="input-group-addon">线索来源</div>
+				      <div class="input-group-addon">リードソース</div>
 					  <select class="form-control" id="source">
 					  		<option value=""></option>
 					  	<c:forEach items="${sourceList}" var="source">
@@ -748,7 +752,7 @@
 				  
 				  <div class="form-group">
 				    <div class="input-group">
-				      <div class="input-group-addon">所有者</div>
+				      <div class="input-group-addon">担当者</div>
 				      <input class="form-control" type="text" id="owner">
 				    </div>
 				  </div>
@@ -757,14 +761,14 @@
 				  
 				  <div class="form-group">
 				    <div class="input-group">
-				      <div class="input-group-addon">手机</div>
+				      <div class="input-group-addon">携帯電話</div>
 				      <input class="form-control" id="phone" type="text">
 				    </div>
 				  </div>
 				  
 				  <div class="form-group">
 				    <div class="input-group">
-				      <div class="input-group-addon">线索状态</div>
+				      <div class="input-group-addon">リードステータス</div>
 					  <select class="form-control" id="state">
 							<option value=""></option>
 					  	<c:forEach items="${clueStateList}" var="clueState">
@@ -774,15 +778,15 @@
 				    </div>
 				  </div>
 
-				  <button type="button" class="btn btn-default" id="researchClue">查询</button>
+				  <button type="button" class="btn btn-default" id="researchClue">検索</button>
 				  
 				</form>
 			</div>
 			<div class="btn-toolbar" role="toolbar" style="background-color: #F7F7F7; height: 50px; position: relative;top: 40px;">
 				<div class="btn-group" style="position: relative; top: 18%;">
-				  <button type="button" class="btn btn-primary" id="createClueBtn"><span class="glyphicon glyphicon-plus"></span> 创建</button>
-				  <button type="button" class="btn btn-default" data-toggle="modal" id="editClueBtn"><span class="glyphicon glyphicon-pencil"></span> 修改</button>
-				  <button type="button" class="btn btn-danger" id="deleteClueBtn"><span class="glyphicon glyphicon-minus"></span> 删除</button>
+				  <button type="button" class="btn btn-primary" id="createClueBtn"><span class="glyphicon glyphicon-plus"></span> 新規作成</button>
+				  <button type="button" class="btn btn-default" data-toggle="modal" id="editClueBtn"><span class="glyphicon glyphicon-pencil"></span> 編集</button>
+				  <button type="button" class="btn btn-danger" id="deleteClueBtn"><span class="glyphicon glyphicon-minus"></span> 削除</button>
 				</div>
 				
 				
@@ -793,12 +797,12 @@
 						<tr style="color: #B3B3B3;">
 							<td><input type="checkbox" id="checkAll" /></td>
 							<td>客様</td>
-							<td>お会社</td>
-							<td>会社TEL</td>
-							<td>個人電話</td>
-							<td>线索来源</td>
-							<td>所有者</td>
-							<td>线索状态</td>
+							<td>会社名</td>
+							<td>会社電話</td>
+							<td>携帯電話</td>
+							<td>リードソース</td>
+							<td>担当者</td>
+							<td>リードステータス</td>
 						</tr>
 					</thead>
 					<tbody id="clueTableBody">

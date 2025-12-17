@@ -46,9 +46,9 @@
 			var endDate = $("#create-endTime").val();
 			var cost = $.trim($("#create-cost").val());
 			var description = $.trim($("#create-describe").val());
-			//フォーム検証：所有者と名称は空であってはなりません。
+			//フォーム検証：担当者と名称は空であってはなりません。
 			if(owner == ""){
-				alert("所有者は必須入力です");
+				alert("担当者は必須入力です");
 				return;
 			}
 			if(name == ""){
@@ -473,7 +473,7 @@
 					<form class="form-horizontal" role="form" id="createActivityForm">
 					
 						<div class="form-group">
-							<label for="create-marketActivityOwner" class="col-sm-2 control-label">所有者<span style="font-size: 15px; color: red;">*</span></label>
+							<label for="create-marketActivityOwner" class="col-sm-2 control-label">担当者<span style="font-size: 15px; color: red;">*</span></label>
 							<div class="col-sm-10" style="width: 300px;">
 								<select class="form-control" id="create-marketActivityOwner">
 									<c:forEach items="${userList}" var="user">
@@ -538,7 +538,7 @@
 						<div class="form-group">
 							<!-- 編集するマーケティングキャンペーンのidを保存するhidden inputタグ-->
 							<input type="hidden" id="edit-id"></input>
-							<label for="edit-marketActivityOwner" class="col-sm-2 control-label">所有者<span style="font-size: 15px; color: red;">*</span></label>
+							<label for="edit-marketActivityOwner" class="col-sm-2 control-label">担当者<span style="font-size: 15px; color: red;">*</span></label>
 							<div class="col-sm-10" style="width: 300px;">
 								<select class="form-control" id="edit-marketActivityOwner">
 									<c:forEach items="${userList}" var="user">
@@ -655,7 +655,7 @@
 				  
 				  <div class="form-group">
 				    <div class="input-group">
-				      <div class="input-group-addon">所有者</div>
+				      <div class="input-group-addon">担当者</div>
 				      <input class="form-control" type="text" id="query-owner"/>
 				    </div>
 				  </div>
@@ -696,7 +696,7 @@
 						<tr style="color: #B3B3B3;">
 							<td><input type="checkbox" id="checkAll"/></td>
 							<td>ｷｬﾝﾍﾟｰﾝ名</td>
-              				<td>所有者</td>
+              				<td>担当者</td>
 							<td>開始日</td>
 							<td>終了日</td>
 						</tr>
