@@ -17,11 +17,13 @@ import com.lukai.crm.workbench.domain.ActivityRemark;
 import com.lukai.crm.workbench.domain.Clue;
 import com.lukai.crm.workbench.domain.ClueActivityRelation;
 import com.lukai.crm.workbench.domain.ClueRemark;
+import com.lukai.crm.workbench.domain.Customer;
 import com.lukai.crm.workbench.mapper.ActivityMapper;
 import com.lukai.crm.workbench.mapper.ActivityRemarkMapper;
 import com.lukai.crm.workbench.mapper.ClueActivityRelationMapper;
 import com.lukai.crm.workbench.mapper.ClueMapper;
 import com.lukai.crm.workbench.mapper.ClueRemarkMapper;
+import com.lukai.crm.workbench.mapper.CustomerMapper;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {
 		"classpath:applicationContext.xml",
@@ -41,6 +43,8 @@ public class Test {
 	private ClueRemarkMapper clueRemarkMapper;
 	@Autowired
 	private ClueActivityRelationMapper clueActivityRelationMapper;
+	@Autowired
+	private CustomerMapper customerMapper;
 	@org.junit.Test
 	public void dateUtilsTest() {
 		String formateDateTime = DateUtils.formateDateTime(new Date());
@@ -114,5 +118,18 @@ public class Test {
 		String clueId ="asfsad";
 		List<ClueActivityRelation> carList = clueActivityRelationMapper.selectClueActivityRelationByClueId(clueId);
 		carList.forEach(System.out::println);
+	}
+	
+	@org.junit.Test
+	public void selectCustomerByConditionForPage() {
+		Integer beginNo =1;
+		Integer pageSize =1;
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		map.put("beginNo", beginNo);
+		map.put("pageSize", pageSize);
+		List<Customer> customers = customerMapper.selectCustomerByConditionForPage(map);
+		customers.forEach(System.out::println);
+		
+		
 	}
 }

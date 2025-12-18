@@ -173,7 +173,7 @@
 		<li class="liClass"><a href="javascript:void(0);" target="workareaFrame"><span class="glyphicon glyphicon-user"></span> 未割当顧客</a></li>
 		<li class="liClass"><a href="workbench/activity/index.do" target="workareaFrame"><span class="glyphicon glyphicon-play-circle"></span>キャンペーン</a></li>
 		<li class="liClass"><a href="workbench/clue/index.do" target="workareaFrame"><span class="glyphicon glyphicon-search"></span> リード</a></li>
-		<li class="liClass"><a href="customer/index.html" target="workareaFrame"><span class="glyphicon glyphicon-user"></span> 取引先</a></li>
+		<li class="liClass"><a href="workbench/customer/toIndex.do" target="workareaFrame"><span class="glyphicon glyphicon-user"></span> 取引先</a></li>
 		<li class="liClass"><a href="contacts/index.html" target="workareaFrame"><span class="glyphicon glyphicon-earphone"></span> 取引先責任者</a></li>
 		<li class="liClass"><a href="transaction/index.html" target="workareaFrame"><span class="glyphicon glyphicon-usd"></span> 商談</a></li>
 		<li class="liClass"><a href="visit/index.html" target="workareaFrame"><span class="glyphicon glyphicon-phone-alt"></span> フォロー履歴</a></li>

@@ -38,6 +38,55 @@
             values (#{id},#{owner},#{name},#{website},#{phone},#{createBy},#{createTime},#{editBy},#{editTime},#{description},#{contactSummary},#{nextContactTime},#{address})
 	</insert>
 	
+	<select id="selectCustomerByConditionForPage" resultMap="BaseResultMap" parameterType="Map">
+		select c.id,u1.name as owner,c.name,c.website,c.phone,u2.name as create_by,c.create_time,u3.name as edit_by,c.edit_time,c.description,c.contact_summary,c.next_contact_time,c.address
+			from tbl_customer c
+					join tbl_user u1 on c.owner=u1.id
+					join tbl_user u2 on c.create_by=u2.id
+					left join tbl_user u3 on c.edit_by=u3.id
+			<where>
+				<if test="name != null and name != ''">
+			    	<bind name="namePattern" value="'%' + name + '%'" />
+			        and c.name like #{namePattern}
+			    </if>
+				<if test="owner != null and owner != ''">
+					<bind name="ownerPattern" value="'%' + owner + '%'" />
+					and u1.name like #{ownerPattern}
+				</if>
+				<if test="phone != null and phone != ''">
+					<bind name="phonePattern" value="'%' + phone + '%'" />
+					and c.phone like #{phonePattern}
+				</if>
+				<if test="website != null and website != ''">
+					<bind name="websitePattern" value="'%' + website + '%'" />
+					and c.website like #{websitePattern}
+				</if>
+			</where>
+			order by c.create_time desc
+			limit #{beginNo},#{pageSize}
+	</select>
 	
-	
+	<select id="selectCustomerByConditionForPageCount" resultType="int" parameterType="Map">
+		select count(*)
+		from tbl_customer c
+					join tbl_user u1 on c.owner=u1.id
+			<where>
+				<if test="name != null and name != ''">
+			    	<bind name="namePattern" value="'%' + name + '%'" />
+			        and c.name like #{namePattern}
+			    </if>
+				<if test="owner != null and owner != ''">
+					<bind name="ownerPattern" value="'%' + owner + '%'" />
+					and u1.name like #{ownerPattern}
+				</if>
+				<if test="phone != null and phone != ''">
+					<bind name="phonePattern" value="'%' + phone + '%'" />
+					and c.phone like #{phonePattern}
+				</if>
+				<if test="website != null and website != ''">
+					<bind name="websitePattern" value="'%' + website + '%'" />
+					and c.website like #{websitePattern}
+				</if>
+			</where>
+	</select>
 </mapper>
