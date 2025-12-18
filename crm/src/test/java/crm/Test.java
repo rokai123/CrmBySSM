@@ -128,7 +128,7 @@ public class Test {
 		map.put("beginNo", beginNo);
 		map.put("pageSize", pageSize);
 		List<Customer> customers = customerMapper.selectCustomerByConditionForPage(map);
-		customers.forEach(System.out::println);
+		customers.forEach(System.out::println);//444
 		
 		
 	}
