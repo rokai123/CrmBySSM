@@ -14,4 +14,12 @@ public interface CustomerMapper {
 	List<Customer> selectCustomerByConditionForPage(Map<String, Object> map);
 	
 	int selectCustomerByConditionForPageCount(Map<String, Object> map);
+	
+	Customer selectCustomerById(String customerId);
+	
+	int updateCustomer(Customer customer);
+	
+	int deleteCustomerByIds(String[] ids);
+	
+	Customer selectCustomerForDetailById(String customerId);
 }

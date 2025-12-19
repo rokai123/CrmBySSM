@@ -122,13 +122,13 @@ public class Test {
 	
 	@org.junit.Test
 	public void selectCustomerByConditionForPage() {
-		Integer beginNo =1;
-		Integer pageSize =1;
+		Integer beginNo =0;
+		Integer pageSize =2;
 		HashMap<String, Object> map = new HashMap<String, Object>();
 		map.put("beginNo", beginNo);
 		map.put("pageSize", pageSize);
 		List<Customer> customers = customerMapper.selectCustomerByConditionForPage(map);
-		customers.forEach(System.out::println);//444
+		customers.forEach(System.out::println);
 		
 		
 	}

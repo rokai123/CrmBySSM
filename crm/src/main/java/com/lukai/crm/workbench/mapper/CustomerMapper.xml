@@ -89,4 +89,45 @@
 				</if>
 			</where>
 	</select>
+	
+	<select id="selectCustomerById" parameterType="String" resultMap="BaseResultMap">
+		select  c.id,c.owner,c.name,c.website,c.phone,c.create_by,c.create_time,c.edit_by,c.edit_time,c.description,c.contact_summary,c.next_contact_time,c.address
+			from tbl_customer c
+			where id = #{customerId}
+
+	</select>
+	
+	<update id="updateCustomer" parameterType="com.lukai.crm.workbench.domain.Customer">
+        update tbl_customer
+            set 
+                owner = #{owner},
+                name = #{name},
+                website = #{website},
+                phone = #{phone},
+                edit_by = #{editBy},
+                edit_time = #{editTime},
+                description = #{description},
+                contact_summary = #{contactSummary},
+                next_contact_time = #{nextContactTime},
+                address = #{address}
+            where id = #{id}
+   </update>
+   
+   <delete id="deleteCustomerByIds">
+        delete from tbl_customer
+            where id in
+            <foreach collection="array" item="id" open="(" separator="," close=")">
+                #{id}
+            </foreach>
+ 	</delete>
+ 	
+ 	<select id="selectCustomerForDetailById" parameterType="String" resultMap="BaseResultMap">
+ 	        select  c.id,u1.name as owner,c.name,c.website,c.phone,u2.name as create_by,c.create_time,u3.name as edit_by,c.edit_time,c.description,c.contact_summary,c.next_contact_time,c.address
+ 	                    from tbl_customer c
+ 	                    join tbl_user u1 on c.owner=u1.id
+ 	                    join tbl_user u2 on c.create_by=u2.id
+ 	                    left join tbl_user u3 on c.edit_by=u3.id
+ 	                    where c.id = #{customerId}
+ 	</select>
+ 	
 </mapper>
