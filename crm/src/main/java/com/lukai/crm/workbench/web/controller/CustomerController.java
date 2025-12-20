@@ -94,9 +94,12 @@ public class CustomerController {
 	
 	@RequestMapping("/workbench/customer/saveEditCustomer.do")
 	@ResponseBody
-	public ReturnObject saveEditCustomer(Customer customer) {
+	public ReturnObject saveEditCustomer(Customer customer,HttpSession session) {
 		ReturnObject returnObject = new ReturnObject();
 		try {
+			User user = (User)session.getAttribute(Contants.SESSION_USER);
+			customer.setEditBy(user.getId());
+			customer.setEditTime(DateUtils.formateDateTime(new Date()));
 			int retInt = customerService.saveEditCustomer(customer);
 			if (retInt>0) {
 				returnObject.setCode(Contants.RETURN_OBJECT_CODE_SUCCESS);

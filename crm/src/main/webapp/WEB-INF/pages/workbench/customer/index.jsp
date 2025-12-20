@@ -62,6 +62,7 @@
 			let description = $("#create-description").val();
 			let contactSummary = $("#create-contactSummary").val();
 			let nextContactTime = $("#create-nextContactTime").val();
+			let address = $("#create-address1").val();
 			//取引先名は必須入力
 			if (name == "") {
 				alert("取引先名は必須入力です。");
@@ -76,7 +77,8 @@
 					"phone": phone,
 					"description": description,
 					"contactSummary": contactSummary,
-					"nextContactTime": nextContactTime
+					"nextContactTime": nextContactTime,
+				    "address": address
 				},
 				type: "post",
 				dataType: "json",
@@ -140,7 +142,7 @@
 						$("#edit-describe").val(data.description);
 						$("#create-contactSummary1").val(data.contactSummary);
 						$("#create-nextContactTime2").val(data.nextContactTime);
-						$("#create-address").val(data.address);
+						$("#edit-address").val(data.address);
 
 						$("#hidden-owner").val(data.owner);
 						$("#hidden-name").val(data.name);
