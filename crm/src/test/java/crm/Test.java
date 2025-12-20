@@ -18,12 +18,14 @@ import com.lukai.crm.workbench.domain.Clue;
 import com.lukai.crm.workbench.domain.ClueActivityRelation;
 import com.lukai.crm.workbench.domain.ClueRemark;
 import com.lukai.crm.workbench.domain.Customer;
+import com.lukai.crm.workbench.domain.CustomerRemark;
 import com.lukai.crm.workbench.mapper.ActivityMapper;
 import com.lukai.crm.workbench.mapper.ActivityRemarkMapper;
 import com.lukai.crm.workbench.mapper.ClueActivityRelationMapper;
 import com.lukai.crm.workbench.mapper.ClueMapper;
 import com.lukai.crm.workbench.mapper.ClueRemarkMapper;
 import com.lukai.crm.workbench.mapper.CustomerMapper;
+import com.lukai.crm.workbench.mapper.CustomerRemarkMapper;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {
 		"classpath:applicationContext.xml",
@@ -45,6 +47,8 @@ public class Test {
 	private ClueActivityRelationMapper clueActivityRelationMapper;
 	@Autowired
 	private CustomerMapper customerMapper;
+	@Autowired
+	private CustomerRemarkMapper customerRemarkMapper;
 	@org.junit.Test
 	public void dateUtilsTest() {
 		String formateDateTime = DateUtils.formateDateTime(new Date());
@@ -131,5 +135,11 @@ public class Test {
 		customers.forEach(System.out::println);
 		
 		
+	}
+	@org.junit.Test
+	public void selectCustomerRemarkByCusIdTest() {
+		String cusId ="f260950f121841e88a8d9debcb4f9370";
+		List<CustomerRemark> customerRemarks = customerRemarkMapper.selectCustomerRemarkByCusId(cusId);
+		customerRemarks.forEach(System.out::println);
 	}
 }

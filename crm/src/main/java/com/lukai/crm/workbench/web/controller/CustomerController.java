@@ -20,6 +20,8 @@ import com.lukai.crm.commons.utils.UUIdUtils;
 import com.lukai.crm.settings.domain.User;
 import com.lukai.crm.settings.service.UserService;
 import com.lukai.crm.workbench.domain.Customer;
+import com.lukai.crm.workbench.domain.CustomerRemark;
+import com.lukai.crm.workbench.service.CustomerRemarkService;
 import com.lukai.crm.workbench.service.CustomerService;
 
 @Controller
@@ -28,6 +30,8 @@ public class CustomerController {
 	CustomerService customerService;
 	@Autowired
 	UserService userService;
+	@Autowired
+	CustomerRemarkService customerRemarkService;
 	@RequestMapping("/workbench/customer/toIndex.do")
 	public String toIndex(HttpSession session,HttpServletRequest request) {
 		User user = (User)session.getAttribute(Contants.SESSION_USER);
@@ -135,11 +139,18 @@ public class CustomerController {
 		}
 		return returnObject;
 	}
-	
+	/**
+	 * 取引先詳細情報画面に遷移するためのコントローラ
+	 * @param id
+	 * @param request
+	 * @return
+	 */
 	@RequestMapping("/workbench/customer/toCustomerDetail.do")
 	public String toCustomerDetail(String id,HttpServletRequest request) {
 		Customer customer = customerService.queryCustomerForDetailById(id);
+		List<CustomerRemark> customerRemarkList = customerRemarkService.queryCustomerRemarkByCusId(id);
 		request.setAttribute("customer", customer);
+		request.setAttribute("customerRemarkList", customerRemarkList);
 		return "workbench/customer/detail";
 	}
 }
