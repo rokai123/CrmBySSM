@@ -12,6 +12,8 @@ import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -27,25 +29,39 @@ import com.lukai.crm.workbench.mapper.ActivityMapper;
 import com.lukai.crm.workbench.service.ActivityService;
 @Service("activityService")
 public class ActivityServiceImpl implements ActivityService{
-
+	private static final Logger log = LoggerFactory.getLogger(ActivityServiceImpl.class);
+	
 	@Autowired
 	private ActivityMapper activityMapper;
 	
 	@Override
 	public ReturnObject saveCreateActivity(Activity activity) {
 		ReturnObject returnObject = new ReturnObject();
+		//方法入口：必打（INFO）                                                                                                                                          
+        log.info("マーケティング活動登録開始, name={}, owner={}, startDate={}, endDate={}",
+                activity.getName(),
+                activity.getOwner(),
+                activity.getStartDate(),
+                activity.getEndDate());
 		try {
 			int resultNum = activityMapper.insertActivity(activity);
 			if (resultNum>0) {
 				returnObject.setCode(Contants.RETURN_OBJECT_CODE_SUCCESS);
-				
+				// ③ 成功日志（INFO）
+                log.info("マーケティング活動登録成功, activityId={}, name={}",
+                        activity.getId(), activity.getName());
 			}else {
 				returnObject.setCode(Contants.RETURN_OBJECT_CODE_FAIL);
 				returnObject.setMessage("システムが混雑中です、しばらくしてから再度お試しください");
+				// ④ 业务失败（WARN）
+                log.warn("マーケティング活動登録失敗（insert結果=0）, name={}, owner={}",
+                        activity.getName(), activity.getOwner());
 			}
 			
 		} catch (Exception e) {
 			e.printStackTrace();
+			log.error("マーケティング活動登録処理中に例外が発生しました, name={}, owner={}",
+                    activity.getName(), activity.getOwner(), e);
 			returnObject.setCode(Contants.RETURN_OBJECT_CODE_FAIL);
 			returnObject.setMessage("システムが混雑中です、しばらくしてから再度お試しください");
 		}

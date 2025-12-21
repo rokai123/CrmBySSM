@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN" monitorInterval="60">
+
+  <Properties>
+    <!-- 推荐写到 Tomcat 的 logs 下：${catalina.base}/logs -->
+    <Property name="LOG_DIR">${sys:catalina.base}/logs</Property>
+    <Property name="APP_NAME">crm</Property>
+    <Property name="PATTERN">%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %c - %msg%n</Property>
+  </Properties>
+
+  <Appenders>
+
+    <!-- 控制台（开发/调试时方便） -->
+    <Console name="Console" target="SYSTEM_OUT">
+      <PatternLayout pattern="${PATTERN}"/>
+    </Console>
+
+    <!-- 全量日志：按天滚动 -->
+    <RollingFile name="AppFile"
+                 fileName="${LOG_DIR}/${APP_NAME}.log"
+                 filePattern="${LOG_DIR}/${APP_NAME}-%d{yyyy-MM-dd}.log.gz">
+      <PatternLayout pattern="${PATTERN}"/>
+      <Policies>
+        <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+      </Policies>
+      <DefaultRolloverStrategy max="30"/>
+    </RollingFile>
+
+    <!-- 只记录 ERROR：单独文件，方便现场排查 -->
+    <RollingFile name="ErrorFile"
+                 fileName="${LOG_DIR}/${APP_NAME}-error.log"
+                 filePattern="${LOG_DIR}/${APP_NAME}-error-%d{yyyy-MM-dd}.log.gz">
+      <PatternLayout pattern="${PATTERN}"/>
+      <Filters>
+        <ThresholdFilter level="ERROR" onMatch="ACCEPT" onMismatch="DENY"/>
+      </Filters>
+      <Policies>
+        <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+      </Policies>
+      <DefaultRolloverStrategy max="60"/>
+    </RollingFile>
+
+  </Appenders>
+
+  <Loggers>
+
+    <!-- 你的业务包：建议 INFO（需要排查时改 DEBUG） -->
+    <Logger name="com.lukai.crm" level="INFO" additivity="false">
+      <AppenderRef ref="Console"/>
+      <AppenderRef ref="AppFile"/>
+      <AppenderRef ref="ErrorFile"/>
+    </Logger>
+
+    <!-- 根日志：别太吵 -->
+    <Root level="INFO">
+      <AppenderRef ref="Console"/>
+      <AppenderRef ref="AppFile"/>
+      <AppenderRef ref="ErrorFile"/>
+    </Root>
+
+  </Loggers>
+
+</Configuration>

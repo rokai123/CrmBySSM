@@ -331,10 +331,11 @@
 		<!-- 备注1 -->
 		<c:forEach var="cr" items="${customerRemarkList}">
 		<div class="remarkDiv" style="height: 60px;">
-				<img title="zhangsan" src="image/user-thumbnail.png" style="width: 30px; height:30px;">
+				<img title="${cr.createBy}" src="image/user-thumbnail02.png" style="width: 35px; height:35px;">
 				<div style="position: relative; top: -40px; left: 40px;" >
 					<h5>${cr.noteContent}</h5>
-					<font color="gray">客户</font> <font color="gray">-</font> <b>${customer.name}</b> <small style="color: gray;"> 2017-01-22 10:10:10 由zhangsan</small>
+					<font color="gray">会社名</font> <font color="gray">-</font> <b>${customer.name}</b> <small style="color: gray;">${cr.editFlag=='1'?cr.editTime:cr.createTime}--${cr.editFlag=='1'?cr.editBy:cr.createBy}さんが${cr.editFlag=='1'?'編集しました':'作成しました'}</small>
+
 					<div style="position: relative; left: 500px; top: -30px; height: 30px; width: 100px; display: none;">
 						<a class="myHref" href="javascript:void(0);"><span class="glyphicon glyphicon-edit" style="font-size: 20px; color: #E6E6E6;"></span></a>
 						&nbsp;&nbsp;&nbsp;&nbsp;
@@ -347,9 +348,9 @@
 		
 		<div id="remarkDiv" style="background-color: #E6E6E6; width: 870px; height: 90px;">
 			<form role="form" style="position: relative;top: 10px; left: 10px;">
-				<textarea id="remark" class="form-control" style="width: 850px; resize : none;" rows="2"  placeholder="添加备注..."></textarea>
-				<p id="cancelAndSaveBtn" style="position: relative;left: 737px; top: 10px; display: none;">
-					<button id="cancelBtn" type="button" class="btn btn-default">取消</button>
+				<textarea id="remark" class="form-control" style="width: 850px; resize : none;" rows="2"  placeholder="備考を入力..."></textarea>
+				<p id="cancelAndSaveBtn" style="position: relative;left: 690px; top: 10px; display: none;">
+					<button id="cancelBtn" type="button" class="btn btn-default">キャンセル</button>
 					<button type="button" class="btn btn-primary">保存</button>
 				</p>
 			</form>
