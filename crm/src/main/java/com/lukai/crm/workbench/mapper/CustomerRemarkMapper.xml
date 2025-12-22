@@ -35,5 +35,9 @@
 			where customer_id=#{cusId}
 	</select>
 
+	<insert id="insertCustomerRemark" parameterType="com.lukai.crm.workbench.domain.CustomerRemark">
+		insert into tbl_customer_remark (id, note_content, create_by, create_time, edit_by, edit_time, edit_flag, customer_id)
+			values (#{id},#{noteContent},#{createBy},#{createTime},#{editBy},#{editTime},#{editFlag},#{customerId})
+	</insert>
 
 </mapper>

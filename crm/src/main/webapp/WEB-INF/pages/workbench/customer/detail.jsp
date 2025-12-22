@@ -28,7 +28,6 @@
 				cancelAndSaveBtnDefault = false;
 			}
 		});
-		
 		$("#cancelBtn").click(function(){
 			//显示
 			$("#cancelAndSaveBtn").hide();
@@ -51,6 +50,41 @@
 		
 		$(".myHref").mouseout(function(){
 			$(this).children("span").css("color","#E6E6E6");
+		});
+
+		$("#saveRemarkBtn").click(function(){
+			let customerId = "${customer.id}";
+			let noteContent = $("#remark").val();
+			$.ajax({
+				url:"workbench/customer/saveCreateCustomerRemark.do",
+				data:{
+					"customerId":customerId,
+					"noteContent":noteContent
+				},
+				type:"post",
+				dataType:"json",
+				success:function(data){
+					if(data.code=="1"){
+						let html = "";
+						html +="<div class=\"remarkDiv\" style=\"height: 60px;\">";
+						html +="<img title=\""+data.resultData.createBy+"\" src=\"image/user-thumbnail02.png\" style=\"width: 35px; height:35px;\">";
+						html +="<div style=\"position: relative; top: -40px; left: 40px;\" >";
+						html +="<h5>${cr.noteContent}</h5>";
+						html +="<font color=\"gray\">会社名</font> <font color=\"gray\">-</font> <b>${customer.name}</b> <small style=\"color: gray;\">cr.createTime}--${cr.createBy}さんが${cr.editFlag=='1'?'編集しました':'作成しました'}</small>";
+						html +="<div style=\"position: relative; left: 500px; top: -30px; height: 30px; width: 100px; display: none;\">";
+						html +="<a class=\"myHref\" href=\"javascript:void(0);\"><span class=\"glyphicon glyphicon-edit\" style=\"font-size: 20px; color: #E6E6E6;\"></span></a>";
+						html +="&nbsp;&nbsp;&nbsp;&nbsp;";
+						html +="<a class=\"myHref\" href=\"javascript:void(0);\"><span class=\"glyphicon glyphicon-remove\" style=\"font-size: 20px; color: #E6E6E6;\"></span></a>";
+						html +="</div>";
+						html +="</div>";
+						html +="</div>";
+						$("#remarkDiv01").after(html);
+					}else{
+						alert(data.message);
+					}
+				}
+			})
+	
 		});
 	});
 	
@@ -324,7 +358,7 @@
 	
 	<!-- 备注 -->
 	<div style="position: relative; top: 10px; left: 40px;">
-		<div class="page-header">
+		<div class="page-header" id="remarkDiv01">
 			<h4>备注</h4>
 		</div>
 		
@@ -351,7 +385,7 @@
 				<textarea id="remark" class="form-control" style="width: 850px; resize : none;" rows="2"  placeholder="備考を入力..."></textarea>
 				<p id="cancelAndSaveBtn" style="position: relative;left: 690px; top: 10px; display: none;">
 					<button id="cancelBtn" type="button" class="btn btn-default">キャンセル</button>
-					<button type="button" class="btn btn-primary">保存</button>
+					<button type="button" class="btn btn-primary" id="saveRemarkBtn">保存</button>
 				</p>
 			</form>
 		</div>

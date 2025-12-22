@@ -153,4 +153,13 @@ public class CustomerController {
 		request.setAttribute("customerRemarkList", customerRemarkList);
 		return "workbench/customer/detail";
 	}
+	
+	@RequestMapping("/workbench/customer/saveCreateCustomerRemark.do")
+	@ResponseBody
+	public ReturnObject saveCreateCustomerRemark(CustomerRemark customerRemark,HttpSession session) {
+		User	user = (User)session.getAttribute(Contants.SESSION_USER);
+		ReturnObject ret = customerRemarkService.saveCreateCustomerRemark(customerRemark,user.getId());
+		
+		return ret;
+	}
 }
