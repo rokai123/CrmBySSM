@@ -124,8 +124,8 @@
                 AND u1.name like #{ownerPattern}
             </if>
             <if test="customerName != null and customerName != ''">
-            	<bind name="customerName" value="'%' + customerName + '%'" />
-                AND c.name like #{customerName}
+            	<bind name="customerNamePattern" value="'%' + customerName + '%'" />
+                AND c.name like #{customerNamePattern}
             </if>
             <if test="stage != null and stage != ''">
                 AND t.stage = #{stage}
@@ -137,8 +137,8 @@
                 AND t.source = #{source}
             </if>
             <if test="contactsName != null and contactsName != ''">
-            	<bind name="contactsName" value="'%' + contactsName + '%'" />
-                AND ct.name like #{contactsName}
+            	<bind name="contactsNamePattern" value="'%' + contactsName + '%'" />
+                AND ct.fullname like #{contactsNamePattern}
              </if>
         </where>
         ORDER BY t.create_time DESC

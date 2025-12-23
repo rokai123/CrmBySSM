@@ -26,6 +26,9 @@
 	$(function(){
 		queryTranByConditionForPage(1,10);
 		
+		$("#researchBtn").click(function () {
+			queryTranByConditionForPage(1,10);
+		});
 		
 	});
 
@@ -163,9 +166,9 @@
 				    <div class="input-group">
 				      <div class="input-group-addon">阶段</div>
 					  <select class="form-control" id="stage">
-					  	<option></option>
+					  	<option value=""></option>
 					  	<c:forEach items="${stageList}" var="s">
-					  	<option value="${s.value}">${s.text}</option>
+					  	<option value="${s.id}">${s.text}</option>
 					  </c:forEach>
 					  </select>
 				    </div>
@@ -175,9 +178,9 @@
 				    <div class="input-group">
 				      <div class="input-group-addon">类型</div>
 					  <select class="form-control" id="type">
-					  	<option></option>
+					  	<option value=""></option>
 					  	<c:forEach items="${transactionTypeList}" var="t">
-							<option value="${t.value}">${t.text}</option>
+							<option value="${t.id}">${t.text}</option>
 						</c:forEach>
 					  </select>
 				    </div>
@@ -187,9 +190,9 @@
 				    <div class="input-group">
 				      <div class="input-group-addon">来源</div>
 				      <select class="form-control" id="source">
-						  	<option></option>
+						  	<option value=""></option>
 						<c:forEach items="${sourceList}" var="s"> 
-							<option value="${s.value}">${s.text}</option>
+							<option value="${s.id}">${s.text}</option>
 						</c:forEach>
 						</select>
 				    </div>
@@ -202,7 +205,7 @@
 				    </div>
 				  </div>
 				  
-				  <button type="submit" class="btn btn-default">查询</button>
+				  <button type="button" id="researchBtn" class="btn btn-default">查询</button>
 				  
 				</form>
 			</div>
