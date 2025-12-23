@@ -175,7 +175,7 @@
 		<li class="liClass"><a href="workbench/clue/index.do" target="workareaFrame"><span class="glyphicon glyphicon-search"></span> リード</a></li>
 		<li class="liClass"><a href="workbench/customer/toIndex.do" target="workareaFrame"><span class="glyphicon glyphicon-user"></span> 取引先</a></li>
 		<li class="liClass"><a href="contacts/index.html" target="workareaFrame"><span class="glyphicon glyphicon-earphone"></span> 取引先責任者</a></li>
-		<li class="liClass"><a href="transaction/index.html" target="workareaFrame"><span class="glyphicon glyphicon-usd"></span> 商談</a></li>
+		<li class="liClass"><a href="workbench/transaction/toIndex.do" target="workareaFrame"><span class="glyphicon glyphicon-usd"></span> 商談</a></li>
 		<li class="liClass"><a href="visit/index.html" target="workareaFrame"><span class="glyphicon glyphicon-phone-alt"></span> フォロー履歴</a></li>
 		<li class="liClass">
 			<a href="#no2" class="collapsed" data-toggle="collapse"><span class="glyphicon glyphicon-stats"></span>分析</a>

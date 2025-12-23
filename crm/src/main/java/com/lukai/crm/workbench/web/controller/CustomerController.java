@@ -158,8 +158,23 @@ public class CustomerController {
 	@ResponseBody
 	public ReturnObject saveCreateCustomerRemark(CustomerRemark customerRemark,HttpSession session) {
 		User	user = (User)session.getAttribute(Contants.SESSION_USER);
-		ReturnObject ret = customerRemarkService.saveCreateCustomerRemark(customerRemark,user.getId());
+		ReturnObject ret = customerRemarkService.saveCreateCustomerRemark(customerRemark,user);
 		
+		return ret;
+	}
+	
+	@RequestMapping("/workbench/customer/deleteCustomerRemarkById.do")
+	@ResponseBody
+	public ReturnObject deleteCustomerRemarkById(String id) {
+		ReturnObject ret = customerRemarkService.deleteCustomerRemarkById(id);
+		return ret;
+	}
+	
+	@RequestMapping("/workbench/customer/saveEditCustomerRemark.do")
+	@ResponseBody
+	public ReturnObject saveEditCustomerRemark(CustomerRemark customerRemark,HttpSession session) {
+		User	user = (User)session.getAttribute(Contants.SESSION_USER);
+		ReturnObject ret = customerRemarkService.saveEditCustomerRemark(customerRemark,user);
 		return ret;
 	}
 }

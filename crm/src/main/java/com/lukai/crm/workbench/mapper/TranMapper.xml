@@ -86,5 +86,102 @@
             #{nextContactTime}
         )
     </insert>
-
+	<select id="selecTransByConditionForPage" parameterType="map" resultMap="BaseResultMap">
+        SELECT
+        	t.id,
+        	u1.name as owner,
+        	t.money,
+        	t.name,
+        	t.expected_date,
+        	c.name as customer_id,
+        	d1.value as stage,
+        	d2.value as type,
+        	d3.value as source,
+        	t.activity_id,
+        	ct.fullname as contacts_id,
+        	u2.name as create_by,
+        	t.create_time,
+        	t.edit_by,
+        	t.edit_time,
+        	t.description,
+        	t.contact_summary,
+        	t.next_contact_time
+        FROM tbl_tran t 
+        	join tbl_customer c on t.customer_id = c.id
+        	join tbl_user u1 on t.owner = u1.id
+        	join tbl_user u2 on t.create_by = u2.id
+        	left join tbl_dic_value d1 on t.stage = d1.id
+        	left join tbl_dic_value d2 on t.type = d2.id
+        	left join tbl_dic_value d3 on t.source = d3.id
+        	left join tbl_contacts ct on t.contacts_id = ct.id
+        <where>
+            <if test="name != null and name != ''">
+            	<bind name="namePattern" value="'%' + name + '%'" />
+                AND t.name like #{namePattern}
+            </if>
+             <if test="owner != null and owner != ''">
+             	<bind name="ownerPattern" value="'%' + owner + '%'" />
+                AND u1.name like #{ownerPattern}
+            </if>
+            <if test="customerName != null and customerName != ''">
+            	<bind name="customerName" value="'%' + customerName + '%'" />
+                AND c.name like #{customerName}
+            </if>
+            <if test="stage != null and stage != ''">
+                AND t.stage = #{stage}
+            </if>
+            <if test="type != null and type != ''">
+                AND t.type = #{type}
+            </if>
+            <if test="source != null and source != ''">
+                AND t.source = #{source}
+            </if>
+            <if test="contactsName != null and contactsName != ''">
+            	<bind name="contactsName" value="'%' + contactsName + '%'" />
+                AND ct.name like #{contactsName}
+             </if>
+        </where>
+        ORDER BY t.create_time DESC
+        LIMIT #{beginNo}, #{pageSize}
+    </select>
+	
+	<select id="selectTransByConditionForPageCount" parameterType="map" resultType="int">
+        SELECT
+        	count(1)
+        FROM tbl_tran t 
+        	join tbl_customer c on t.customer_id = c.id
+        	join tbl_user u1 on t.owner = u1.id
+        	join tbl_user u2 on t.create_by = u2.id
+        	left join tbl_dic_value d1 on t.stage = d1.id
+        	left join tbl_dic_value d2 on t.type = d2.id
+        	left join tbl_dic_value d3 on t.source = d3.id
+        	left join tbl_contacts ct on t.contacts_id = ct.id
+        <where>
+            <if test="name != null and name != ''">
+            	<bind name="namePattern" value="'%' + name + '%'" />
+                AND t.name like #{namePattern}
+            </if>
+             <if test="owner != null and owner != ''">
+             	<bind name="ownerPattern" value="'%' + owner + '%'" />
+                AND u1.name like #{ownerPattern}
+            </if>
+            <if test="customerId != null and customerId != ''">
+            	<bind name="customerId" value="'%' + customerId + '%'" />
+                AND c.name like #{customerId}
+            </if>
+            <if test="stage != null and stage != ''">
+                AND t.stage = #{stage}
+            </if>
+            <if test="type != null and type != ''">
+                AND t.type = #{type}
+            </if>
+            <if test="source != null and source != ''">
+                AND t.source = #{source}
+            </if>
+            <if test="contactsId != null and contactsId != ''">
+            	<bind name="contactsId" value="'%' + contactsId + '%'" />
+                AND ct.name like #{contactsId}
+             </if>
+        </where>
+	</select>
 </mapper>

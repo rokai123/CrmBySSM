@@ -36,25 +36,29 @@
 			cancelAndSaveBtnDefault = true;
 		});
 		
-		$(".remarkDiv").mouseover(function(){
+		$("#remarkDiv00").on("mouseover",".remarkDiv",function(){
 			$(this).children("div").children("div").show();
 		});
 		
-		$(".remarkDiv").mouseout(function(){
+		$("#remarkDiv00").on("mouseout",".remarkDiv",function(){
 			$(this).children("div").children("div").hide();
 		});
 		
-		$(".myHref").mouseover(function(){
+		$("#remarkDiv00").on("mouseover",".myHref",function(){
 			$(this).children("span").css("color","red");
 		});
 		
-		$(".myHref").mouseout(function(){
+		$("#remarkDiv00").on("mouseout",".myHref",function(){
 			$(this).children("span").css("color","#E6E6E6");
 		});
 
 		$("#saveRemarkBtn").click(function(){
 			let customerId = "${customer.id}";
 			let noteContent = $("#remark").val();
+			if(noteContent==""){
+				alert("内容不能为空");
+				return;
+			}
 			$.ajax({
 				url:"workbench/customer/saveCreateCustomerRemark.do",
 				data:{
@@ -66,19 +70,20 @@
 				success:function(data){
 					if(data.code=="1"){
 						let html = "";
-						html +="<div class=\"remarkDiv\" style=\"height: 60px;\">";
+						html +="<div class=\"remarkDiv\" id=\"remarkDiv_"+data.resultData.id+"\" style=\"height: 60px;\">";
 						html +="<img title=\""+data.resultData.createBy+"\" src=\"image/user-thumbnail02.png\" style=\"width: 35px; height:35px;\">";
 						html +="<div style=\"position: relative; top: -40px; left: 40px;\" >";
-						html +="<h5>${cr.noteContent}</h5>";
-						html +="<font color=\"gray\">会社名</font> <font color=\"gray\">-</font> <b>${customer.name}</b> <small style=\"color: gray;\">cr.createTime}--${cr.createBy}さんが${cr.editFlag=='1'?'編集しました':'作成しました'}</small>";
-						html +="<div style=\"position: relative; left: 500px; top: -30px; height: 30px; width: 100px; display: none;\">";
-						html +="<a class=\"myHref\" href=\"javascript:void(0);\"><span class=\"glyphicon glyphicon-edit\" style=\"font-size: 20px; color: #E6E6E6;\"></span></a>";
+						html +="<h5>"+data.resultData.noteContent+"</h5>";
+						html +="<font color=\"gray\">会社名</font> <font color=\"gray\">-</font> <b>${customer.name}</b> <small style=\"color: gray;\">"+data.resultData.createTime+"--"+data.resultData.createBy+"さんが作成しました</small>";
+						html +="<div style=\"position: relative; left: 550px; top: -30px; height: 30px; width: 100px; display: none;\">";
+						html +="<a class=\"myHref\" data-remark-id=\""+data.resultData.id+"\" name=\"editRemarkBtn\" href=\"javascript:void(0);\"><span class=\"glyphicon glyphicon-edit\" style=\"font-size: 20px; color: #E6E6E6;\"></span></a>";
 						html +="&nbsp;&nbsp;&nbsp;&nbsp;";
-						html +="<a class=\"myHref\" href=\"javascript:void(0);\"><span class=\"glyphicon glyphicon-remove\" style=\"font-size: 20px; color: #E6E6E6;\"></span></a>";
+						html +="<a class=\"myHref\" data-remark-id=\""+data.resultData.id+"\" name=\"removeRemarkBtn\" href=\"javascript:void(0);\"><span class=\"glyphicon glyphicon-remove\" style=\"font-size: 20px; color: #E6E6E6;\"></span></a>";
 						html +="</div>";
 						html +="</div>";
 						html +="</div>";
 						$("#remarkDiv01").after(html);
+						$("#remark").val("");
 					}else{
 						alert(data.message);
 					}
@@ -86,13 +91,107 @@
 			})
 	
 		});
+
+		$("#remarkDiv00").on("click","a[name=\"removeRemarkBtn\"]",function(){ 
+			let remarkId = $(this).data("remarkId");
+			if(window.confirm("削除しますか")){
+				$.ajax({
+					url:"workbench/customer/deleteCustomerRemarkById.do",
+					data:{
+						"id":remarkId
+					},
+					type:"post",
+					dataType:"json",
+					success:function(data){
+						if(data.code=="1"){
+							$("#remarkDiv_"+remarkId).remove();
+						}else{
+							alert(data.message);
+						}
+					}
+				})
+			}
+		});
+		//修改备注的模态窗口
+		$("#remarkDiv00").on("click","a[name=\"editRemarkBtn\"]",function(){
+			
+			let remarkId = $(this).data("remarkId");
+			$("#saveRemarkIdInput").val(remarkId);
+			$("#edit-noteContent").val($("#remarkDiv_"+remarkId+" h5").text());
+			$("#edit-noteContent-Hidden").val($("#remarkDiv_"+remarkId+" h5").text());
+			$("#editRemarkModal").modal("show");
+		});
+
+		$("#updateRemarkBtn").click(function(){
+			let remarkId = $("#saveRemarkIdInput").val();
+			let noteContent = $("#edit-noteContent").val();
+			if(noteContent==""){
+				alert("内容を入力してください");
+				return;
+			}
+			if(noteContent==$("#edit-noteContent-Hidden").val()){
+				alert("内容を変更していません");
+				return;
+			}
+			$.ajax({
+				url:"workbench/customer/saveEditCustomerRemark.do",
+				data:{
+					"id":remarkId,
+					"noteContent":noteContent
+				},
+				type:"post",
+				dataType:"json",
+				success:function(data){
+					if(data.code=="1"){
+						alert("更新成功");
+						$("#editRemarkModal").modal("hide");
+						$("#remarkDiv_"+remarkId+" h5").text(noteContent);
+						$("#remarkDiv_"+remarkId+" small").text(data.resultData.editTime+"--${sessionScope.sessionUser.name}さんが編集しました");
+					}else{
+						alert(data.message);
+					}
+				}
+
+			})
+		});
 	});
 	
 </script>
 
 </head>
 <body>
-
+	<!-- 修改备注的模态窗口 -->
+	<div class="modal fade" id="editRemarkModal" role="dialog">
+		<!-- 备注的id -->
+		<input type="hidden" id="remarkId">
+        <div class="modal-dialog" role="document" style="width: 40%;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">修改备注</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal" role="form">
+						<!-- 将remarkId保存在隐藏域 -->
+						<input type="hidden" id="saveRemarkIdInput"/>
+                        <div class="form-group">
+                            <label for="noteContent" class="col-sm-2 control-label">内容</label>
+                            <div class="col-sm-10" style="width: 81%;">
+								<input type="hidden" id="edit-noteContent-Hidden"/>
+                                <textarea class="form-control" rows="3" id="edit-noteContent"></textarea>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-primary" id="updateRemarkBtn">更新</button>
+                </div>
+            </div>
+        </div>
+    </div>
 	<!-- 删除联系人的模态窗口 -->
 	<div class="modal fade" id="removeContactsModal" role="dialog">
 		<div class="modal-dialog" role="document" style="width: 30%;">
@@ -357,23 +456,23 @@
 	</div>
 	
 	<!-- 备注 -->
-	<div style="position: relative; top: 10px; left: 40px;">
+	<div style="position: relative; top: 10px; left: 40px;" id="remarkDiv00">
 		<div class="page-header" id="remarkDiv01">
 			<h4>备注</h4>
 		</div>
 		
 		<!-- 备注1 -->
 		<c:forEach var="cr" items="${customerRemarkList}">
-		<div class="remarkDiv" style="height: 60px;">
+		<div class="remarkDiv" id="remarkDiv_${cr.id}" style="height: 60px;">
 				<img title="${cr.createBy}" src="image/user-thumbnail02.png" style="width: 35px; height:35px;">
 				<div style="position: relative; top: -40px; left: 40px;" >
 					<h5>${cr.noteContent}</h5>
 					<font color="gray">会社名</font> <font color="gray">-</font> <b>${customer.name}</b> <small style="color: gray;">${cr.editFlag=='1'?cr.editTime:cr.createTime}--${cr.editFlag=='1'?cr.editBy:cr.createBy}さんが${cr.editFlag=='1'?'編集しました':'作成しました'}</small>
 
-					<div style="position: relative; left: 500px; top: -30px; height: 30px; width: 100px; display: none;">
-						<a class="myHref" href="javascript:void(0);"><span class="glyphicon glyphicon-edit" style="font-size: 20px; color: #E6E6E6;"></span></a>
+					<div style="position: relative; left: 550px; top: -30px; height: 30px; width: 100px; display: none;">
+						<a class="myHref" data-remark-id="${cr.id}" name="editRemarkBtn" href="javascript:void(0);"><span class="glyphicon glyphicon-edit" style="font-size: 20px; color: #E6E6E6;"></span></a>
 						&nbsp;&nbsp;&nbsp;&nbsp;
-						<a class="myHref" href="javascript:void(0);"><span class="glyphicon glyphicon-remove" style="font-size: 20px; color: #E6E6E6;"></span></a>
+						<a class="myHref" data-remark-id="${cr.id}" name="removeRemarkBtn" href="javascript:void(0);"><span class="glyphicon glyphicon-remove" style="font-size: 20px; color: #E6E6E6;"></span></a>
 					</div>
 				</div>
 		</div>

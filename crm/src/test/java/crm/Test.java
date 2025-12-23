@@ -26,6 +26,7 @@ import com.lukai.crm.workbench.mapper.ClueMapper;
 import com.lukai.crm.workbench.mapper.ClueRemarkMapper;
 import com.lukai.crm.workbench.mapper.CustomerMapper;
 import com.lukai.crm.workbench.mapper.CustomerRemarkMapper;
+import com.lukai.crm.workbench.mapper.TranMapper;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {
 		"classpath:applicationContext.xml",
@@ -49,6 +50,9 @@ public class Test {
 	private CustomerMapper customerMapper;
 	@Autowired
 	private CustomerRemarkMapper customerRemarkMapper;
+	@Autowired
+	private TranMapper tranMapper;
+	
 	@org.junit.Test
 	public void dateUtilsTest() {
 		String formateDateTime = DateUtils.formateDateTime(new Date());
@@ -141,5 +145,16 @@ public class Test {
 		String cusId ="f260950f121841e88a8d9debcb4f9370";
 		List<CustomerRemark> customerRemarks = customerRemarkMapper.selectCustomerRemarkByCusId(cusId);
 		customerRemarks.forEach(System.out::println);
+	}
+	
+	@org.junit.Test
+	public void selectClueByConditionForPage() {
+		
+		
+	}
+	@org.junit.Test
+	public void selectTransByConditionForPageCount() {
+	
+		
 	}
 }

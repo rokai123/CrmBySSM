@@ -8,4 +8,6 @@ public interface CustomerRemarkMapper {
 	int insertCustomerRemarkBatch(List<CustomerRemark> customerRemarkList);
 	List<CustomerRemark> selectCustomerRemarkByCusId(String cusId);
 	int insertCustomerRemark(CustomerRemark customerRemark);
+	int deleteCustomerRemarkById(String id);
+	int updateCustomerRemark(CustomerRemark customerRemark);
 }
