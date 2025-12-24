@@ -16,6 +16,7 @@ import com.lukai.crm.commons.contants.Contants;
 import com.lukai.crm.settings.domain.DicValue;
 import com.lukai.crm.settings.domain.User;
 import com.lukai.crm.settings.service.DicValueService;
+import com.lukai.crm.settings.service.UserService;
 import com.lukai.crm.workbench.domain.Tran;
 import com.lukai.crm.workbench.service.TranService;
 
@@ -25,6 +26,8 @@ public class TranController {
 	DicValueService dicValueService;
 	@Autowired
 	TranService tranService;
+	@Autowired
+	UserService userService;
 	
 	@RequestMapping("/workbench/transaction/toIndex.do")
 	public String toIndex(HttpServletRequest request,HttpSession session) {
@@ -66,6 +69,22 @@ public class TranController {
 		
 		return retMap;
 		
+	}
+	
+	@RequestMapping("/workbench/transaction/toCreateTranPage.do")
+	public String toCreateTranPage(HttpSession session,HttpServletRequest request) {
+		User user=(User)session.getAttribute(Contants.SESSION_USER);
+		List<User> userList = userService.queryAllUsers();
+		List<DicValue> transactionTypeList = dicValueService.queryDicValueByTypeCode("transactionType");
+		List<DicValue> stageList = dicValueService.queryDicValueByTypeCode("stage");
+		List<DicValue> sourceList = dicValueService.queryDicValueByTypeCode("source");
+		request.setAttribute("user", user);
+		request.setAttribute("userList", userList);
+		request.setAttribute("transactionTypeList", transactionTypeList);
+		request.setAttribute("stageList", stageList);
+		request.setAttribute("sourceList", sourceList);
+		
+		return "workbench/transaction/save";
 	}
 
 }
