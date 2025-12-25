@@ -17,7 +17,9 @@ import com.lukai.crm.settings.domain.DicValue;
 import com.lukai.crm.settings.domain.User;
 import com.lukai.crm.settings.service.DicValueService;
 import com.lukai.crm.settings.service.UserService;
+import com.lukai.crm.workbench.domain.Activity;
 import com.lukai.crm.workbench.domain.Tran;
+import com.lukai.crm.workbench.service.ActivityService;
 import com.lukai.crm.workbench.service.TranService;
 
 @Controller
@@ -28,6 +30,8 @@ public class TranController {
 	TranService tranService;
 	@Autowired
 	UserService userService;
+	@Autowired
+	ActivityService activityService;
 	
 	@RequestMapping("/workbench/transaction/toIndex.do")
 	public String toIndex(HttpServletRequest request,HttpSession session) {
@@ -86,5 +90,10 @@ public class TranController {
 		
 		return "workbench/transaction/save";
 	}
-
+	
+	@RequestMapping("/workbench/transaction/queryActivitiesByNameLike.do")
+	@ResponseBody
+	public List<Activity> queryActivitiesByNameLike(String Actname) {
+		return activityService.queryActivitiesByNameLike(Actname);
+	}
 }

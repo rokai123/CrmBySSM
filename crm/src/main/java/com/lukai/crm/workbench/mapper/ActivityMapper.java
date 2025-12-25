@@ -105,4 +105,6 @@ public interface ActivityMapper {
      */
     List<Activity> selectActivityForConvertByNameAndClueId(Map<String,Object> map);
     
+    List<Activity> selectActivitiesByNameLike(String name);
+    
 }

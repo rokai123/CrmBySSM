@@ -216,6 +216,12 @@ public class ActivityServiceImpl implements ActivityService{
 		List<Activity> activities = activityMapper.selectActivityForConvertByNameAndClueId(map);
 		return activities;
 	}
+
+	@Override
+	public List<Activity> queryActivitiesByNameLike(String aname) {
+		
+		return activityMapper.selectActivitiesByNameLike(aname);
+	}
 	
 	
 

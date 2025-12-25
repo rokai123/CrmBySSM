@@ -11,7 +11,9 @@
 
 <link href="jquery/bootstrap_3.3.0/css/bootstrap.min.css" type="text/css" rel="stylesheet" />
 <link href="jquery/bootstrap-datetimepicker-master/css/bootstrap-datetimepicker.min.css" type="text/css" rel="stylesheet" />
-
+<link href="jquery/bs_pagination-master/css/jquery.bs_pagination.min.css" type="text/css" rel="stylesheet" />
+<script type="text/javascript" src="jquery/jquery-1.11.1-min.js"></script>
+<script type="text/javascript" src="jquery/bootstrap_3.3.0/js/bootstrap.min.js"></script>
 <!-- 時間選択のためのJSファイルの読み込み -->
 <script type="text/javascript" src="jquery/bootstrap-datetimepicker-master/js/bootstrap-datetimepicker.js"></script>
 <script type="text/javascript" src="jquery/bootstrap-datetimepicker-master/locale/bootstrap-datetimepicker.ja.js"></script>
@@ -21,6 +23,38 @@
 
 <script>
 	$(function(){
+		//点击市场活动源搜索按钮弹出模态窗口
+		$("#activityResearch").click(function(){
+			//清空模态窗口中数据
+			$("#activityTbody").empty();
+			$("#actResearchText").val("");
+			$("#findMarketActivity").modal("show");
+		});
+
+		$("#actResearchText").keyup(function(){
+			var name = $("#actResearchText").val();
+			$.ajax({
+				url:"workbench/transaction/queryActivitiesByNameLike.do",
+				data:{
+					"Actname":name
+				},
+				type:"get",
+				dataType:"json",
+				success:function(data){
+					var html = "";
+					$.each(data,function(i,activity){
+						html +="<tr>";
+						html +="<td><input type=\"radio\" name=\"activity\"/></td>";
+						html +="<td>"+activity.name+"</td>";
+						html +="<td>2020-10-10</td>";
+						html +="<td>2020-10-20</td>";
+						html +="<td>zhangsan</td>";
+						html +="</tr>";
+					})
+					$("#activityTbody").html(html);
+				}
+			})
+		});
 	});
 </script>
 </head>
@@ -40,7 +74,7 @@
 					<div class="btn-group" style="position: relative; top: 18%; left: 8px;">
 						<form class="form-inline" role="form">
 						  <div class="form-group has-feedback">
-						    <input type="text" class="form-control" style="width: 300px;" placeholder="请输入市场活动名称，支持模糊查询">
+						    <input type="text" id="actResearchText" class="form-control" style="width: 300px;" placeholder="请输入市场活动名称，支持模糊查询">
 						    <span class="glyphicon glyphicon-search form-control-feedback"></span>
 						  </div>
 						</form>
@@ -55,8 +89,8 @@
 								<td>所有者</td>
 							</tr>
 						</thead>
-						<tbody>
-							<tr>
+						<tbody id="activityTbody">
+							<!-- <tr>
 								<td><input type="radio" name="activity"/></td>
 								<td>发传单</td>
 								<td>2020-10-10</td>
@@ -69,7 +103,7 @@
 								<td>2020-10-10</td>
 								<td>2020-10-20</td>
 								<td>zhangsan</td>
-							</tr>
+							</tr> -->
 						</tbody>
 					</table>
 				</div>
@@ -208,8 +242,9 @@
 			  	  </c:forEach>
 				</select>
 			</div>
-			<label for="create-activitySrc" class="col-sm-2 control-label">市场活动源&nbsp;&nbsp;<a href="javascript:void(0);" data-toggle="modal" data-target="#findMarketActivity"><span class="glyphicon glyphicon-search"></span></a></label>
+			<label for="create-activitySrc" class="col-sm-2 control-label">市场活动源&nbsp;&nbsp;<a href="javascript:void(0);" id="activityResearch"><span class="glyphicon glyphicon-search"></span></a></label>
 			<div class="col-sm-10" style="width: 300px;">
+				<input type="hidden" id="create-activityId">
 				<input type="text" class="form-control" id="create-activitySrc">
 			</div>
 		</div>
@@ -217,6 +252,7 @@
 		<div class="form-group">
 			<label for="create-contactsName" class="col-sm-2 control-label">联系人名称&nbsp;&nbsp;<a href="javascript:void(0);" data-toggle="modal" data-target="#findContacts"><span class="glyphicon glyphicon-search"></span></a></label>
 			<div class="col-sm-10" style="width: 300px;">
+				<input type="hidden" id="create-contactsId">
 				<input type="text" class="form-control" id="create-contactsName">
 			</div>
 		</div>
