@@ -3,6 +3,7 @@ package com.lukai.crm.workbench.web.controller;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.ResourceBundle;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -18,20 +19,24 @@ import com.lukai.crm.settings.domain.User;
 import com.lukai.crm.settings.service.DicValueService;
 import com.lukai.crm.settings.service.UserService;
 import com.lukai.crm.workbench.domain.Activity;
+import com.lukai.crm.workbench.domain.Contacts;
 import com.lukai.crm.workbench.domain.Tran;
 import com.lukai.crm.workbench.service.ActivityService;
+import com.lukai.crm.workbench.service.ContactsService;
 import com.lukai.crm.workbench.service.TranService;
 
 @Controller
 public class TranController {
 	@Autowired
-	DicValueService dicValueService;
+	private DicValueService dicValueService;
 	@Autowired
-	TranService tranService;
+	private TranService tranService;
 	@Autowired
-	UserService userService;
+	private UserService userService;
 	@Autowired
-	ActivityService activityService;
+	private ActivityService activityService;
+	@Autowired
+	private ContactsService contactsService;
 	
 	@RequestMapping("/workbench/transaction/toIndex.do")
 	public String toIndex(HttpServletRequest request,HttpSession session) {
@@ -95,5 +100,22 @@ public class TranController {
 	@ResponseBody
 	public List<Activity> queryActivitiesByNameLike(String Actname) {
 		return activityService.queryActivitiesByNameLike(Actname);
+	}
+	
+	
+	@RequestMapping("/workbench/transaction/queryContactsByNameLike.do")
+	@ResponseBody
+	public List<Contacts> queryContactsByNameLike(String contName) {
+		return contactsService.queryContactsByNameLike(contName);
+	}
+	
+	@RequestMapping("/workbench/transaction/queryPossibilityByStage.do")
+	@ResponseBody
+	public String queryPossibilityByStage(String stage) {
+		ResourceBundle rb = ResourceBundle.getBundle("possibility");
+		String  possibility = rb.getString(stage);
+		
+		
+		return possibility;
 	}
 }

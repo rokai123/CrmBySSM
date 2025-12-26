@@ -53,5 +53,12 @@
         #{id},#{owner},#{source},#{customerId},#{fullname},#{appellation},#{email},#{mphone},#{job},#{createBy},#{createTime},#{editBy},#{editTime},#{description},#{contactSummary},#{nextContactTime},#{address}
         )
     </insert>
+    
+    <select id="selectContactsByNameLike" parameterType="String" resultMap="BaseResultMap">
+    	<bind name="fullnamePattern" value="'%' + fullname + '%'"/>
+    		select c.fullname, c.id, c.email, c.mphone
+        		from tbl_contacts c
+       			where c.fullname like #{fullnamePattern}
+    </select>
 
 </mapper>

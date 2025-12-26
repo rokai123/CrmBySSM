@@ -33,6 +33,10 @@
 
 		$("#actResearchText").keyup(function(){
 			var name = $("#actResearchText").val();
+			if(name == ""){
+				$("#activityTbody").html("");
+				return;
+			}
 			$.ajax({
 				url:"workbench/transaction/queryActivitiesByNameLike.do",
 				data:{
@@ -44,14 +48,92 @@
 					var html = "";
 					$.each(data,function(i,activity){
 						html +="<tr>";
-						html +="<td><input type=\"radio\" name=\"activity\"/></td>";
+						html +="<td><input type=\"radio\" data-act-name=\""+activity.name+"\" data-act-id=\""+activity.id+"\" name=\"activityRadio\"/></td>";
 						html +="<td>"+activity.name+"</td>";
-						html +="<td>2020-10-10</td>";
-						html +="<td>2020-10-20</td>";
-						html +="<td>zhangsan</td>";
+						html +="<td>"+activity.startDate+"</td>";
+						html +="<td>"+activity.endDate+"</td>";
+						html +="<td>"+activity.owner+"</td>";
 						html +="</tr>";
 					})
 					$("#activityTbody").html(html);
+				}
+			})
+		});
+
+		//获取选中的单选按钮
+		$("#activityTbody").on("click","input[name='activityRadio']",function(){
+			//获取单选按钮的id
+			var id = $(this).data("actId");
+			var name = $(this).data("actName");
+			//将id保存到隐藏域中，name保存到输入框中
+			$("#create-activityId").val(id);
+			$("#create-activitySrc").val(name);
+			//关闭模态窗口
+			$("#findMarketActivity").modal("hide");
+		});
+
+		//点击联系人搜索按钮弹出模态窗口
+		$("#contactsResearch").click(function(){
+			//清空模态窗口中数据
+			$("#contactsTbody").empty();
+			$("#contactsResearchText").val("");
+			$("#findContacts").modal("show");
+		});
+
+		$("#contactsResearchText").keyup(function(){
+			var name = $("#contactsResearchText").val();
+			if(name == ""){
+				$("#contactsTbody").html("");
+				return;
+			}
+			$.ajax({
+				url:"workbench/transaction/queryContactsByNameLike.do",
+				data:{
+					"contName":name
+				},
+				type:"get",
+				dataType:"json",
+				success:function(data){
+					var html = "";
+					$.each(data,function(i,contacts){
+						html +="<tr>";
+						html +="<td><input type=\"radio\" data-cont-id=\""+contacts.id+"\" data-cont-fullname=\""+contacts.fullname+"\" name=\"contactsRadio\"/></td>";
+						html +="<td>"+contacts.fullname+"</td>";
+						html +="<td>"+contacts.email+"</td>";
+						html +="<td>"+contacts.mphone+"</td>";
+						html +="</tr>";
+					})
+					$("#contactsTbody").html(html);
+				}
+			})
+		});
+
+		//获取选中的单选按钮
+		$("#contactsTbody").on("click","input[name='contactsRadio']",function(){
+			let contId = $(this).data("contId");
+			let fullname = $(this).data("contFullname");
+			$("#create-contactsId").val(contId);
+			$("#create-contactsName").val(fullname);
+			$("#findContacts").modal("hide");
+		});
+
+		//阶段值改变时，可能性值改变
+		$("#create-transactionStage").change(function(){
+			
+			let stage = $("#create-transactionStage option:selected").text();
+			if(stage == ""){
+				$("#create-possibility").val("");
+				return;
+			}
+			$.ajax({
+				url:"workbench/transaction/queryPossibilityByStage.do",
+				data:{
+					"stage":stage
+				},
+				type:"get",
+				dataType:"json",
+				success:function(data){
+					$("#create-possibility").val(data+"%");
 				}
 			})
 		});
@@ -90,20 +172,7 @@
 							</tr>
 						</thead>
 						<tbody id="activityTbody">
-							<!-- <tr>
-								<td><input type="radio" name="activity"/></td>
-								<td>发传单</td>
-								<td>2020-10-10</td>
-								<td>2020-10-20</td>
-								<td>zhangsan</td>
-							</tr>
-							<tr>
-								<td><input type="radio" name="activity"/></td>
-								<td>发传单</td>
-								<td>2020-10-10</td>
-								<td>2020-10-20</td>
-								<td>zhangsan</td>
-							</tr> -->
+							<!--挂载动态的市场活动列表数据-->
 						</tbody>
 					</table>
 				</div>
@@ -125,7 +194,7 @@
 					<div class="btn-group" style="position: relative; top: 18%; left: 8px;">
 						<form class="form-inline" role="form">
 						  <div class="form-group has-feedback">
-						    <input type="text" class="form-control" style="width: 300px;" placeholder="请输入联系人名称，支持模糊查询">
+						    <input type="text" id="contactsResearchText" class="form-control" style="width: 300px;" placeholder="请输入联系人名称，支持模糊查询">
 						    <span class="glyphicon glyphicon-search form-control-feedback"></span>
 						  </div>
 						</form>
@@ -139,19 +208,13 @@
 								<td>手机</td>
 							</tr>
 						</thead>
-						<tbody>
-							<tr>
+						<tbody id="contactsTbody">
+							<!-- <tr>
 								<td><input type="radio" name="activity"/></td>
 								<td>李四</td>
 								<td>lisi@bjpowernode.com</td>
 								<td>12345678901</td>
-							</tr>
-							<tr>
-								<td><input type="radio" name="activity"/></td>
-								<td>李四</td>
-								<td>lisi@bjpowernode.com</td>
-								<td>12345678901</td>
-							</tr>
+							</tr> -->
 						</tbody>
 					</table>
 				</div>
@@ -228,7 +291,7 @@
 			</div>
 			<label for="create-possibility" class="col-sm-2 control-label">可能性</label>
 			<div class="col-sm-10" style="width: 300px;">
-				<input type="text" class="form-control" id="create-possibility">
+				<input type="text" class="form-control" id="create-possibility" readonly>
 			</div>
 		</div>
 		
@@ -245,15 +308,15 @@
 			<label for="create-activitySrc" class="col-sm-2 control-label">市场活动源&nbsp;&nbsp;<a href="javascript:void(0);" id="activityResearch"><span class="glyphicon glyphicon-search"></span></a></label>
 			<div class="col-sm-10" style="width: 300px;">
 				<input type="hidden" id="create-activityId">
-				<input type="text" class="form-control" id="create-activitySrc">
+				<input type="text" class="form-control" id="create-activitySrc" readonly>
 			</div>
 		</div>
 		
 		<div class="form-group">
-			<label for="create-contactsName" class="col-sm-2 control-label">联系人名称&nbsp;&nbsp;<a href="javascript:void(0);" data-toggle="modal" data-target="#findContacts"><span class="glyphicon glyphicon-search"></span></a></label>
+			<label for="create-contactsName" class="col-sm-2 control-label">联系人名称&nbsp;&nbsp;<a href="javascript:void(0);" id="contactsResearch"><span class="glyphicon glyphicon-search"></span></a></label>
 			<div class="col-sm-10" style="width: 300px;">
 				<input type="hidden" id="create-contactsId">
-				<input type="text" class="form-control" id="create-contactsName">
+				<input type="text" class="form-control" id="create-contactsName" readonly>
 			</div>
 		</div>
 		
