@@ -153,8 +153,8 @@ public class Test {
 		
 	}
 	@org.junit.Test
-	public void selectTransByConditionForPageCount() {
-	
+	public void selectCustomerNameByNameLike() {
+		customerMapper.selectCustomerNameByNameLike("株式").forEach(System.out::println);
 		
 	}
 }

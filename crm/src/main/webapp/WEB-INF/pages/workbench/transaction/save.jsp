@@ -20,6 +20,8 @@
 <!-- ページングのためのJSファイルの読み込み -->
 <script type="text/javascript" src="jquery/bs_pagination-master/js/jquery.bs_pagination.min.js"></script>
 <script type="text/javascript" src="jquery/bs_pagination-master/localization/ja.js"></script>
+<!-- 文字入力時の候補表示（オートコンプリート）用 -->
+<script type="text/javascript" src="jquery/bs_typeahead/bootstrap3-typeahead.min.js"></script>
 
 <script>
 	$(function(){
@@ -137,6 +139,28 @@
 				}
 			})
 		});
+
+		//
+		$("#create-customerName").typeahead({
+			source:function(query,process){
+				//删除键击时，清空框中的内容
+				if(query == ""){
+					query = "";
+				}
+				
+				$.ajax({
+					url:"workbench/transaction/queryCustomerNameByNameLike.do",
+					data:{
+						"name":query
+					},
+					type:"get",
+					dataType:"json",
+					success:function(data){
+						process(data);
+					}
+				})
+			}
+		})
 	});
 </script>
 </head>
@@ -266,7 +290,7 @@
 		<div class="form-group">
 			<label for="create-accountName" class="col-sm-2 control-label">客户名称<span style="font-size: 15px; color: red;">*</span></label>
 			<div class="col-sm-10" style="width: 300px;">
-				<input type="text" class="form-control" id="create-accountName" placeholder="支持自动补全，输入客户不存在则新建">
+				<input type="text" class="form-control" id="create-customerName" placeholder="支持自动补全，输入客户不存在则新建">
 			</div>
 			<label for="create-transactionStage" class="col-sm-2 control-label">阶段<span style="font-size: 15px; color: red;">*</span></label>
 			<div class="col-sm-10" style="width: 300px;">

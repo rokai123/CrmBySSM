@@ -22,4 +22,6 @@ public interface CustomerMapper {
 	int deleteCustomerByIds(String[] ids);
 	
 	Customer selectCustomerForDetailById(String customerId);
+	
+	List<String> selectCustomerNameByNameLike(String name);
 }

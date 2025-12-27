@@ -23,6 +23,7 @@ import com.lukai.crm.workbench.domain.Contacts;
 import com.lukai.crm.workbench.domain.Tran;
 import com.lukai.crm.workbench.service.ActivityService;
 import com.lukai.crm.workbench.service.ContactsService;
+import com.lukai.crm.workbench.service.CustomerService;
 import com.lukai.crm.workbench.service.TranService;
 
 @Controller
@@ -37,6 +38,8 @@ public class TranController {
 	private ActivityService activityService;
 	@Autowired
 	private ContactsService contactsService;
+	@Autowired
+	private CustomerService customerService;
 	
 	@RequestMapping("/workbench/transaction/toIndex.do")
 	public String toIndex(HttpServletRequest request,HttpSession session) {
@@ -117,5 +120,11 @@ public class TranController {
 		
 		
 		return possibility;
+	}
+	
+	@RequestMapping("/workbench/transaction/queryCustomerNameByNameLike.do")
+	@ResponseBody
+	public List<String> queryCustomerNameByNameLike(String name) {
+		return customerService.queryCustomerNameByNameLike(name);
 	}
 }

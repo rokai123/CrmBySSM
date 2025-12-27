@@ -52,5 +52,10 @@ public class CustomerServiceImpl implements CustomerService{
 		return customer;
 	}
 
+	@Override
+	public List<String> queryCustomerNameByNameLike(String name) {
+		return customerMapper.selectCustomerNameByNameLike(name);
+	}
+
 	
 }

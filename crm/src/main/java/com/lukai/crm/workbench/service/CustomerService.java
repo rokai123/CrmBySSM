@@ -13,4 +13,5 @@ public interface CustomerService {
 	int saveEditCustomer(Customer customer);
 	int deleteCustomerByIds(String[] ids);
 	Customer queryCustomerForDetailById(String id);
+	List<String> queryCustomerNameByNameLike(String name);
 }

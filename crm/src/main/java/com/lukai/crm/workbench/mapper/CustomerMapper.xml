@@ -130,4 +130,9 @@
  	                    where c.id = #{customerId}
  	</select>
  	
+ 	<select id="selectCustomerNameByNameLike" parameterType="String" resultType="String">
+ 		<bind name="namePattern" value="'%' + name + '%'" />
+ 	    select name from tbl_customer
+ 	        where name like #{namePattern}
+ 	</select>
 </mapper>
