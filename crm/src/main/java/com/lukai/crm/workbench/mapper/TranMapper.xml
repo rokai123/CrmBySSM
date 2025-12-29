@@ -184,4 +184,38 @@
              </if>
         </where>
 	</select>
-</mapper>
+	
+	<select id="selectTranForDetailById" parameterType="string" resultMap="BaseResultMap">
+        SELECT
+        	t.id,
+        	u1.name as owner,
+        	t.money,
+        	t.name,
+        	t.expected_date,
+        	c.name as customer_id,
+        	d1.value as stage,
+        	d2.value as type,
+        	d3.value as source,
+        	a.name as activity_id,
+        	ct.fullname as contacts_id,
+        	u2.name as create_by,
+        	t.create_time,
+        	u3.name as edit_by,
+        	t.edit_time,
+        	t.description,
+        	t.contact_summary,
+        	t.next_contact_time
+        FROM tbl_tran t 
+        	join tbl_customer c on t.customer_id = c.id
+        	join tbl_user u1 on t.owner = u1.id
+        	join tbl_user u2 on t.create_by = u2.id
+        	join tbl_user u3 on t.edit_by = u3.id
+        	left join tbl_dic_value d1 on t.stage = d1.id
+        	left join tbl_dic_value d2 on t.type = d2.id
+        	left join tbl_dic_value d3 on t.source = d3.id
+        	left join tbl_contacts ct on t.contacts_id = ct.id
+        	left join tbl_activity a on t.activity_id = a.id
+
+        WHERE t.id = #{id}
+    </select>
+    </mapper>

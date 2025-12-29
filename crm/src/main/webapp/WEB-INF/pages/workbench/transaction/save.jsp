@@ -25,6 +25,19 @@
 
 <script>
 	$(function(){
+
+		// ページの読み込み完了後、コンテナに対してカレンダーツール関数を呼び出す
+		$(".myDate").datetimepicker({
+		    language: "ja",          // 言語（日本語に設定）
+		    format: "yyyy-mm-dd",    // 日付フォーマット
+		    minView: "month",        // 月単位で表示
+		    initialDate: new Date(), // デフォルトで現在の日付を表示
+		    autoclose: true,         // 日付選択後にカレンダーを自動閉じる
+		    todayBtn: true,          // 「今日」ボタンを表示
+		    clearBtn: true           // 「クリア」ボタンを表示
+		});
+
+		
 		//点击市场活动源搜索按钮弹出模态窗口
 		$("#activityResearch").click(function(){
 			//清空模态窗口中数据
@@ -142,11 +155,10 @@
 
 		//
 		$("#create-customerName").typeahead({
+			minLength: 1, // 至少输入1个字符才触发
+			showHintOnFocus: false,    // 关键：避免 focus 时弹出旧缓存（很多版本默认会弹）
+			autoSelect: false,         // 可选：避免自动选中第一条
 			source:function(query,process){
-				//删除键击时，清空框中的内容
-				if(query == ""){
-					query = "";
-				}
 				
 				$.ajax({
 					url:"workbench/transaction/queryCustomerNameByNameLike.do",
@@ -161,6 +173,67 @@
 				})
 			}
 		})
+
+		$("#saveCreateTranBtn").click(function(){
+			let owner = $("#create-transactionOwner").val();
+			let money = $("#create-money").val();
+			let name = $("#create-transactionName").val();
+			let expectedDate = $("#create-expectedDate").val();
+			let customerName = $("#create-customerName").val();
+			let stage = $("#create-transactionStage").val();
+			let type = $("#create-transactionType").val();
+			let source = $("#create-clueSource").val();
+			let activityId = $("#create-activityId").val();
+			let contactsId = $("#create-contactsName").val();
+			let description = $("#create-describe").val();
+			let contactSummary = $("#create-contactSummary").val();
+			let nextContactTime= $("#create-nextContactTime").val();
+			if(name == ""){
+				alert("参数不能为空");
+				return;
+			}
+			if(customerName == ""){
+				alert("参数不能为空");
+				return;
+			}
+			if(expectedDate == ""){
+				alert("参数不能为空");
+				return;
+			}
+			if(stage == ""){
+				alert("参数不能为空");
+				return;
+			}
+			$.ajax({
+				url:"workbench/transaction/saveCreateTran.do",
+				data:{
+					"owner":owner,
+					"money":money,
+					"name":name,
+					"expectedDate":expectedDate,
+					"customerName":customerName,
+					"stage":stage,
+					"type":type,
+					"source":source,
+					"activityId":activityId,
+					"contactsId":contactsId,
+					"description":description,
+					"contactSummary":contactSummary,
+					"nextContactTime":nextContactTime
+				}
+				,type:"post",
+				dataType:"json",
+				success:function(data){
+					if(data.code == "1"){
+						alert("添加成功");
+						window.location.href="workbench/transaction/toIndex.do";
+					}else{
+						alert("添加失败");
+					}
+				}
+			})
+			
+		});
 	});
 </script>
 </head>
@@ -250,7 +323,7 @@
 	<div style="position:  relative; left: 30px;">
 		<h3>创建交易</h3>
 	  	<div style="position: relative; top: -40px; left: 70%;">
-			<button type="button" class="btn btn-primary">保存</button>
+			<button type="button" id="saveCreateTranBtn" class="btn btn-primary">保存</button>
 			<button type="button" class="btn btn-default">取消</button>
 		</div>
 		<hr style="position: relative; top: -40px;">
@@ -283,7 +356,7 @@
 			</div>
 			<label for="create-expectedClosingDate" class="col-sm-2 control-label">预计成交日期<span style="font-size: 15px; color: red;">*</span></label>
 			<div class="col-sm-10" style="width: 300px;">
-				<input type="text" class="form-control" id="create-expectedClosingDate">
+				<input type="text" class="form-control myDate" id="create-expectedClosingDate">
 			</div>
 		</div>
 		
@@ -361,7 +434,7 @@
 		<div class="form-group">
 			<label for="create-nextContactTime" class="col-sm-2 control-label">下次联系时间</label>
 			<div class="col-sm-10" style="width: 300px;">
-				<input type="text" class="form-control" id="create-nextContactTime">
+				<input type="text" class="form-control myDate" id="create-nextContactTime">
 			</div>
 		</div>
 		

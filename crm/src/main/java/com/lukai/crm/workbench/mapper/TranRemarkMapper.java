@@ -10,4 +10,5 @@ import com.lukai.crm.workbench.domain.TranRemark;
 public interface TranRemarkMapper {
 	
 	int insertTranRemarkByList(List<TranRemark> trList);
+	List<TranRemark> selectTranRemarkById(String tranId);
 }

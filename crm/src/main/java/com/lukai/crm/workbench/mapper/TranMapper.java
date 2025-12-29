@@ -12,4 +12,5 @@ public interface TranMapper {
 	int insertTran(Tran tran);
 	List<Tran> selecTransByConditionForPage(Map<String, Object> map);
 	int selectTransByConditionForPageCount(Map<String, Object> map);
+	Tran selectTranForDetailById(String id);
 }

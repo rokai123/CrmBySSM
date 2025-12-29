@@ -8,5 +8,7 @@ import com.lukai.crm.workbench.domain.Tran;
 public interface TranService {
 	List<Tran> queryTransByConditionForPage(Map<String, Object> map);
 	int queryTransByConditionForPageCount(Map<String, Object> map);
+	void saveCreateTran(Map<String, Object> map);
+	Tran queryTranForDetailById(String id);
 
 }

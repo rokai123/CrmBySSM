@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lukai.crm.workbench.mapper.TranHistoryMapper">
+	<resultMap id="BaseResultMap" type="com.lukai.crm.workbench.domain.TranHistory">
+	    <id column="id" jdbcType="CHAR" property="id"/>
+	    <result column="stage" jdbcType="VARCHAR" property="stage"/>
+	    <result column="money" jdbcType="VARCHAR" property="money"/>
+	    <result column="expected_date" jdbcType="CHAR" property="expectedDate"/>
+	    <result column="create_time" jdbcType="CHAR" property="createTime"/>
+	    <result column="create_by" jdbcType="VARCHAR" property="createBy"/>
+	    <result column="tran_id" jdbcType="CHAR" property="tranId"/>
+	</resultMap>
+
+	<sql id="Base_Column_List">
+	    id,
+	    stage,
+	    money,
+	    expected_date,
+	    create_time,
+	    create_by,
+	    tran_id
+	</sql>
+	
+	<insert id="insetTranHistory"
+        parameterType="com.lukai.crm.workbench.domain.TranHistory">
+	    insert into tbl_tran_history (
+	        id,
+	        stage,
+	        money,
+	        expected_date,
+	        create_time,
+	        create_by,
+	        tran_id
+	    ) values (
+	        #{id},
+	        #{stage},
+	        #{money},
+	        #{expectedDate},
+	        #{createTime},
+	        #{createBy},
+	        #{tranId}
+	    )
+	</insert>
+	
+
+</mapper>

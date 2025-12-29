@@ -24,4 +24,6 @@ public interface CustomerMapper {
 	Customer selectCustomerForDetailById(String customerId);
 	
 	List<String> selectCustomerNameByNameLike(String name);
+	
+	Customer selectCustomerByName(String name);
 }

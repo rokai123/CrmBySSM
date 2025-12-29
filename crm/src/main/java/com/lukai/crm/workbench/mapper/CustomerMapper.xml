@@ -135,4 +135,10 @@
  	    select name from tbl_customer
  	        where name like #{namePattern}
  	</select>
+ 	
+ 	<select id="selectCustomerByName" parameterType="String" resultMap="BaseResultMap">
+ 	    select  c.id,c.owner,c.name,c.website,c.phone,c.create_by,c.create_time,c.edit_by,c.edit_time,c.description,c.contact_summary,c.next_contact_time,c.address
+ 	        from tbl_customer c
+ 	        where c.name = #{name}
+ 	</select>
 </mapper>

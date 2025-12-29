@@ -27,6 +27,7 @@ import com.lukai.crm.workbench.mapper.ClueRemarkMapper;
 import com.lukai.crm.workbench.mapper.CustomerMapper;
 import com.lukai.crm.workbench.mapper.CustomerRemarkMapper;
 import com.lukai.crm.workbench.mapper.TranMapper;
+import com.lukai.crm.workbench.mapper.TranRemarkMapper;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {
 		"classpath:applicationContext.xml",
@@ -52,6 +53,8 @@ public class Test {
 	private CustomerRemarkMapper customerRemarkMapper;
 	@Autowired
 	private TranMapper tranMapper;
+	@Autowired
+	private TranRemarkMapper tranRemarkMapper;
 	
 	@org.junit.Test
 	public void dateUtilsTest() {
@@ -155,6 +158,11 @@ public class Test {
 	@org.junit.Test
 	public void selectCustomerNameByNameLike() {
 		customerMapper.selectCustomerNameByNameLike("株式").forEach(System.out::println);
+		
+	}
+	@org.junit.Test
+	public void selectTranRemarkById() {
+		tranRemarkMapper.selectTranRemarkById("d97fdd9ddba841a0b7cfc7fc566fa3e5").forEach(System.out::println);
 		
 	}
 }

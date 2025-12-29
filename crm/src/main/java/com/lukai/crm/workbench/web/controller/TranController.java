@@ -11,9 +11,11 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.lukai.crm.commons.contants.Contants;
+import com.lukai.crm.commons.domain.ReturnObject;
 import com.lukai.crm.settings.domain.DicValue;
 import com.lukai.crm.settings.domain.User;
 import com.lukai.crm.settings.service.DicValueService;
@@ -126,5 +128,38 @@ public class TranController {
 	@ResponseBody
 	public List<String> queryCustomerNameByNameLike(String name) {
 		return customerService.queryCustomerNameByNameLike(name);
+	}
+	
+	/**
+	 * 保存创建的交易
+	 * @param session
+	 * @param map
+	 * @return
+	 */
+	@RequestMapping("/workbench/transaction/saveCreateTran.do")
+	@ResponseBody
+	public ReturnObject saveCreateTran(HttpSession session,@RequestParam Map<String, Object> map) {
+		User user = (User)session.getAttribute(Contants.SESSION_USER);
+		map.put(Contants.SESSION_USER, user);
+		
+		ReturnObject returnObject = new ReturnObject();
+		try {
+			tranService.saveCreateTran(map);
+			returnObject.setCode(Contants.RETURN_OBJECT_CODE_SUCCESS);
+		} catch (Exception e) {
+			e.printStackTrace();
+			returnObject.setCode(Contants.RETURN_OBJECT_CODE_FAIL);
+			returnObject.setMessage("システムが混雑中です、しばらくしてから再度お試しください");
+			
+		}
+		
+		return returnObject;
+	}
+	
+	@RequestMapping("/workbench/transaction/TranDetailPage.do")
+	public String TranDetailPage(String id,HttpServletRequest request) {
+		Tran tran = tranService.queryTranForDetailById(id);
+		request.setAttribute("tran", tran);
+		return "workbench/transaction/detail";
 	}
 }

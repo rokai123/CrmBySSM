@@ -73,7 +73,7 @@
 		        $.each(data.tranList, function(i, t) {
 					html +="<tr>";
 					html +="<td><input type=\"checkbox\" value=\""+t.id+"\"/></td>";
-					html +="<td><a style=\"text-decoration: none; cursor: pointer;\" onclick=\"window.location.href='detail.html';\">"+t.name+"</a></td>";
+					html +="<td><a style=\"text-decoration: none; cursor: pointer;\" onclick=\"window.location.href='workbench/transaction/TranDetailPage.do?id="+t.id+"';\">"+t.name+"</a></td>";
 					html +="<td>"+(t.customerId||"")+"</td>";
 					html +="<td>"+t.stage+"</td>";
 					html +="<td>"+(t.type||"")+"</td>";
