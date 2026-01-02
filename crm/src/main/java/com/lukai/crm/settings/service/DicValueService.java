@@ -11,4 +11,6 @@ public interface DicValueService {
 	 * @return
 	 */
 	List<DicValue> queryDicValueByTypeCode(String typeCode);
+	
+	DicValue queryDicValueById(String id);
 }

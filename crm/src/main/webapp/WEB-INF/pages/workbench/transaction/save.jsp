@@ -321,16 +321,16 @@
 	
 	
 	<div style="position:  relative; left: 30px;">
-		<h3>创建交易</h3>
+		<h3>商談作成</h3>
 	  	<div style="position: relative; top: -40px; left: 70%;">
-			<button type="button" id="saveCreateTranBtn" class="btn btn-primary">保存</button>
-			<button type="button" class="btn btn-default">取消</button>
+			<button type="button" id="saveCreateTranBtn" class="btn btn-primary">登録</button>
+			<button type="button" class="btn btn-default">キャンセル</button>
 		</div>
 		<hr style="position: relative; top: -40px;">
 	</div>
 	<form class="form-horizontal" role="form" style="position: relative; top: -30px;">
 		<div class="form-group">
-			<label for="create-transactionOwner" class="col-sm-2 control-label">所有者<span style="font-size: 15px; color: red;">*</span></label>
+			<label for="create-transactionOwner" class="col-sm-2 control-label">担当者<span style="font-size: 15px; color: red;">*</span></label>
 			<div class="col-sm-10" style="width: 300px;">
 				<select class="form-control" id="create-transactionOwner">
 					<!-- 遍历所有者,默认选择当前用户-->
@@ -343,29 +343,29 @@
 
 				</select>
 			</div>
-			<label for="create-amountOfMoney" class="col-sm-2 control-label">金额</label>
+			<label for="create-amountOfMoney" class="col-sm-2 control-label">金額</label>
 			<div class="col-sm-10" style="width: 300px;">
 				<input type="text" class="form-control" id="create-amountOfMoney">
 			</div>
 		</div>
 		
 		<div class="form-group">
-			<label for="create-transactionName" class="col-sm-2 control-label">名称<span style="font-size: 15px; color: red;">*</span></label>
+			<label for="create-transactionName" class="col-sm-2 control-label">商談名<span style="font-size: 15px; color: red;">*</span></label>
 			<div class="col-sm-10" style="width: 300px;">
 				<input type="text" class="form-control" id="create-transactionName">
 			</div>
-			<label for="create-expectedClosingDate" class="col-sm-2 control-label">预计成交日期<span style="font-size: 15px; color: red;">*</span></label>
+			<label for="create-expectedClosingDate" class="col-sm-2 control-label">成約予定日<span style="font-size: 15px; color: red;">*</span></label>
 			<div class="col-sm-10" style="width: 300px;">
 				<input type="text" class="form-control myDate" id="create-expectedClosingDate">
 			</div>
 		</div>
 		
 		<div class="form-group">
-			<label for="create-accountName" class="col-sm-2 control-label">客户名称<span style="font-size: 15px; color: red;">*</span></label>
+			<label for="create-accountName" class="col-sm-2 control-label">取引先名<span style="font-size: 15px; color: red;">*</span></label>
 			<div class="col-sm-10" style="width: 300px;">
 				<input type="text" class="form-control" id="create-customerName" placeholder="支持自动补全，输入客户不存在则新建">
 			</div>
-			<label for="create-transactionStage" class="col-sm-2 control-label">阶段<span style="font-size: 15px; color: red;">*</span></label>
+			<label for="create-transactionStage" class="col-sm-2 control-label">ステージ<span style="font-size: 15px; color: red;">*</span></label>
 			<div class="col-sm-10" style="width: 300px;">
 			  <select class="form-control" id="create-transactionStage">
 			  	<option value=""></option>
@@ -377,7 +377,7 @@
 		</div>
 		
 		<div class="form-group">
-			<label for="create-transactionType" class="col-sm-2 control-label">类型</label>
+			<label for="create-transactionType" class="col-sm-2 control-label">種別</label>
 			<div class="col-sm-10" style="width: 300px;">
 				<select class="form-control" id="create-transactionType">
 				  	<option value=""></option>
@@ -386,14 +386,14 @@
 			  	  </c:forEach>
 				</select>
 			</div>
-			<label for="create-possibility" class="col-sm-2 control-label">可能性</label>
+			<label for="create-possibility" class="col-sm-2 control-label">確度</label>
 			<div class="col-sm-10" style="width: 300px;">
 				<input type="text" class="form-control" id="create-possibility" readonly>
 			</div>
 		</div>
 		
 		<div class="form-group">
-			<label for="create-clueSource" class="col-sm-2 control-label">来源</label>
+			<label for="create-clueSource" class="col-sm-2 control-label">リードソース</label>
 			<div class="col-sm-10" style="width: 300px;">
 				<select class="form-control" id="create-clueSource">
 				  	<option value=""></option>
@@ -402,7 +402,7 @@
 			  	  </c:forEach>
 				</select>
 			</div>
-			<label for="create-activitySrc" class="col-sm-2 control-label">市场活动源&nbsp;&nbsp;<a href="javascript:void(0);" id="activityResearch"><span class="glyphicon glyphicon-search"></span></a></label>
+			<label for="create-activitySrc" class="col-sm-2 control-label">キャンペーンソース&nbsp;&nbsp;<a href="javascript:void(0);" id="activityResearch"><span class="glyphicon glyphicon-search"></span></a></label>
 			<div class="col-sm-10" style="width: 300px;">
 				<input type="hidden" id="create-activityId">
 				<input type="text" class="form-control" id="create-activitySrc" readonly>
@@ -410,7 +410,7 @@
 		</div>
 		
 		<div class="form-group">
-			<label for="create-contactsName" class="col-sm-2 control-label">联系人名称&nbsp;&nbsp;<a href="javascript:void(0);" id="contactsResearch"><span class="glyphicon glyphicon-search"></span></a></label>
+			<label for="create-contactsName" class="col-sm-2 control-label">取引先責任者&nbsp;&nbsp;<a href="javascript:void(0);" id="contactsResearch"><span class="glyphicon glyphicon-search"></span></a></label>
 			<div class="col-sm-10" style="width: 300px;">
 				<input type="hidden" id="create-contactsId">
 				<input type="text" class="form-control" id="create-contactsName" readonly>
@@ -418,21 +418,21 @@
 		</div>
 		
 		<div class="form-group">
-			<label for="create-describe" class="col-sm-2 control-label">描述</label>
+			<label for="create-describe" class="col-sm-2 control-label">説明</label>
 			<div class="col-sm-10" style="width: 70%;">
 				<textarea class="form-control" rows="3" id="create-describe"></textarea>
 			</div>
 		</div>
 		
 		<div class="form-group">
-			<label for="create-contactSummary" class="col-sm-2 control-label">联系纪要</label>
+			<label for="create-contactSummary" class="col-sm-2 control-label">対応履歴</label>
 			<div class="col-sm-10" style="width: 70%;">
 				<textarea class="form-control" rows="3" id="create-contactSummary"></textarea>
 			</div>
 		</div>
 		
 		<div class="form-group">
-			<label for="create-nextContactTime" class="col-sm-2 control-label">下次联系时间</label>
+			<label for="create-nextContactTime" class="col-sm-2 control-label">次回連絡日時</label>
 			<div class="col-sm-10" style="width: 300px;">
 				<input type="text" class="form-control myDate" id="create-nextContactTime">
 			</div>

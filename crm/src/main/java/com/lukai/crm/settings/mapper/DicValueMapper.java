@@ -14,4 +14,5 @@ public interface DicValueMapper {
 	 * @return
 	 */
 	List<DicValue> selectDicValueByTypeCode(String typeCode);
+	DicValue selectDicValueById(String id);
 }

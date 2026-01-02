@@ -14,6 +14,7 @@ import com.lukai.crm.settings.domain.User;
 import com.lukai.crm.workbench.domain.Customer;
 import com.lukai.crm.workbench.domain.Tran;
 import com.lukai.crm.workbench.domain.TranHistory;
+import com.lukai.crm.workbench.domain.TranVO;
 import com.lukai.crm.workbench.mapper.CustomerMapper;
 import com.lukai.crm.workbench.mapper.TranHistoryMapper;
 import com.lukai.crm.workbench.mapper.TranMapper;
@@ -85,7 +86,7 @@ public class TranServiceImpl implements TranService{
 	}
 
 	@Override
-	public Tran queryTranForDetailById(String id) {
+	public TranVO queryTranForDetailById(String id) {
 		
 		
 		return tranMapper.selectTranForDetailById(id);

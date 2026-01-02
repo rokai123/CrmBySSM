@@ -25,6 +25,28 @@
         <result column="contact_summary"  property="contactSummary"/>
         <result column="next_contact_time" property="nextContactTime"/>
     </resultMap>
+    <!-- ==================== ResultMap ==================== -->
+    <resultMap id="BaseResultMapVO" type="com.lukai.crm.workbench.domain.TranVO">
+        <id     column="id"               property="id" jdbcType="CHAR"/>
+        <result column="owner"            property="owner"/>
+        <result column="money"            property="money"/>
+        <result column="name"             property="name"/>
+        <result column="expected_date"    property="expectedDate"/>
+        <result column="customer_id"      property="customerId"/>
+        <result column="stage"            property="stage"/>
+        <result column="type"             property="type"/>
+        <result column="source"           property="source"/>
+        <result column="activity_id"      property="activityId"/>
+        <result column="contacts_id"      property="contactsId"/>
+        <result column="create_by"        property="createBy"/>
+        <result column="create_time"      property="createTime"/>
+        <result column="edit_by"          property="editBy"/>
+        <result column="edit_time"        property="editTime"/>
+        <result column="description"      property="description"/>
+        <result column="contact_summary"  property="contactSummary"/>
+        <result column="next_contact_time" property="nextContactTime"/>
+        <result column="order_no"  property="orderNo"/>
+    </resultMap>
 
     <!-- ==================== Base Column List ==================== -->
     <sql id="Base_Column_List">
@@ -185,7 +207,7 @@
         </where>
 	</select>
 	
-	<select id="selectTranForDetailById" parameterType="string" resultMap="BaseResultMap">
+	<select id="selectTranForDetailById" parameterType="string" resultMap="BaseResultMapVO">
         SELECT
         	t.id,
         	u1.name as owner,
@@ -204,17 +226,19 @@
         	t.edit_time,
         	t.description,
         	t.contact_summary,
-        	t.next_contact_time
+        	t.next_contact_time,
+        	dv.order_no as order_no
         FROM tbl_tran t 
         	join tbl_customer c on t.customer_id = c.id
         	join tbl_user u1 on t.owner = u1.id
         	join tbl_user u2 on t.create_by = u2.id
-        	join tbl_user u3 on t.edit_by = u3.id
+        	left join tbl_user u3 on t.edit_by = u3.id
         	left join tbl_dic_value d1 on t.stage = d1.id
         	left join tbl_dic_value d2 on t.type = d2.id
         	left join tbl_dic_value d3 on t.source = d3.id
         	left join tbl_contacts ct on t.contacts_id = ct.id
         	left join tbl_activity a on t.activity_id = a.id
+        	left join tbl_dic_value dv on t.stage = dv.id
 
         WHERE t.id = #{id}
     </select>

@@ -56,7 +56,7 @@
 			let customerId = "${customer.id}";
 			let noteContent = $("#remark").val();
 			if(noteContent==""){
-				alert("内容不能为空");
+				alert("内容を入力してください。");
 				return;
 			}
 			$.ajax({
@@ -94,7 +94,7 @@
 
 		$("#remarkDiv00").on("click","a[name=\"removeRemarkBtn\"]",function(){ 
 			let remarkId = $(this).data("remarkId");
-			if(window.confirm("削除しますか")){
+			if(window.confirm("削除してもよろしいですか？")){
 				$.ajax({
 					url:"workbench/customer/deleteCustomerRemarkById.do",
 					data:{
@@ -143,7 +143,7 @@
 				dataType:"json",
 				success:function(data){
 					if(data.code=="1"){
-						alert("更新成功");
+						alert("更新が完了しました。");
 						$("#editRemarkModal").modal("hide");
 						$("#remarkDiv_"+remarkId+" h5").text(noteContent);
 						$("#remarkDiv_"+remarkId+" small").text(data.resultData.editTime+"--${sessionScope.sessionUser.name}さんが編集しました");
@@ -170,7 +170,7 @@
                     <button type="button" class="close" data-dismiss="modal">
                         <span aria-hidden="true">×</span>
                     </button>
-                    <h4 class="modal-title" id="myModalLabel">修改备注</h4>
+                    <h4 class="modal-title" id="myModalLabel">備考編集</h4>
                 </div>
                 <div class="modal-body">
                     <form class="form-horizontal" role="form">
@@ -186,7 +186,7 @@
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">閉じる</button>
                     <button type="button" class="btn btn-primary" id="updateRemarkBtn">更新</button>
                 </div>
             </div>
@@ -384,8 +384,8 @@
 			<h3>${customer.name} <small><a href="${customer.website}" target="_blank">${customer.website}</a></small></h3>
 		</div>
 		<div style="position: relative; height: 50px; width: 500px;  top: -72px; left: 700px;">
-			<button type="button" class="btn btn-default" data-toggle="modal" data-target="#editCustomerModal"><span class="glyphicon glyphicon-edit"></span> 编辑</button>
-			<button type="button" class="btn btn-danger"><span class="glyphicon glyphicon-minus"></span> 删除</button>
+			<button type="button" class="btn btn-default" data-toggle="modal" data-target="#editCustomerModal"><span class="glyphicon glyphicon-edit"></span>編集</button>
+			<button type="button" class="btn btn-danger"><span class="glyphicon glyphicon-minus"></span>削除</button>
 		</div>
 	</div>
 	
@@ -396,47 +396,47 @@
 	<!-- 详细信息 -->
 	<div style="position: relative; top: -70px;">
 		<div style="position: relative; left: 40px; height: 30px;">
-			<div style="width: 300px; color: gray;">所有者</div>
+			<div style="width: 300px; color: gray;">担当者</div>
 			<div style="width: 300px;position: relative; left: 200px; top: -20px;"><b>${customer.owner}</b></div>
-			<div style="width: 300px;position: relative; left: 450px; top: -40px; color: gray;">名称</div>
+			<div style="width: 300px;position: relative; left: 450px; top: -40px; color: gray;">会社名</div>
 			<div style="width: 300px;position: relative; left: 650px; top: -60px;"><b>${customer.name}</b></div>
 			<div style="height: 1px; width: 400px; background: #D5D5D5; position: relative; top: -60px;"></div>
 			<div style="height: 1px; width: 400px; background: #D5D5D5; position: relative; top: -60px; left: 450px;"></div>
 		</div>
 		<div style="position: relative; left: 40px; height: 30px; top: 10px;">
-			<div style="width: 300px; color: gray;">公司网站</div>
+			<div style="width: 300px; color: gray;">会社Webサイト</div>
 			<div style="width: 300px;position: relative; left: 200px; top: -20px;"><b>${customer.website}</b></div>
-			<div style="width: 300px;position: relative; left: 450px; top: -40px; color: gray;">公司座机</div>
+			<div style="width: 300px;position: relative; left: 450px; top: -40px; color: gray;">会社電話</div>
 			<div style="width: 300px;position: relative; left: 650px; top: -60px;"><b>${customer.phone}</b></div>
 			<div style="height: 1px; width: 400px; background: #D5D5D5; position: relative; top: -60px;"></div>
 			<div style="height: 1px; width: 400px; background: #D5D5D5; position: relative; top: -60px; left: 450px;"></div>
 		</div>
 		<div style="position: relative; left: 40px; height: 30px; top: 20px;">
-			<div style="width: 300px; color: gray;">创建者</div>
+			<div style="width: 300px; color: gray;">作成者</div>
 			<div style="width: 500px;position: relative; left: 200px; top: -20px;"><b>${customer.createBy}&nbsp;&nbsp;</b><small style="font-size: 10px; color: gray;">${customer.createTime}</small></div>
 			<div style="height: 1px; width: 550px; background: #D5D5D5; position: relative; top: -20px;"></div>
 		</div>
 		<div style="position: relative; left: 40px; height: 30px; top: 30px;">
-			<div style="width: 300px; color: gray;">修改者</div>
+			<div style="width: 300px; color: gray;">更新者</div>
 			<div style="width: 500px;position: relative; left: 200px; top: -20px;"><b>${customer.editBy}&nbsp;&nbsp;</b><small style="font-size: 10px; color: gray;">${customer.editTime}</small></div>
 			<div style="height: 1px; width: 550px; background: #D5D5D5; position: relative; top: -20px;"></div>
 		</div>
         <div style="position: relative; left: 40px; height: 30px; top: 40px;">
-            <div style="width: 300px; color: gray;">联系纪要</div>
+            <div style="width: 300px; color: gray;">対応履歴</div>
             <div style="width: 630px;position: relative; left: 200px; top: -20px;">
                 <b>
-                    ${customer.contactSummary}
+                     ${empty customer.contactSummary ? '&nbsp;' : customer.contactSummary}
                 </b>
             </div>
             <div style="height: 1px; width: 850px; background: #D5D5D5; position: relative; top: -20px;"></div>
         </div>
         <div style="position: relative; left: 40px; height: 30px; top: 50px;">
-            <div style="width: 300px; color: gray;">下次联系时间</div>
-            <div style="width: 300px;position: relative; left: 200px; top: -20px;"><b>${customer.nextContactTime}</b></div>
+            <div style="width: 300px; color: gray;">次回連絡日時</div>
+            <div style="width: 300px;position: relative; left: 200px; top: -20px;"><b>${empty customer.nextContactTime?'&nbsp;':customer.nextContactTime}</b></div>
             <div style="height: 1px; width: 400px; background: #D5D5D5; position: relative; top: -20px; "></div>
         </div>
 		<div style="position: relative; left: 40px; height: 30px; top: 60px;">
-			<div style="width: 300px; color: gray;">描述</div>
+			<div style="width: 300px; color: gray;">取引先説明</div>
 			<div style="width: 630px;position: relative; left: 200px; top: -20px;">
 				<b>
 					 ${customer.description}
@@ -445,7 +445,7 @@
 			<div style="height: 1px; width: 850px; background: #D5D5D5; position: relative; top: -20px;"></div>
 		</div>
         <div style="position: relative; left: 40px; height: 30px; top: 70px;">
-            <div style="width: 300px; color: gray;">详细地址</div>
+            <div style="width: 300px; color: gray;">住所(詳細)</div>
             <div style="width: 630px;position: relative; left: 200px; top: -20px;">
                 <b>
 					 ${customer.address}
@@ -458,7 +458,7 @@
 	<!-- 备注 -->
 	<div style="position: relative; top: 10px; left: 40px;" id="remarkDiv00">
 		<div class="page-header" id="remarkDiv01">
-			<h4>备注</h4>
+			<h4>備考</h4>
 		</div>
 		
 		<!-- 备注1 -->
@@ -494,7 +494,7 @@
 	<div>
 		<div style="position: relative; top: 20px; left: 40px;">
 			<div class="page-header">
-				<h4>交易</h4>
+				<h4>商談</h4>
 			</div>
 			<div style="position: relative;top: 0px;">
 				<table id="activityTable2" class="table table-hover" style="width: 900px;">

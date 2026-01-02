@@ -121,9 +121,9 @@
 		$("#edit-CustomerBtn").click(function () {
 			let checkedBox = $("#customerTBody input[type='checkbox']:checked");
 			if (checkedBox.size() == 0) {
-				alert("请选择要修改的取引先");
+				alert("編集する取引先を選択してください。");
 			} else if (checkedBox.size() > 1) {
-				alert("只能选择一条取引先进行修改");
+				alert("編集する取引先は1件のみ選択してください。");
 			} else {
 				let id = checkedBox[0].value;
 				$.ajax({
@@ -212,10 +212,10 @@
 		$("#delete-CustomerBtn").click(function () {
 			let checkedBox = $("#customerTBody input[type='checkbox']:checked");
 			if (checkedBox.size() == 0) {
-				alert("请选择要删除的取引先");
+				alert("削除する取引先を選択してください。");
 				return;
 			} else {
-				if (window.confirm("确定要删除吗？")) {
+				if (window.confirm("削除してもよろしいですか？")) {
 					let ids = "";
 					$.each(checkedBox,function () { 
 						ids += "id=" + $(this).val() + "&";
@@ -321,13 +321,13 @@
 					<button type="button" class="close" data-dismiss="modal">
 						<span aria-hidden="true">×</span>
 					</button>
-					<h4 class="modal-title" id="myModalLabel1">创建客户</h4>
+					<h4 class="modal-title" id="myModalLabel1">取引先作成</h4>
 				</div>
 				<div class="modal-body">
 					<form class="form-horizontal" role="form">
 					
 						<div class="form-group">
-							<label for="create-customerOwner" class="col-sm-2 control-label">所有者<span style="font-size: 15px; color: red;">*</span></label>
+							<label for="create-customerOwner" class="col-sm-2 control-label">担当者<span style="font-size: 15px; color: red;">*</span></label>
 							<div class="col-sm-10" style="width: 300px;">
 								<select class="form-control" id="create-customerOwner">
 								  <c:forEach items="${userList}" var="u">
@@ -335,24 +335,24 @@
 								  </c:forEach>
 								</select>
 							</div>
-							<label for="create-customerName" class="col-sm-2 control-label">名称<span style="font-size: 15px; color: red;">*</span></label>
+							<label for="create-customerName" class="col-sm-2 control-label">会社名<span style="font-size: 15px; color: red;">*</span></label>
 							<div class="col-sm-10" style="width: 300px;">
 								<input type="text" class="form-control" id="create-customerName">
 							</div>
 						</div>
 						
 						<div class="form-group">
-                            <label for="create-website" class="col-sm-2 control-label">公司网站</label>
+                            <label for="create-website" class="col-sm-2 control-label">会社Webサイト</label>
                             <div class="col-sm-10" style="width: 300px;">
                                 <input type="text" class="form-control" id="create-website">
                             </div>
-							<label for="create-phone" class="col-sm-2 control-label">公司座机</label>
+							<label for="create-phone" class="col-sm-2 control-label">会社電話</label>
 							<div class="col-sm-10" style="width: 300px;">
 								<input type="text" class="form-control" id="create-phone">
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="create-describe" class="col-sm-2 control-label">描述</label>
+							<label for="create-describe" class="col-sm-2 control-label">取引先説明</label>
 							<div class="col-sm-10" style="width: 81%;">
 								<textarea class="form-control" rows="3" id="create-description"></textarea>
 							</div>
@@ -361,13 +361,13 @@
 
                         <div style="position: relative;top: 15px;">
                             <div class="form-group">
-                                <label for="create-contactSummary" class="col-sm-2 control-label">联系纪要</label>
+                                <label for="create-contactSummary" class="col-sm-2 control-label">対応履歴</label>
                                 <div class="col-sm-10" style="width: 81%;">
                                     <textarea class="form-control" rows="3" id="create-contactSummary"></textarea>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="create-nextContactTime" class="col-sm-2 control-label">下次联系时间</label>
+                                <label for="create-nextContactTime" class="col-sm-2 control-label">次回連絡日時</label>
                                 <div class="col-sm-10" style="width: 300px;">
                                     <input type="text" class="form-control myDate" id="create-nextContactTime">
                                 </div>
@@ -378,7 +378,7 @@
 
                         <div style="position: relative;top: 20px;">
                             <div class="form-group">
-                                <label for="create-address1" class="col-sm-2 control-label">详细地址</label>
+                                <label for="create-address1" class="col-sm-2 control-label">住所（詳細）</label>
                                 <div class="col-sm-10" style="width: 81%;">
                                     <textarea class="form-control" rows="1" id="create-address1"></textarea>
                                 </div>
@@ -388,8 +388,8 @@
 					
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-					<button type="button" class="btn btn-primary" id="saveCreateCustomer">保存</button>
+					<button type="button" class="btn btn-default" data-dismiss="modal">閉じる</button>
+					<button type="button" class="btn btn-primary" id="saveCreateCustomer">登録</button>
 				</div>
 			</div>
 		</div>
@@ -403,13 +403,13 @@
 					<button type="button" class="close" data-dismiss="modal">
 						<span aria-hidden="true">×</span>
 					</button>
-					<h4 class="modal-title" id="myModalLabel">修改客户</h4>
+					<h4 class="modal-title" id="myModalLabel">取引先編集</h4>
 				</div>
 				<div class="modal-body">
 					<form class="form-horizontal" role="form">
 						<input type="hidden" id="edit-id">
 						<div class="form-group">
-							<label for="edit-customerOwner" class="col-sm-2 control-label">所有者<span style="font-size: 15px; color: red;">*</span></label>
+							<label for="edit-customerOwner" class="col-sm-2 control-label">担当者<span style="font-size: 15px; color: red;">*</span></label>
 							<div class="col-sm-10" style="width: 300px;">
 								<input type="hidden" id="hidden-owner">
 								<select class="form-control" id="edit-customerOwner">
@@ -418,7 +418,7 @@
 								  </c:forEach>
 								</select>
 							</div>
-							<label for="edit-customerName" class="col-sm-2 control-label">名称<span style="font-size: 15px; color: red;">*</span></label>
+							<label for="edit-customerName" class="col-sm-2 control-label">会社名<span style="font-size: 15px; color: red;">*</span></label>
 							<div class="col-sm-10" style="width: 300px;">
 								<input type="hidden" id="hidden-name">
 								<input type="text" class="form-control" id="edit-customerName">
@@ -426,12 +426,12 @@
 						</div>
 						
 						<div class="form-group">
-                            <label for="edit-website" class="col-sm-2 control-label">公司网站</label>
+                            <label for="edit-website" class="col-sm-2 control-label">会社Webサイト</label>
                             <div class="col-sm-10" style="width: 300px;">
 								<input type="hidden" id="hidden-website">
                                 <input type="text" class="form-control" id="edit-website">
                             </div>
-							<label for="edit-phone" class="col-sm-2 control-label">公司座机</label>
+							<label for="edit-phone" class="col-sm-2 control-label">会社電話</label>
 							<div class="col-sm-10" style="width: 300px;">
 								<input type="hidden" id="hidden-phone">
 								<input type="text" class="form-control" id="edit-phone" value="010-84846003">
@@ -439,7 +439,7 @@
 						</div>
 						
 						<div class="form-group">
-							<label for="edit-describe" class="col-sm-2 control-label">描述</label>
+							<label for="edit-describe" class="col-sm-2 control-label">取引先説明</label>
 							<div class="col-sm-10" style="width: 81%;">
 								<input type="hidden" id="hidden-description">
 								<textarea class="form-control" rows="3" id="edit-describe"></textarea>
@@ -450,14 +450,14 @@
 
                         <div style="position: relative;top: 15px;">
                             <div class="form-group">
-                                <label for="create-contactSummary1" class="col-sm-2 control-label">联系纪要</label>
+                                <label for="create-contactSummary1" class="col-sm-2 control-label">対応履歴</label>
                                 <div class="col-sm-10" style="width: 81%;">
 									<input type="hidden" id="hidden-contactSummary">
                                     <textarea class="form-control" rows="3" id="create-contactSummary1"></textarea>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="create-nextContactTime2" class="col-sm-2 control-label">下次联系时间</label>
+                                <label for="create-nextContactTime2" class="col-sm-2 control-label">次回連絡日時</label>
                                 <div class="col-sm-10" style="width: 300px;">
 									<input type="hidden" id="hidden-nextContactTime">
                                     <input type="text" class="form-control" id="create-nextContactTime2">
@@ -469,7 +469,7 @@
 
                         <div style="position: relative;top: 20px;">
                             <div class="form-group">
-                                <label for="create-address" class="col-sm-2 control-label">详细地址</label>
+                                <label for="create-address" class="col-sm-2 control-label">住所(詳細)</label>
                                 <div class="col-sm-10" style="width: 81%;">
 									<input type="hidden" id="hidden-address">
                                     <textarea class="form-control" rows="1" id="edit-address"></textarea>
@@ -480,7 +480,7 @@
 					
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+					<button type="button" class="btn btn-default" data-dismiss="modal">閉じる</button>
 					<button type="button" class="btn btn-primary" id="saveEditBtn">更新</button>
 				</div>
 			</div>
@@ -493,7 +493,7 @@
 	<div>
 		<div style="position: relative; left: 10px; top: -10px;">
 			<div class="page-header">
-				<h3>客户列表</h3>
+				<h3>取引先一覧</h3>
 			</div>
 		</div>
 	</div>
@@ -507,41 +507,41 @@
 				  
 				  <div class="form-group">
 				    <div class="input-group">
-				      <div class="input-group-addon">名称</div>
+				      <div class="input-group-addon">会社名</div>
 				      <input class="form-control" id="query-name" type="text">
 				    </div>
 				  </div>
 				  
 				  <div class="form-group">
 				    <div class="input-group">
-				      <div class="input-group-addon">所有者</div>
+				      <div class="input-group-addon">担当者</div>
 				      <input class="form-control" id="query-owner" type="text">
 				    </div>
 				  </div>
 				  
 				  <div class="form-group">
 				    <div class="input-group">
-				      <div class="input-group-addon">公司座机</div>
+				      <div class="input-group-addon">会社電話</div>
 				      <input class="form-control" id="query-phone" type="text">
 				    </div>
 				  </div>
 				  
 				  <div class="form-group">
 				    <div class="input-group">
-				      <div class="input-group-addon">公司网站</div>
+				      <div class="input-group-addon">会社Webサイト</div>
 				      <input class="form-control" id="query-website" type="text">
 				    </div>
 				  </div>
 				  
-				  <button type="button" class="btn btn-default" id="queryBtn">查询</button>
+				  <button type="button" class="btn btn-default" id="queryBtn">検索</button>
 				  
 				</form>
 			</div>
 			<div class="btn-toolbar" role="toolbar" style="background-color: #F7F7F7; height: 50px; position: relative;top: 5px;">
 				<div class="btn-group" style="position: relative; top: 18%;">
 				  <button type="button" class="btn btn-primary" id="create-customer"><span class="glyphicon glyphicon-plus"></span> 新規作成</button>
-				  <button type="button" class="btn btn-default" id="edit-CustomerBtn"><span class="glyphicon glyphicon-pencil"></span> 修改</button>
-				  <button type="button" class="btn btn-danger" id="delete-CustomerBtn"><span class="glyphicon glyphicon-minus"></span> 删除</button>
+				  <button type="button" class="btn btn-default" id="edit-CustomerBtn"><span class="glyphicon glyphicon-pencil"></span> 編集</button>
+				  <button type="button" class="btn btn-danger" id="delete-CustomerBtn"><span class="glyphicon glyphicon-minus"></span> 削除</button>
 				</div>
 				
 			</div>
@@ -550,10 +550,10 @@
 					<thead>
 						<tr style="color: #B3B3B3;">
 							<td><input type="checkbox" id="checkAll"/></td>
-							<td>名称</td>
-							<td>所有者</td>
-							<td>公司座机</td>
-							<td>公司网站</td>
+							<td>会社名</td>
+							<td>担当者</td>
+							<td>会社電話</td>
+							<td>会社Webサイト</td>
 						</tr>
 					</thead>
 					<tbody id="customerTBody">

@@ -127,6 +127,23 @@
 	<!-- 阶段状态 -->
 	<div style="position: relative; left: 40px; top: -50px;">
 		阶段&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		<c:forEach items="${stageList}" var="s">
+			<c:if test="${s.value==tran.stage}">
+				<span class="glyphicon glyphicon-map-marker mystage" data-toggle="popover" data-placement="bottom" data-content="${s.value}" style="color: #90F790;"></span>
+				-----------
+			</c:if>
+			<c:if test="${tran.orderNo>s.orderNo}">
+				<span class="glyphicon glyphicon-ok-circle mystage" data-toggle="popover" data-placement="bottom" data-content="${s.value}" style="color: #90F790;"></span>
+				-----------
+			</c:if>
+			<c:if test="${tran.orderNo<s.orderNo}">
+				<span class="glyphicon glyphicon-record mystage" data-toggle="popover" data-placement="bottom" data-content="${s.value}"></span>
+				-----------
+			</c:if>
+			
+		</c:forEach>
+		<!-- <span class="glyphicon glyphicon-ok-circle mystage" data-toggle="popover" data-placement="bottom" data-content="资质审查" style="color: #90F790;"></span>
+		----------- 
 		<span class="glyphicon glyphicon-ok-circle mystage" data-toggle="popover" data-placement="bottom" data-content="资质审查" style="color: #90F790;"></span>
 		-----------
 		<span class="glyphicon glyphicon-ok-circle mystage" data-toggle="popover" data-placement="bottom" data-content="需求分析" style="color: #90F790;"></span>
@@ -144,8 +161,10 @@
 		<span class="glyphicon glyphicon-record mystage" data-toggle="popover" data-placement="bottom" data-content="丢失的线索"></span>
 		-----------
 		<span class="glyphicon glyphicon-record mystage" data-toggle="popover" data-placement="bottom" data-content="因竞争丢失关闭"></span>
-		-----------
-		<span class="closingDate">2010-10-10</span>
+		----------- -->
+		<span class="closingDate">
+			${tran.expectedDate}
+		</span>
 	</div>
 	
 	<!-- 详细信息 -->
@@ -176,9 +195,9 @@
 		</div>
 		<div style="position: relative; left: 40px; height: 30px; top: 30px;">
 			<div style="width: 300px; color: gray;">类型</div>
-			<div style="width: 300px;position: relative; left: 200px; top: -20px;"><b>新业务</b></div>
+			<div style="width: 300px;position: relative; left: 200px; top: -20px;"><b>${tran.type}</b></div>
 			<div style="width: 300px;position: relative; left: 450px; top: -40px; color: gray;">可能性</div>
-			<div style="width: 300px;position: relative; left: 650px; top: -60px;"><b>90</b></div>
+			<div style="width: 300px;position: relative; left: 650px; top: -60px;"><b>${tran.possibility}%</b></div>
 			<div style="height: 1px; width: 400px; background: #D5D5D5; position: relative; top: -60px;"></div>
 			<div style="height: 1px; width: 400px; background: #D5D5D5; position: relative; top: -60px; left: 450px;"></div>
 		</div>
@@ -237,32 +256,35 @@
 		</div>
 		
 		<!-- 备注1 -->
-		<div class="remarkDiv" style="height: 60px;">
-			<img title="zhangsan" src="image/user-thumbnail.png" style="width: 30px; height:30px;">
-			<div style="position: relative; top: -40px; left: 40px;" >
-				<h5>哎呦！</h5>
-				<font color="gray">交易</font> <font color="gray">-</font> <b>动力节点-交易01</b> <small style="color: gray;"> 2017-01-22 10:10:10 由zhangsan</small>
-				<div style="position: relative; left: 500px; top: -30px; height: 30px; width: 100px; display: none;">
-					<a class="myHref" href="javascript:void(0);"><span class="glyphicon glyphicon-edit" style="font-size: 20px; color: #E6E6E6;"></span></a>
-					&nbsp;&nbsp;&nbsp;&nbsp;
-					<a class="myHref" href="javascript:void(0);"><span class="glyphicon glyphicon-remove" style="font-size: 20px; color: #E6E6E6;"></span></a>
+		<c:forEach items="${tranRemarkList}" var="tranRemark">
+			<div class="remarkDiv" id="remarkDiv_${tranRemark.id}" style="height: 60px;">
+				<img title="${tranRemark.createBy}" src="image/user-thumbnail.png" style="width: 30px; height:30px;">
+				<div style="position: relative; top: -40px; left: 40px;" >
+					<h5>${tranRemark.noteContent}</h5>
+					<font color="gray">商談</font> <font color="gray">-</font> <b>${tran.name}</b><small style="color: gray;">${tranRemark.editFlag=='1'?tranRemark.editTime:tranRemark.createTime}--${tranRemark.editFlag=='1'?tranRemark.editBy:tranRemark.createBy}さんが${tranRemark.editFlag=='1'?'編集しました':'作成しました'}</small>
+					<div style="position: relative; left: 500px; top: -30px; height: 30px; width: 100px; display: none;">
+						<a class="myHref" data-remark-id="${tranRemark.id}" name="remarkEdit" href="javascript:void(0);"><span class="glyphicon glyphicon-edit" style="font-size: 20px; color: #E6E6E6;"></span></a>
+						&nbsp;&nbsp;&nbsp;&nbsp;
+						<a class="myHref" data-remark-id="${tranRemark.id}" name="remarkRemove" href="javascript:void(0);"><span class="glyphicon glyphicon-remove" style="font-size: 20px; color: #E6E6E6;"></span></a>
+					</div>
 				</div>
 			</div>
-		</div>
+		</c:forEach>
+
 		
 		<!-- 备注2 -->
-		<div class="remarkDiv" style="height: 60px;">
-			<img title="zhangsan" src="image/user-thumbnail.png" style="width: 30px; height:30px;">
-			<div style="position: relative; top: -40px; left: 40px;" >
-				<h5>呵呵！</h5>
-				<font color="gray">交易</font> <font color="gray">-</font> <b>动力节点-交易01</b> <small style="color: gray;"> 2017-01-22 10:20:10 由zhangsan</small>
-				<div style="position: relative; left: 500px; top: -30px; height: 30px; width: 100px; display: none;">
-					<a class="myHref" href="javascript:void(0);"><span class="glyphicon glyphicon-edit" style="font-size: 20px; color: #E6E6E6;"></span></a>
-					&nbsp;&nbsp;&nbsp;&nbsp;
-					<a class="myHref" href="javascript:void(0);"><span class="glyphicon glyphicon-remove" style="font-size: 20px; color: #E6E6E6;"></span></a>
-				</div>
-			</div>
-		</div>
+<!--		<div class="remarkDiv" style="height: 60px;">-->
+<!--			<img title="zhangsan" src="image/user-thumbnail.png" style="width: 30px; height:30px;">-->
+<!--			<div style="position: relative; top: -40px; left: 40px;" >-->
+<!--				<h5>呵呵！</h5>-->
+<!--				<font color="gray">交易</font> <font color="gray">-</font> <b>交易01</b> <small style="color: gray;"> 2017-01-22 10:20:10 由zhangsan</small>-->
+<!--				<div style="position: relative; left: 500px; top: -30px; height: 30px; width: 100px; display: none;">-->
+<!--					<a class="myHref" href="javascript:void(0);"><span class="glyphicon glyphicon-edit" style="font-size: 20px; color: #E6E6E6;"></span></a>-->
+<!--					&nbsp;&nbsp;&nbsp;&nbsp;-->
+<!--					<a class="myHref" href="javascript:void(0);"><span class="glyphicon glyphicon-remove" style="font-size: 20px; color: #E6E6E6;"></span></a>-->
+<!--				</div>-->
+<!--			</div>-->
+<!--		</div>-->
 		
 		<div id="remarkDiv" style="background-color: #E6E6E6; width: 870px; height: 90px;">
 			<form role="form" style="position: relative;top: 10px; left: 10px;">
@@ -293,29 +315,15 @@
 						</tr>
 					</thead>
 					<tbody>
-						<tr>
-							<td>资质审查</td>
-							<td>5,000</td>
-							<td>2017-02-07</td>
-							<td>2016-10-10 10:10:10</td>
-							<td>zhangsan</td>
-						</tr>
-						<tr>
-							<td>需求分析</td>
-							<td>5,000</td>
-							<td>20</td>
-							<td>2017-02-07</td>
-							<td>2016-10-20 10:10:10</td>
-							<td>zhangsan</td>
-						</tr>
-						<tr>
-							<td>谈判/复审</td>
-							<td>5,000</td>
-							<td>90</td>
-							<td>2017-02-07</td>
-							<td>2017-02-09 10:10:10</td>
-							<td>zhangsan</td>
-						</tr>
+						<c:forEach items="${tranHistoryList}" var="tranHistory">
+							<tr>
+								<td>${tranHistory.stage}</td>
+								<td>${tranHistory.money}</td>
+								<td>${tranHistory.expectedDate}</td>
+								<td>${tranHistory.createTime}</td>
+								<td>${tranHistory.createBy}</td>
+							</tr>
+						</c:forEach>
 					</tbody>
 				</table>
 			</div>

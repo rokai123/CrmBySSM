@@ -21,5 +21,11 @@
         WHERE type_code = #{typeCode}
         ORDER BY order_no ASC
     </select>
-
+    
+    <select id="selectDicValueById" parameterType="string" resultMap="BaseResultMap">
+        SELECT
+          <include refid="Base_Column_List" />
+        FROM tbl_dic_value
+        WHERE id = #{id}
+        </select>
 </mapper>

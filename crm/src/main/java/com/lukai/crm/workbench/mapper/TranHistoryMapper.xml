@@ -41,6 +41,21 @@
 	        #{tranId}
 	    )
 	</insert>
-	
-
+	<!-- 根据tranId查询交易历史列表 -->
+	<select id="selectTranHistoryByTranId" 
+        parameterType="string" 
+        resultMap="BaseResultMap">
+        SELECT
+	       	th.id,
+		    dv.value as stage,
+		    th.money,
+		    th.expected_date,
+		    th.create_time,
+		    u.name as create_by
+        FROM tbl_tran_history th
+        join tbl_user u on th.create_by = u.id
+        join tbl_dic_value dv on th.stage = dv.id
+        WHERE tran_id = #{tranId}
+        ORDER BY th.create_time ASC
+   </select>
 </mapper>

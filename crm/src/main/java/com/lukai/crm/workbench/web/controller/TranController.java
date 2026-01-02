@@ -23,9 +23,14 @@ import com.lukai.crm.settings.service.UserService;
 import com.lukai.crm.workbench.domain.Activity;
 import com.lukai.crm.workbench.domain.Contacts;
 import com.lukai.crm.workbench.domain.Tran;
+import com.lukai.crm.workbench.domain.TranHistory;
+import com.lukai.crm.workbench.domain.TranRemark;
+import com.lukai.crm.workbench.domain.TranVO;
 import com.lukai.crm.workbench.service.ActivityService;
 import com.lukai.crm.workbench.service.ContactsService;
 import com.lukai.crm.workbench.service.CustomerService;
+import com.lukai.crm.workbench.service.TranHistoryService;
+import com.lukai.crm.workbench.service.TranRemarkService;
 import com.lukai.crm.workbench.service.TranService;
 
 @Controller
@@ -42,6 +47,10 @@ public class TranController {
 	private ContactsService contactsService;
 	@Autowired
 	private CustomerService customerService;
+	@Autowired
+	private TranHistoryService tranHistoryService;
+	@Autowired
+	private TranRemarkService tranRemarkService;
 	
 	@RequestMapping("/workbench/transaction/toIndex.do")
 	public String toIndex(HttpServletRequest request,HttpSession session) {
@@ -158,8 +167,17 @@ public class TranController {
 	
 	@RequestMapping("/workbench/transaction/TranDetailPage.do")
 	public String TranDetailPage(String id,HttpServletRequest request) {
-		Tran tran = tranService.queryTranForDetailById(id);
+		TranVO tran = tranService.queryTranForDetailById(id);//交易信息
+		List<TranHistory> TranHistoryList = tranHistoryService.queryTranHistoryByTranId(id);//交易历史列表
+		ResourceBundle rb = ResourceBundle.getBundle("possibility");//将可能性设置到交易对象中
+		String  possibility = rb.getString(tran.getStage());
+		tran.setPossibility(possibility);
+		List<TranRemark> tranRemarkList = tranRemarkService.queryTranRemarkByTranId(id);//交易备注信息列表
+		List<DicValue> stageList = dicValueService.queryDicValueByTypeCode("stage");//阶段值列表
+		request.setAttribute("stageList", stageList);
+		request.setAttribute("tranRemarkList", tranRemarkList);
 		request.setAttribute("tran", tran);
+		request.setAttribute("tranHistoryList", TranHistoryList);
 		return "workbench/transaction/detail";
 	}
 }
