@@ -1,7 +1,6 @@
 package com.lukai.crm.settings.web.controller;
 
 import java.util.Date;
-import java.util.HashMap;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -9,6 +8,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -25,8 +25,9 @@ public class UserController {
 
 	//注意：必ず service クラスのインターフェースを注入し、実装クラスではないようにしてください！
 	@Autowired
-	UserService userService;
-	
+	private UserService userService;
+	@Autowired
+	private BCryptPasswordEncoder bCryptPasswordEncoder;
 	//返回到哪个资源，写哪个资源的路径
 	@RequestMapping("/settings/qx/user/toLogin.do")
 	public String toLogin() {
@@ -39,25 +40,32 @@ public class UserController {
 	@RequestMapping("/settings/qx/user/Login.do")
 	@ResponseBody
 	public Object Login(String loginPwd,String loginAct,String isRemPwd,HttpServletRequest request,HttpServletResponse response,HttpSession session) {
-		//HashMapオブジェクトを作成して、フロントからのソースを入れる。
-		HashMap<String, Object> hashMap = new HashMap<String, Object>();
-		hashMap.put("loginPwd", loginPwd);
-		hashMap.put("loginAct", loginAct);
-		User user = userService.queryUserByLoginActAndPwd(hashMap);
+		
+		User user = userService.queryUserByLoginAct(loginAct);
+		
 		ReturnObject returnObject = new ReturnObject();
 		
 		if (user==null) {
 			//パスワードかユーザー名が存在しない。
 			//returnObject.setCode("0");
 			returnObject.setCode(Contants.RETURN_OBJECT_CODE_FAIL);
-			returnObject.setMessage("パスワードかユーザー名のご入力が間違っています");
+			returnObject.setMessage("ユーザー名のご入力が間違っています");
+			
 		}else{
+			//ユーザーが存在する場合、パスワードの検証を行う
+			boolean matcheRet = bCryptPasswordEncoder.matches(loginPwd, user.getLoginPwd());
+			if (!matcheRet) {
+				//パスワードかユーザー名が存在しない。
+				//returnObject.setCode("0");
+				returnObject.setCode(Contants.RETURN_OBJECT_CODE_FAIL);
+				returnObject.setMessage("パスワードのご入力が間違っています");
+			}
 			//有効期限を獲得し、まだ有効期限内であるか検証する
 			/*SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			String formatDate = simpleDateFormat.format(new Date());*/
 			//日付形式をユーティリティクラスにカプセル化して返すことで
 			//拡張性を向上させます。
-			if (DateUtils.formateDateTime(new Date()).compareTo(user.getExpireTime())>0) {
+			else if (DateUtils.formateDateTime(new Date()).compareTo(user.getExpireTime())>0) {
 				//有効期間外のユーザー。
 				//コードを直接固定値で記述することは推奨されません。
 				//後からの修正と保守が不便になります。最もよいのは定数としてカプセル化することです
@@ -86,7 +94,7 @@ public class UserController {
 					//将cookie返回浏览器
 					//ブラウザは指定された有効期間内でcookieを保存する。
 					response.addCookie(cookie);
-					Cookie cookie2 = new Cookie("loginPwd", user.getLoginPwd());
+					Cookie cookie2 = new Cookie("loginPwd", loginPwd);
 					cookie2.setMaxAge(60*60*24*10);
 					response.addCookie(cookie2);
 				}else {
@@ -122,6 +130,43 @@ public class UserController {
 				
 	}
 	
+	@RequestMapping("/settings/qx/user/checkOldPwd.do")
+	@ResponseBody
+	public ReturnObject checkOldPwd(String oldPwd,HttpSession session) {
+		User user = (User)session.getAttribute(Contants.SESSION_USER);
+		User u = userService.queryUserByLoginAct(user.getLoginAct());
+		boolean matcheRet = bCryptPasswordEncoder.matches(oldPwd, u.getLoginPwd());
+		ReturnObject ret = new ReturnObject();
+		if (matcheRet) {
+			ret.setCode(Contants.RETURN_OBJECT_CODE_SUCCESS);
+		}else {
+			ret.setCode(Contants.RETURN_OBJECT_CODE_FAIL);
+		}
+		return ret;
+	}
 	
+	@RequestMapping("/settings/qx/user/saveChangePwd.do")
+	@ResponseBody
+	public ReturnObject saveChangePwd(String newPwd,HttpSession session) {
+		User user = (User)session.getAttribute(Contants.SESSION_USER);
+		String nPwd = bCryptPasswordEncoder.encode(newPwd);
+		user.setLoginPwd(nPwd);
+		ReturnObject returnObject = new ReturnObject();
+		try {
+			int retInt = userService.saveChangePwd(user);
+			if (retInt>0) {
+				returnObject.setCode(Contants.RETURN_OBJECT_CODE_SUCCESS);
+			}else {
+				returnObject.setCode(Contants.RETURN_OBJECT_CODE_FAIL);
+				returnObject.setMessage("更新失敗しました");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			returnObject.setCode(Contants.RETURN_OBJECT_CODE_FAIL);
+			returnObject.setMessage("更新失敗しました");
+		}
+		
+		return returnObject;
+	}
 	
 }

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lukai.crm.workbench.mapper.FunnelVOMapper">
+
+<select id="selectFunnelVOsForChart" resultType="com.lukai.crm.workbench.domain.FunnelVO">
+	SELECT 
+        dv.value AS name,
+        COUNT(*) AS value
+    FROM 
+        tbl_tran t
+        JOIN tbl_dic_value dv ON t.stage = dv.id
+    GROUP BY 
+        t.stage, dv.value
+</select>
+	
+</mapper>

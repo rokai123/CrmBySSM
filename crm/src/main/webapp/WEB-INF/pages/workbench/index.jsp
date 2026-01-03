@@ -43,6 +43,84 @@
 		$("#logOutBtn").click(function(){
 			window.location.href="settings/qx/user/logout.do";
 		});
+
+		$("#changePwdBtn").click(function(){
+			//打开模态窗口
+			$("#oldPwd").val("");
+			$("#oldPwdWarn").html("");
+			$("#newPwd").val("");
+			$("#newPwdWarn").html("");
+			$("#confirmPwd").val("");
+			$("#confirmPwdWarn").html("");
+			$("#editPwdModal").modal("show");
+		});
+
+		//失去焦点时验证原密码是否正确
+		let oldPwdIsTrue = false;
+		$("#oldPwd").blur(function(){
+			let oldPwd = $(this).val();
+			$.ajax({
+				url:"settings/qx/user/checkOldPwd.do",
+				data:{
+					"oldPwd":oldPwd,
+				},
+				type:"post",
+				dataType:"json",
+				success:function(data){
+					if(data.code == "1" ){
+						oldPwdIsTrue = true;
+						$("#oldPwdWarn").html("");
+					}else{
+						$(this).val("");
+						$("#oldPwdWarn").html("原密码输入错误");
+					}
+				}
+			})
+		});
+
+		$("#saveUpdatePwdBtn").click(function(){
+			let oldPwd = $("#oldPwd").val();
+			let newPwd = $("#newPwd").val();
+			let confirmPwd = $("#confirmPwd").val();
+			if(newPwd == ""){
+				$("#newPwdWarn").html("新密码不能为空");
+				return;
+			}else if(confirmPwd == ""){
+				$("#confirmPwdWarn").html("确认密码不能为空");
+				return;
+			}
+			//验证新密码和确认密码是否一致
+			if(newPwd != confirmPwd){
+				$("#confirmPwdWarn").html("新密码和确认密码不一致");
+				return;
+			}
+			if(oldPwdIsTrue){
+				$.ajax({
+					url:"settings/qx/user/saveChangePwd.do",
+					data:{
+						"newPwd":newPwd,
+					},
+					type:"post",
+					dataType:"json",
+					success:function(data){
+						if(data.code == "1"){
+							alert("密码修改成功");
+							//关闭模态窗口
+							$("#editPwdModal").modal("hide");
+						}else{
+							alert(data.message);
+						}
+					}
+				})
+			}else{
+				$("#oldPwdWarn").html("原密码输入错误");
+			}
+		});
+
+		$("#confirmPwd").on("click",function(){
+			$("#confirmPwdWarn").html("");
+		});
+
 	});
 	
 </script>
@@ -93,6 +171,7 @@
 							<label for="oldPwd" class="col-sm-2 control-label">元のパスワード</label>
 							<div class="col-sm-10" style="width: 300px;">
 								<input type="text" class="form-control" id="oldPwd" style="width: 200%;">
+								<span id="oldPwdWarn" style="color: red;"></span>
 							</div>
 						</div>
 						
@@ -100,6 +179,7 @@
 							<label for="newPwd" class="col-sm-2 control-label">新しいパスワード</label>
 							<div class="col-sm-10" style="width: 300px;">
 								<input type="text" class="form-control" id="newPwd" style="width: 200%;">
+								<span id="newPwdWarn" style="color: red;"></span>
 							</div>
 						</div>
 						
@@ -107,13 +187,14 @@
 							<label for="confirmPwd" class="col-sm-2 control-label">パスワードを確認する</label>
 							<div class="col-sm-10" style="width: 300px;">
 								<input type="text" class="form-control" id="confirmPwd" style="width: 200%;">
+								<span id="confirmPwdWarn" style="color: red;"></span>
 							</div>
 						</div>
 					</form>
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">キャンセル</button>
-					<button type="button" class="btn btn-primary" data-dismiss="modal" onclick="window.location.href='login.html';">更新</button>
+					<button type="button" class="btn btn-primary" id="saveUpdatePwdBtn">更新</button>
 				</div>
 			</div>
 		</div>
@@ -152,7 +233,7 @@
 					<ul class="dropdown-menu">
 						<li><a href="settings/index.html"><span class="glyphicon glyphicon-wrench"></span> システム設定</a></li>
 						<li><a href="javascript:void(0)" data-toggle="modal" data-target="#myInformation"><span class="glyphicon glyphicon-file"></span> 私の資料</a></li>
-						<li><a href="javascript:void(0)" data-toggle="modal" data-target="#editPwdModal"><span class="glyphicon glyphicon-edit"></span> パスワードを変更する</a></li>
+						<li><a href="javascript:void(0)" id="changePwdBtn"><span class="glyphicon glyphicon-edit"></span> パスワードを変更する</a></li>
 						<li><a href="javascript:void(0);" data-toggle="modal" data-target="#exitModal"><span class="glyphicon glyphicon-off"></span> ログアウト</a></li>
 					</ul>
 				</li>
@@ -183,7 +264,7 @@
 				<li class="liClass"><a href="chart/activity/index.html" target="workareaFrame">&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-chevron-right"></span> キャンペーン分析</a></li>
 				<li class="liClass"><a href="chart/clue/index.html" target="workareaFrame">&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-chevron-right"></span> リード分析</a></li>
 				<li class="liClass"><a href="chart/customerAndContacts/index.html" target="workareaFrame">&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-chevron-right"></span> 取引先・取引先責任者分析</a></li>
-				<li class="liClass"><a href="chart/transaction/index.html" target="workareaFrame">&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-chevron-right"></span> 商談分析</a></li>
+				<li class="liClass"><a href="workbench/chart/transaction/index.do" target="workareaFrame">&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-chevron-right"></span> 商談分析</a></li>
 			</ul>
 		</li>
 		<li class="liClass"><a href="javascript:void(0);" target="workareaFrame"><span class="glyphicon glyphicon-file"></span> レポート</a></li>

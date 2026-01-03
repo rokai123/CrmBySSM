@@ -1,7 +1,6 @@
 package com.lukai.crm.settings.service.Impl;
 
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,14 +16,19 @@ public class UserServiceImpl implements UserService{
 	private UserMapper userMapper;
 	
 	@Override
-	public User queryUserByLoginActAndPwd(Map<String, Object> map) {
-		return userMapper.queryUserByactAndPwd(map);
+	public User queryUserByLoginAct(String loginAct) {
+		return userMapper.selectUserByloginAct(loginAct);
 	}
 
 	@Override
 	public List<User> queryAllUsers() {
 		List<User> users = userMapper.queryAllUsers();
 		return users;
+	}
+
+	@Override
+	public int saveChangePwd(User user) {
+		return userMapper.updatePwd(user);
 	}
 	
 }

@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -26,6 +27,7 @@ import com.lukai.crm.workbench.mapper.ClueMapper;
 import com.lukai.crm.workbench.mapper.ClueRemarkMapper;
 import com.lukai.crm.workbench.mapper.CustomerMapper;
 import com.lukai.crm.workbench.mapper.CustomerRemarkMapper;
+import com.lukai.crm.workbench.mapper.FunnelVOMapper;
 import com.lukai.crm.workbench.mapper.TranMapper;
 import com.lukai.crm.workbench.mapper.TranRemarkMapper;
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -55,7 +57,10 @@ public class Test {
 	private TranMapper tranMapper;
 	@Autowired
 	private TranRemarkMapper tranRemarkMapper;
-	
+	@Autowired
+	private FunnelVOMapper funnelVOMapper;
+	@Autowired
+	private BCryptPasswordEncoder bCryptPasswordEncoder;
 	@org.junit.Test
 	public void dateUtilsTest() {
 		String formateDateTime = DateUtils.formateDateTime(new Date());
@@ -163,6 +168,21 @@ public class Test {
 	@org.junit.Test
 	public void selectTranRemarkById() {
 		tranRemarkMapper.selectTranRemarkById("d97fdd9ddba841a0b7cfc7fc566fa3e5").forEach(System.out::println);
+		
+	}
+	@org.junit.Test
+	public void xxx() {
+		funnelVOMapper.selectFunnelVOsForChart().forEach(System.out::println);
+		
+	}
+	@org.junit.Test
+	public void BCryptTest() {
+		String pwd = bCryptPasswordEncoder.encode("yz123");
+		System.out.println(pwd);
+		String pwd2 = bCryptPasswordEncoder.encode("cs123");
+		System.out.println(pwd2);
+		boolean matches = bCryptPasswordEncoder.matches("yz123", pwd);
+		System.out.println(matches);
 		
 	}
 }

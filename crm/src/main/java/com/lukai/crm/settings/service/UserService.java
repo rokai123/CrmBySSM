@@ -1,13 +1,14 @@
 package com.lukai.crm.settings.service;
 
 import java.util.List;
-import java.util.Map;
 
 import com.lukai.crm.settings.domain.User;
 
 public interface UserService {
 
-	User queryUserByLoginActAndPwd(Map<String, Object> map);
+	User queryUserByLoginAct(String loginAct);
 	
 	List<User> queryAllUsers();
+	
+	int saveChangePwd(User user);
 }

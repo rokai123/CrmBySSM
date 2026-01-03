@@ -67,7 +67,7 @@ public class TranServiceImpl implements TranService{
 		tran.setSource((String)map.get("source"));
 		tran.setActivityId((String)map.get("activityId"));
 		tran.setContactsId((String)map.get("contactsId"));
-		tran.setCreateBy((String)map.get("createBy"));
+		tran.setCreateBy(user.getId());
 		tran.setCreateTime(DateUtils.formateDateTime(new Date()));
 		tran.setDescription((String)map.get("description"));
 		tran.setContactSummary((String)map.get("contactSummary"));

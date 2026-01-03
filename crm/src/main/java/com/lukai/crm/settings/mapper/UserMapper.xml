@@ -226,12 +226,12 @@
     where id = #{id,jdbcType=CHAR}
   </update>
   
-  <select id="queryUserByactAndPwd" parameterType="java.util.Map" resultMap="BaseResultMap">
+  <select id="selectUserByloginAct" parameterType="String" resultMap="BaseResultMap">
   		select
   			<include refid="Base_Column_List" />
   			from tbl_user
   			<where>
-  				login_act=#{loginAct} and login_pwd=#{loginPwd}
+  				login_act=#{loginAct}
   			</where>
   </select>
   
@@ -240,5 +240,11 @@
   			<include refid="Base_Column_List" />
   			from tbl_user
         where lock_state='1'
-  </select> 
+  </select>
+  
+  <update id="updatePwd" parameterType="com.lukai.crm.settings.domain.User">
+  	    update tbl_user
+        set login_pwd = #{loginPwd}
+        where id = #{id}
+  </update>
 </mapper>
