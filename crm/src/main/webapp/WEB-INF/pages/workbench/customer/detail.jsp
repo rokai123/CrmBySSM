@@ -513,7 +513,7 @@
 					<tbody>
 						<c:forEach var="tran" items="${tranVOList}">
 							<tr>
-								<td><a href="transaction/detail.html" style="text-decoration: none;">${tran.name}</a></td>
+								<td><a href="workbench/transaction/TranDetailPage.do?id=${tran.id}" style="text-decoration: none;">${tran.name}</a></td>
 								<td>
 									￥<fmt:formatNumber value="${tran.money}" pattern="#,##0"/>
 								</td>
@@ -530,7 +530,7 @@
 			</div>
 			
 			<div>
-				<a href="transaction/save.html" style="text-decoration: none;"><span class="glyphicon glyphicon-plus"></span>商談を新規作成</a>
+				<a href="workbench/transaction/toCreateTranPage.do" style="text-decoration: none;"><span class="glyphicon glyphicon-plus"></span>商談を新規作成</a>
 			</div>
 		</div>
 	</div>
