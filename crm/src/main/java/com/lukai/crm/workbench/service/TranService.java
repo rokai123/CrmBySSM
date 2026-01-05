@@ -11,5 +11,6 @@ public interface TranService {
 	int queryTransByConditionForPageCount(Map<String, Object> map);
 	void saveCreateTran(Map<String, Object> map);
 	TranVO queryTranForDetailById(String id);
+	int deleteTranByIds(String[] ids);
 
 }

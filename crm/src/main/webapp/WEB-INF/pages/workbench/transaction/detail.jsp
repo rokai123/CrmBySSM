@@ -126,7 +126,7 @@
 
 	<!-- 阶段状态 -->
 	<div style="position: relative; left: 40px; top: -50px;">
-		阶段&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		ステージ&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 		<c:forEach items="${stageList}" var="s">
 			<c:if test="${s.value==tran.stage}">
 				<span class="glyphicon glyphicon-map-marker mystage" data-toggle="popover" data-placement="bottom" data-content="${s.value}" style="color: #90F790;"></span>
@@ -170,62 +170,62 @@
 	<!-- 详细信息 -->
 	<div style="position: relative; top: 0px;">
 		<div style="position: relative; left: 40px; height: 30px;">
-			<div style="width: 300px; color: gray;">所有者</div>
+			<div style="width: 300px; color: gray;">担当者</div>
 			<div style="width: 300px;position: relative; left: 200px; top: -20px;"><b>${tran.owner}</b></div>
-			<div style="width: 300px;position: relative; left: 450px; top: -40px; color: gray;">金额</div>
+			<div style="width: 300px;position: relative; left: 450px; top: -40px; color: gray;">金額</div>
 			<div style="width: 300px;position: relative; left: 650px; top: -60px;"><b>${tran.money}</b></div>
 			<div style="height: 1px; width: 400px; background: #D5D5D5; position: relative; top: -60px;"></div>
 			<div style="height: 1px; width: 400px; background: #D5D5D5; position: relative; top: -60px; left: 450px;"></div>
 		</div>
 		<div style="position: relative; left: 40px; height: 30px; top: 10px;">
-			<div style="width: 300px; color: gray;">名称</div>
+			<div style="width: 300px; color: gray;">商談名</div>
 			<div style="width: 300px;position: relative; left: 200px; top: -20px;"><b>${tran.name}</b></div>
-			<div style="width: 300px;position: relative; left: 450px; top: -40px; color: gray;">预计成交日期</div>
+			<div style="width: 300px;position: relative; left: 450px; top: -40px; color: gray;">成約予定日</div>
 			<div style="width: 300px;position: relative; left: 650px; top: -60px;"><b>${tran.expectedDate}</b></div>
 			<div style="height: 1px; width: 400px; background: #D5D5D5; position: relative; top: -60px;"></div>
 			<div style="height: 1px; width: 400px; background: #D5D5D5; position: relative; top: -60px; left: 450px;"></div>
 		</div>
 		<div style="position: relative; left: 40px; height: 30px; top: 20px;">
-			<div style="width: 300px; color: gray;">客户名称</div>
+			<div style="width: 300px; color: gray;">取引先名</div>
 			<div style="width: 300px;position: relative; left: 200px; top: -20px;"><b>${tran.customerId}</b></div>
-			<div style="width: 300px;position: relative; left: 450px; top: -40px; color: gray;">阶段</div>
+			<div style="width: 300px;position: relative; left: 450px; top: -40px; color: gray;">ステージ</div>
 			<div style="width: 300px;position: relative; left: 650px; top: -60px;"><b>${tran.stage}</b></div>
 			<div style="height: 1px; width: 400px; background: #D5D5D5; position: relative; top: -60px;"></div>
 			<div style="height: 1px; width: 400px; background: #D5D5D5; position: relative; top: -60px; left: 450px;"></div>
 		</div>
 		<div style="position: relative; left: 40px; height: 30px; top: 30px;">
-			<div style="width: 300px; color: gray;">类型</div>
+			<div style="width: 300px; color: gray;">種別</div>
 			<div style="width: 300px;position: relative; left: 200px; top: -20px;"><b>${tran.type}</b></div>
-			<div style="width: 300px;position: relative; left: 450px; top: -40px; color: gray;">可能性</div>
+			<div style="width: 300px;position: relative; left: 450px; top: -40px; color: gray;">確度</div>
 			<div style="width: 300px;position: relative; left: 650px; top: -60px;"><b>${tran.possibility}%</b></div>
 			<div style="height: 1px; width: 400px; background: #D5D5D5; position: relative; top: -60px;"></div>
 			<div style="height: 1px; width: 400px; background: #D5D5D5; position: relative; top: -60px; left: 450px;"></div>
 		</div>
 		<div style="position: relative; left: 40px; height: 30px; top: 40px;">
-			<div style="width: 300px; color: gray;">来源</div>
+			<div style="width: 300px; color: gray;">リードソース</div>
 			<div style="width: 300px;position: relative; left: 200px; top: -20px;"><b>${tran.source}</b></div>
-			<div style="width: 300px;position: relative; left: 450px; top: -40px; color: gray;">市场活动源</div>
+			<div style="width: 300px;position: relative; left: 450px; top: -40px; color: gray;">キャンペーンソース</div>
 			<div style="width: 300px;position: relative; left: 650px; top: -60px;"><b>${tran.activityId}</b></div>
 			<div style="height: 1px; width: 400px; background: #D5D5D5; position: relative; top: -60px;"></div>
 			<div style="height: 1px; width: 400px; background: #D5D5D5; position: relative; top: -60px; left: 450px;"></div>
 		</div>
 		<div style="position: relative; left: 40px; height: 30px; top: 50px;">
-			<div style="width: 300px; color: gray;">联系人名称</div>
+			<div style="width: 300px; color: gray;">取引先責任者</div>
 			<div style="width: 500px;position: relative; left: 200px; top: -20px;"><b>${tran.contactsId}</b></div>
 			<div style="height: 1px; width: 550px; background: #D5D5D5; position: relative; top: -20px;"></div>
 		</div>
 		<div style="position: relative; left: 40px; height: 30px; top: 60px;">
-			<div style="width: 300px; color: gray;">创建者</div>
+			<div style="width: 300px; color: gray;">作成者</div>
 			<div style="width: 500px;position: relative; left: 200px; top: -20px;">${tran.createBy}<b>&nbsp;&nbsp;</b><small style="font-size: 10px; color: gray;">${tran.createTime}</small></div>
 			<div style="height: 1px; width: 550px; background: #D5D5D5; position: relative; top: -20px;"></div>
 		</div>
 		<div style="position: relative; left: 40px; height: 30px; top: 70px;">
-			<div style="width: 300px; color: gray;">修改者</div>
+			<div style="width: 300px; color: gray;">更新者</div>
 			<div style="width: 500px;position: relative; left: 200px; top: -20px;"><b>${tran.editBy}&nbsp;&nbsp;</b><small style="font-size: 10px; color: gray;">${tran.editTime}</small></div>
 			<div style="height: 1px; width: 550px; background: #D5D5D5; position: relative; top: -20px;"></div>
 		</div>
 		<div style="position: relative; left: 40px; height: 30px; top: 80px;">
-			<div style="width: 300px; color: gray;">描述</div>
+			<div style="width: 300px; color: gray;">備考</div>
 			<div style="width: 630px;position: relative; left: 200px; top: -20px;">
 				<b>
 					${tran.description}
@@ -234,7 +234,7 @@
 			<div style="height: 1px; width: 850px; background: #D5D5D5; position: relative; top: -20px;"></div>
 		</div>
 		<div style="position: relative; left: 40px; height: 30px; top: 90px;">
-			<div style="width: 300px; color: gray;">联系纪要</div>
+			<div style="width: 300px; color: gray;">対応履歴</div>
 			<div style="width: 630px;position: relative; left: 200px; top: -20px;">
 				<b>
 					${tran.contactSummary}
@@ -243,7 +243,7 @@
 			<div style="height: 1px; width: 850px; background: #D5D5D5; position: relative; top: -20px;"></div>
 		</div>
 		<div style="position: relative; left: 40px; height: 30px; top: 100px;">
-			<div style="width: 300px; color: gray;">下次联系时间</div>
+			<div style="width: 300px; color: gray;">次回連絡日時</div>
 			<div style="width: 500px;position: relative; left: 200px; top: -20px;"><b>${tran.nextContactTime}</b></div>
 			<div style="height: 1px; width: 400px; background: #D5D5D5; position: relative; top: -20px;"></div>
 		</div>
@@ -252,7 +252,7 @@
 	<!-- 备注 -->
 	<div style="position: relative; top: 100px; left: 40px;">
 		<div class="page-header">
-			<h4>备注</h4>
+			<h4>備考</h4>
 		</div>
 		
 		<!-- 备注1 -->
@@ -288,7 +288,7 @@
 		
 		<div id="remarkDiv" style="background-color: #E6E6E6; width: 870px; height: 90px;">
 			<form role="form" style="position: relative;top: 10px; left: 10px;">
-				<textarea id="remark" class="form-control" style="width: 850px; resize : none;" rows="2"  placeholder="添加备注..."></textarea>
+				<textarea id="remark" class="form-control" style="width: 850px; resize : none;" rows="2"  placeholder="備考を入力..."></textarea>
 				<p id="cancelAndSaveBtn" style="position: relative;left: 737px; top: 10px; display: none;">
 					<button id="cancelBtn" type="button" class="btn btn-default">取消</button>
 					<button type="button" class="btn btn-primary">保存</button>
@@ -301,17 +301,17 @@
 	<div>
 		<div style="position: relative; top: 100px; left: 40px;">
 			<div class="page-header">
-				<h4>阶段历史</h4>
+				<h4>ステージ履歴</h4>
 			</div>
 			<div style="position: relative;top: 0px;">
 				<table id="activityTable" class="table table-hover" style="width: 900px;">
 					<thead>
 						<tr style="color: #B3B3B3;">
-							<td>阶段</td>
-							<td>金额</td>
-							<td>预计成交日期</td>
-							<td>创建时间</td>
-							<td>创建人</td>
+							<td>ステージ</td>
+							<td>金額</td>
+							<td>成約予定日</td>
+							<td>作成日時</td>
+							<td>作成者</td>
 						</tr>
 					</thead>
 					<tbody>

@@ -92,4 +92,10 @@ public class TranServiceImpl implements TranService{
 		return tranMapper.selectTranForDetailById(id);
 	}
 
+	@Override
+	public int deleteTranByIds(String[] ids) {
+		
+		return tranMapper.deleteTranByIds(ids);
+	}
+
 }

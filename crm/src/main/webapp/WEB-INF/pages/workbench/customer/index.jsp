@@ -267,8 +267,8 @@
 					html +="<td><input type=\"checkbox\" value=\""+customer.id+"\" /></td>";
 					html +="<td><a style=\"text-decoration: none; cursor: pointer;\" onclick=\"window.location.href='workbench/customer/toCustomerDetail.do?id="+customer.id+"';\">"+customer.name+"</a></td>";
 					html +="<td>"+customer.owner+"</td>";
-					html +="<td>"+customer.phone+"</td>";
-					html +="<td>"+customer.website+"</td>";
+					html +="<td>"+(customer.phone || "")+"</td>";
+					html +="<td>"+(customer.website || "")+"</td>";
 					html +="</tr>";
 				})
 				$("#customerTBody").html(html);

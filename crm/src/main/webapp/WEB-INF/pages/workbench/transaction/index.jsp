@@ -30,6 +30,55 @@
 			queryTranByConditionForPage(1,10);
 		});
 		
+		// 「全選択」チェックボックスのクリックで、全チェック／全解除を行う
+		$("#checkAll").on("click",function () {
+		    $("#tranBody input[type='checkbox']").prop("checked",this.checked);
+		})
+
+		$("#tranBody").on("click", "input[name='checkBox']", function () {
+			// 画面内に存在するチェックボックスの総数を取得
+			let totalCheckBox = $("#tranBody input[name='checkBox']").length;
+			// チェックされているチェックボックスの数を取得
+			let checkedCheckBox = $("#tranBody input[name='checkBox']:checked").length;
+			// 全てのチェックボックスが選択されている場合、全選択チェックボックスをONにする
+			$("#checkAll").prop("checked", totalCheckBox === checkedCheckBox);
+		});
+
+		//实现批量删除
+		$("#BtnForDeleteTran").on("click",function(){
+			let checkboxes = $("#tranBody input[type='checkbox'][name='checkBox']:checked");
+			if(checkboxes.length == 0){
+				alert("削除するデータを選択してください。")
+				return;
+			}else{
+				if(confirm("削除してもよろしいですか。")){
+					let ids="";
+					$.each(checkboxes,function(index,checkbox){
+						ids += "id="+$(checkbox).val()+"&";
+					})
+					ids = ids.substring(0,ids.length-1);
+					$.ajax({
+						url:"workbench/transaction/deleteTranByIds.do",
+						type:"post",
+						data:ids,
+						dataType:"json",
+						success:function(data){
+							if(data.code == "1"){
+								alert(data.message);
+								queryTranByConditionForPage(
+									$("#tranPage").bs_pagination("getOption","currentPage"),
+									$("#tranPage").bs_pagination("getOption","rowsPerPage")
+								);
+								
+							}else{
+								alert(data.message);
+							}
+						}
+					})
+				}
+			}
+
+		})
 	});
 
 	//在页面入口函数外面封装市场活动列表的查询显示的函数
@@ -72,14 +121,14 @@
 		        let html = "";
 		        $.each(data.tranList, function(i, t) {
 					html +="<tr>";
-					html +="<td><input type=\"checkbox\" value=\""+t.id+"\"/></td>";
+					html +="<td><input type=\"checkbox\" name=\"checkBox\" value=\""+t.id+"\"/></td>";
 					html +="<td><a style=\"text-decoration: none; cursor: pointer;\" onclick=\"window.location.href='workbench/transaction/TranDetailPage.do?id="+t.id+"';\">"+t.name+"</a></td>";
 					html +="<td>"+(t.customerId||"")+"</td>";
 					html +="<td>"+t.stage+"</td>";
 					html +="<td>"+(t.type||"")+"</td>";
 					html +="<td>"+(t.owner||"")+"</td>";
 					html +="<td>"+(t.source||"")+"</td>";
-					html +="<td>"+(t.contactsName||"")+"</td>";
+					html +="<td>"+(t.contactsId||"")+"</td>";
 					html +="</tr>";
 		        });
 		        
@@ -127,7 +176,7 @@
 	<div>
 		<div style="position: relative; left: 10px; top: -10px;">
 			<div class="page-header">
-				<h3>交易列表</h3>
+				<h3>商談一覧</h3>
 			</div>
 		</div>
 	</div>
@@ -141,21 +190,21 @@
 				  
 				  <div class="form-group">
 				    <div class="input-group">
-				      <div class="input-group-addon">所有者</div>
+				      <div class="input-group-addon">担当者</div>
 				      <input class="form-control" id="owner" type="text">
 				    </div>
 				  </div>
 				  
 				  <div class="form-group">
 				    <div class="input-group">
-				      <div class="input-group-addon">名称</div>
+				      <div class="input-group-addon">商談名</div>
 				      <input class="form-control" id="name" type="text">
 				    </div>
 				  </div>
 				  
 				  <div class="form-group">
 				    <div class="input-group">
-				      <div class="input-group-addon">客户名称</div>
+				      <div class="input-group-addon">取引先名</div>
 				      <input class="form-control" id="customerName" type="text">
 				    </div>
 				  </div>
@@ -164,7 +213,7 @@
 				  
 				  <div class="form-group">
 				    <div class="input-group">
-				      <div class="input-group-addon">阶段</div>
+				      <div class="input-group-addon">ステージ</div>
 					  <select class="form-control" id="stage">
 					  	<option value=""></option>
 					  	<c:forEach items="${stageList}" var="s">
@@ -176,7 +225,7 @@
 				  
 				  <div class="form-group">
 				    <div class="input-group">
-				      <div class="input-group-addon">类型</div>
+				      <div class="input-group-addon">種別</div>
 					  <select class="form-control" id="type">
 					  	<option value=""></option>
 					  	<c:forEach items="${transactionTypeList}" var="t">
@@ -188,7 +237,7 @@
 				  
 				  <div class="form-group">
 				    <div class="input-group">
-				      <div class="input-group-addon">来源</div>
+				      <div class="input-group-addon">リードソース</div>
 				      <select class="form-control" id="source">
 						  	<option value=""></option>
 						<c:forEach items="${sourceList}" var="s"> 
@@ -200,20 +249,20 @@
 				  
 				  <div class="form-group">
 				    <div class="input-group">
-				      <div class="input-group-addon">联系人名称</div>
+				      <div class="input-group-addon">取引先責任者</div>
 				      <input class="form-control" id="contactsName" type="text">
 				    </div>
 				  </div>
 				  
-				  <button type="button" id="researchBtn" class="btn btn-default">查询</button>
+				  <button type="button" id="researchBtn" class="btn btn-default">検索</button>
 				  
 				</form>
 			</div>
 			<div class="btn-toolbar" role="toolbar" style="background-color: #F7F7F7; height: 50px; position: relative;top: 10px;">
 				<div class="btn-group" style="position: relative; top: 18%;">
-				  <button type="button" class="btn btn-primary" onclick="window.location.href='workbench/transaction/toCreateTranPage.do';"><span class="glyphicon glyphicon-plus"></span> 创建</button>
-				  <button type="button" class="btn btn-default" onclick="window.location.href='edit.html';"><span class="glyphicon glyphicon-pencil"></span> 修改</button>
-				  <button type="button" class="btn btn-danger"><span class="glyphicon glyphicon-minus"></span> 删除</button>
+				  <button type="button" class="btn btn-primary" onclick="window.location.href='workbench/transaction/toCreateTranPage.do';"><span class="glyphicon glyphicon-plus"></span>新規作成</button>
+				  <button type="button" class="btn btn-default" onclick="window.location.href='edit.html';"><span class="glyphicon glyphicon-pencil"></span> 編集</button>
+				  <button type="button" id="BtnForDeleteTran" class="btn btn-danger"><span class="glyphicon glyphicon-minus"></span> 削除</button>
 				</div>
 				
 				

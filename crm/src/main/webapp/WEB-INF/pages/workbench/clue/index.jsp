@@ -170,7 +170,6 @@
 						ids += "id=" + this.value + "&";
 					})
 					ids = ids.substr(0, ids.length - 1);
-					alert(ids);
 					$.ajax({
 						url: "workbench/clue/deleteClueByIds.do",
 						type: "post",
@@ -711,11 +710,6 @@
 			<div class="btn-toolbar" role="toolbar" style="height: 80px;">
 				<form class="form-inline" role="form" style="position: relative;top: 8%; left: 5px;">
 				  <div class="form-group">
-                    <div class="input-group">
-                      <div class="input-group-addon">客様</div>
-                      <input class="form-control" id="fullname" type="text">
-                    </div>
-				  <div class="form-group">
 				    <div class="input-group">
 				      <div class="input-group-addon">氏名</div>
 				      <input class="form-control" id="fullname" type="text">
@@ -796,7 +790,7 @@
 					<thead>
 						<tr style="color: #B3B3B3;">
 							<td><input type="checkbox" id="checkAll" /></td>
-							<td>客様</td>
+							<td>氏名</td>
 							<td>会社名</td>
 							<td>会社電話</td>
 							<td>携帯電話</td>

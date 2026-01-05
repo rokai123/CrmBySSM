@@ -14,4 +14,6 @@ public interface TranMapper {
 	List<Tran> selecTransByConditionForPage(Map<String, Object> map);
 	int selectTransByConditionForPageCount(Map<String, Object> map);
 	TranVO selectTranForDetailById(String id);
+	int deleteTranByIds(String[] ids);
+	List<TranVO> selectTransByCustomerId(String cusId);
 }

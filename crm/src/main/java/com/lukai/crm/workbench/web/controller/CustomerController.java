@@ -21,6 +21,7 @@ import com.lukai.crm.settings.domain.User;
 import com.lukai.crm.settings.service.UserService;
 import com.lukai.crm.workbench.domain.Customer;
 import com.lukai.crm.workbench.domain.CustomerRemark;
+import com.lukai.crm.workbench.domain.TranVO;
 import com.lukai.crm.workbench.service.CustomerRemarkService;
 import com.lukai.crm.workbench.service.CustomerService;
 
@@ -149,8 +150,14 @@ public class CustomerController {
 	public String toCustomerDetail(String id,HttpServletRequest request) {
 		Customer customer = customerService.queryCustomerForDetailById(id);
 		List<CustomerRemark> customerRemarkList = customerRemarkService.queryCustomerRemarkByCusId(id);
+		List<TranVO> tranVOList = customerService.queryTransForDetailByCustomerId(id);
+		
+		
+		
+		
 		request.setAttribute("customer", customer);
 		request.setAttribute("customerRemarkList", customerRemarkList);
+		request.setAttribute("tranVOList", tranVOList);
 		return "workbench/customer/detail";
 	}
 	

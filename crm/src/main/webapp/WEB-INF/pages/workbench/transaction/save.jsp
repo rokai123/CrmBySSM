@@ -184,7 +184,7 @@
 			let type = $("#create-transactionType").val();
 			let source = $("#create-clueSource").val();
 			let activityId = $("#create-activityId").val();
-			let contactsId = $("#create-contactsName").val();
+			let contactsId = $("#create-contactsId").val();
 			let description = $("#create-describe").val();
 			let contactSummary = $("#create-contactSummary").val();
 			let nextContactTime= $("#create-nextContactTime").val();

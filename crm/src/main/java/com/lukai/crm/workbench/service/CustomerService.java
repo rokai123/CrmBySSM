@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.lukai.crm.workbench.domain.Customer;
+import com.lukai.crm.workbench.domain.TranVO;
 
 public interface CustomerService {
 	List<Customer> queryCustomerByConditionForPage(Map<String, Object> map);
@@ -14,4 +15,5 @@ public interface CustomerService {
 	int deleteCustomerByIds(String[] ids);
 	Customer queryCustomerForDetailById(String id);
 	List<String> queryCustomerNameByNameLike(String name);
+	List<TranVO> queryTransForDetailByCustomerId(String cusId);
 }

@@ -242,4 +242,25 @@
 
         WHERE t.id = #{id}
     </select>
+    
+    <delete id="deleteTranByIds" parameterType="string">
+    	delete from tbl_tran where id in
+    	<foreach collection="array " item="id" open="(" separator="," close=")">
+        		#{id}
+        </foreach>
+    </delete>
+    
+    <select id="selectTransByCustomerId" parameterType="string" resultMap="BaseResultMapVO">
+    	select
+    		t.id,
+	        t.money,
+	        t.name,
+	        dv1.value as stage,
+	        dv2.value as type,
+	        expected_date
+	    from tbl_tran t
+	    	join tbl_dic_value dv1 on dv1.id=t.stage
+	    	join tbl_dic_value dv2 on dv2.id=t.type
+	    where t.customer_id=#{cusId}
+    </select>
     </mapper>

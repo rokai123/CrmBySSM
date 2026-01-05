@@ -2,18 +2,23 @@ package com.lukai.crm.workbench.service.Impl;
 
 import java.util.List;
 import java.util.Map;
+import java.util.ResourceBundle;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.lukai.crm.workbench.domain.Customer;
+import com.lukai.crm.workbench.domain.TranVO;
 import com.lukai.crm.workbench.mapper.CustomerMapper;
+import com.lukai.crm.workbench.mapper.TranMapper;
 import com.lukai.crm.workbench.service.CustomerService;
 
 @Service("customerService")
 public class CustomerServiceImpl implements CustomerService{
 	@Autowired
-	CustomerMapper customerMapper;
+	private CustomerMapper customerMapper;
+	@Autowired
+	private TranMapper tranMapper;
 
 	@Override
 	public List<Customer> queryCustomerByConditionForPage(Map<String, Object> map) {
@@ -55,6 +60,18 @@ public class CustomerServiceImpl implements CustomerService{
 	@Override
 	public List<String> queryCustomerNameByNameLike(String name) {
 		return customerMapper.selectCustomerNameByNameLike(name);
+	}
+
+	@Override
+	public List<TranVO> queryTransForDetailByCustomerId(String cusId) {
+		ResourceBundle rb = ResourceBundle.getBundle("possibility");
+		List<TranVO> tranVOList = tranMapper.selectTransByCustomerId(cusId);
+		tranVOList.forEach(tranVO -> {
+			String possibility = rb.getString(tranVO.getStage());
+			tranVO.setPossibility(possibility);
+		});
+		
+		return tranVOList;
 	}
 
 	

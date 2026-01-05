@@ -180,4 +180,27 @@ public class TranController {
 		request.setAttribute("tranHistoryList", TranHistoryList);
 		return "workbench/transaction/detail";
 	}
+	
+	@RequestMapping("/workbench/transaction/deleteTranByIds.do")
+	@ResponseBody
+	public ReturnObject deleteTranByIds(@RequestParam("id") String[] ids) {
+		ReturnObject returnObject = new ReturnObject();
+		try {
+			int retInt = tranService.deleteTranByIds(ids);
+			if (retInt>0) {
+				returnObject.setCode(Contants.RETURN_OBJECT_CODE_SUCCESS);
+				returnObject.setMessage("削除しました。");
+			}else {
+				returnObject.setCode(Contants.RETURN_OBJECT_CODE_FAIL);
+				returnObject.setMessage("削除に失敗しました。しばらくしてから再度お試しください。");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			returnObject.setCode(Contants.RETURN_OBJECT_CODE_FAIL);
+			returnObject.setMessage("削除に失敗しました。しばらくしてから再度お試しください。");
+		}
+		
+		
+		return returnObject;
+	}
 }

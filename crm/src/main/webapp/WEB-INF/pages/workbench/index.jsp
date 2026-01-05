@@ -72,7 +72,7 @@
 						$("#oldPwdWarn").html("");
 					}else{
 						$(this).val("");
-						$("#oldPwdWarn").html("原密码输入错误");
+						$("#oldPwdWarn").html("現在のパスワードが正しくありません。");
 					}
 				}
 			})
@@ -83,15 +83,15 @@
 			let newPwd = $("#newPwd").val();
 			let confirmPwd = $("#confirmPwd").val();
 			if(newPwd == ""){
-				$("#newPwdWarn").html("新密码不能为空");
+				$("#newPwdWarn").html("新しいパスワードを入力してください。");
 				return;
 			}else if(confirmPwd == ""){
-				$("#confirmPwdWarn").html("确认密码不能为空");
+				$("#confirmPwdWarn").html("確認用パスワードを入力してください。");
 				return;
 			}
 			//验证新密码和确认密码是否一致
 			if(newPwd != confirmPwd){
-				$("#confirmPwdWarn").html("新密码和确认密码不一致");
+				$("#confirmPwdWarn").html("新しいパスワードと確認用パスワードが一致しません。");
 				return;
 			}
 			if(oldPwdIsTrue){
@@ -104,9 +104,10 @@
 					dataType:"json",
 					success:function(data){
 						if(data.code == "1"){
-							alert("密码修改成功");
+							alert("パスワードを変更しました。");
 							//关闭模态窗口
 							$("#editPwdModal").modal("hide");
+							window.location.href="settings/qx/user/logout.do";
 						}else{
 							alert(data.message);
 						}
@@ -119,6 +120,12 @@
 
 		$("#confirmPwd").on("click",function(){
 			$("#confirmPwdWarn").html("");
+		});
+		$("#oldPwd").on("click",function(){
+			$("#oldPwdWarn").html("");
+		});
+		$("#newPwd").on("click",function(){
+			$("#newPwdWarn").html("");
 		});
 
 	});
