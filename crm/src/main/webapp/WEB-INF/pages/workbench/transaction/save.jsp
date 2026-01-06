@@ -176,7 +176,7 @@
 
 		$("#saveCreateTranBtn").click(function(){
 			let owner = $("#create-transactionOwner").val();
-			let money = $("#create-money").val();
+			let money = $("#create-amountOfMoney").val();
 			let name = $("#create-transactionName").val();
 			let expectedDate = $("#create-expectedDate").val();
 			let customerName = $("#create-customerName").val();
@@ -188,6 +188,8 @@
 			let description = $("#create-describe").val();
 			let contactSummary = $("#create-contactSummary").val();
 			let nextContactTime= $("#create-nextContactTime").val();
+			let returnTo = $("#returnTo").val();
+			let customerId = $("#customerId").val();
 			if(name == ""){
 				alert("参数不能为空");
 				return;
@@ -225,8 +227,14 @@
 				dataType:"json",
 				success:function(data){
 					if(data.code == "1"){
-						alert("添加成功");
-						window.location.href="workbench/transaction/toIndex.do";
+						if(returnTo == "customer"){
+							alert("添加成功");
+							window.location.href="workbench/customer/toCustomerDetail.do?id="+customerId+"";
+						}else{
+							alert("添加成功");
+							window.location.href="workbench/transaction/toIndex.do";
+						}
+
 					}else{
 						alert("添加失败");
 					}
@@ -363,7 +371,23 @@
 		<div class="form-group">
 			<label for="create-accountName" class="col-sm-2 control-label">取引先名<span style="font-size: 15px; color: red;">*</span></label>
 			<div class="col-sm-10" style="width: 300px;">
-				<input type="text" class="form-control" id="create-customerName" placeholder="支持自动补全，输入客户不存在则新建">
+				<input type="hidden" id="returnTo" value="${returnTo}">
+				<input type="hidden" id="customerId" value="${customerId}">
+				<c:choose>
+					<c:when test="${not empty customerId}">
+						<input type="text"
+							value="${customerName}"
+							class="form-control"
+							id="create-customerName"
+							readonly>
+					</c:when>
+					<c:otherwise>
+						<input type="text"
+							class="form-control"
+							id="create-customerName"
+							placeholder="支持自动补全，输入客户不存在则新建">
+					</c:otherwise>
+				</c:choose>
 			</div>
 			<label for="create-transactionStage" class="col-sm-2 control-label">ステージ<span style="font-size: 15px; color: red;">*</span></label>
 			<div class="col-sm-10" style="width: 300px;">

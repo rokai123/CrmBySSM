@@ -260,7 +260,7 @@
 	        expected_date
 	    from tbl_tran t
 	    	join tbl_dic_value dv1 on dv1.id=t.stage
-	    	join tbl_dic_value dv2 on dv2.id=t.type
+	    	left join tbl_dic_value dv2 on dv2.id=t.type
 	    where t.customer_id=#{cusId}
     </select>
     </mapper>

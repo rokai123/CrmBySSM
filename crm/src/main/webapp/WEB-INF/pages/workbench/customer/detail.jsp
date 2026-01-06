@@ -530,7 +530,7 @@
 			</div>
 			
 			<div>
-				<a href="workbench/transaction/toCreateTranPage.do" style="text-decoration: none;"><span class="glyphicon glyphicon-plus"></span>商談を新規作成</a>
+				<a href="workbench/transaction/toCreateTranPage.do?returnTo=customer&customerId=${customer.id}&customerName=${customer.name}" style="text-decoration: none;"><span class="glyphicon glyphicon-plus"></span>商談を新規作成</a>
 			</div>
 		</div>
 	</div>

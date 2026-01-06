@@ -95,7 +95,7 @@ public class TranController {
 	}
 	
 	@RequestMapping("/workbench/transaction/toCreateTranPage.do")
-	public String toCreateTranPage(HttpSession session,HttpServletRequest request) {
+	public String toCreateTranPage(HttpSession session,HttpServletRequest request,String customerId,String customerName,String returnTo) {
 		User user=(User)session.getAttribute(Contants.SESSION_USER);
 		List<User> userList = userService.queryAllUsers();
 		List<DicValue> transactionTypeList = dicValueService.queryDicValueByTypeCode("transactionType");
@@ -106,7 +106,9 @@ public class TranController {
 		request.setAttribute("transactionTypeList", transactionTypeList);
 		request.setAttribute("stageList", stageList);
 		request.setAttribute("sourceList", sourceList);
-		
+		request.setAttribute("returnTo", returnTo);
+		request.setAttribute("customerId", customerId);
+		request.setAttribute("customerName", customerName);
 		return "workbench/transaction/save";
 	}
 	
