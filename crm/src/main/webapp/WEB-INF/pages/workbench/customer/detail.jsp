@@ -155,6 +155,35 @@
 
 			})
 		});
+
+		//获取当前被点击删除按钮的交易元素
+		$("#tranTbody").on("click","a[name=\"deleteTranBtn\"]",function(){
+			let tranId = $(this).data("tranId");
+			$("#deleteTranIdInput").val(tranId);
+		})
+
+		//删除交易的模态窗口中点击删除按钮后，删除该交易
+		$("#deleteTranConfirmBtn").on("click",function(){
+			let tranId = $("#deleteTranIdInput").val();
+			$.ajax({
+				url:"workbench/transaction/deleteTranByIds.do",
+				data:{
+					"id":tranId
+				},
+				type:"post",
+				dataType:"json",
+				success:function(data){
+					if(data.code=="1"){
+						$("#removeTransactionModal").modal("hide");
+						$("#deleteSuccessModal").modal("show");
+						$("#tranTrDiv_"+tranId).remove();
+					}else{
+						alert(data.message);
+					}
+				}
+			})
+		})
+
 	});
 	
 </script>
@@ -229,12 +258,36 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-                    <button type="button" class="btn btn-danger" data-dismiss="modal">删除</button>
+                    <button type="button" class="btn btn-danger" id="deleteTranConfirmBtn">删除</button>
+					<input type="hidden" id="deleteTranIdInput"/>
                 </div>
             </div>
         </div>
     </div>
-	
+
+	<!-- 删除成功提示模态窗口 -->
+	<div class="modal fade" id="deleteSuccessModal" role="dialog">
+		<div class="modal-dialog modal-sm" role="document">
+			<div class="modal-content">
+				<div class="modal-header" style="border-bottom: none;">
+					<button type="button" class="close" data-dismiss="modal">
+						<span aria-hidden="true">×</span>
+					</button>
+					<h4 class="modal-title">操作完了</h4>
+				</div>
+				<div class="modal-body text-center">
+					<span class="glyphicon glyphicon-ok" style="font-size: 36px; color: #5cb85c;"></span>
+					<p style="margin-top: 15px;">削除が完了しました。</p>
+				</div>
+				<div class="modal-footer" style="border-top: none; text-align: center;">
+					<button type="button" class="btn btn-success" data-dismiss="modal">
+						OK
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
 	<!-- 创建联系人的模态窗口 -->
 	<div class="modal fade" id="createContactsModal" role="dialog">
 		<div class="modal-dialog" role="document" style="width: 85%;">
@@ -510,9 +563,9 @@
 							<td></td>
 						</tr>
 					</thead>
-					<tbody>
+					<tbody id="tranTbody">
 						<c:forEach var="tran" items="${tranVOList}">
-							<tr>
+							<tr id="tranTrDiv_${tran.id}">
 								<td><a href="workbench/transaction/TranDetailPage.do?id=${tran.id}" style="text-decoration: none;">${tran.name}</a></td>
 								<td>
 									￥<fmt:formatNumber value="${tran.money}" pattern="#,##0"/>
@@ -521,7 +574,7 @@
 								<td>${tran.possibility}%</td>
 								<td>${tran.expectedDate}</td>
 								<td>${tran.type}</td>
-								<td><a href="javascript:void(0);" date-tran-id="${tran.id}" data-toggle="modal" data-target="#removeTransactionModal" style="text-decoration: none;"><span class="glyphicon glyphicon-remove"></span>削除</a></td>
+								<td><a href="javascript:void(0);" data-tran-id="${tran.id}" name="deleteTranBtn" data-toggle="modal" data-target="#removeTransactionModal" style="text-decoration: none;"><span class="glyphicon glyphicon-remove"></span>削除</a></td>
 							</tr>
 						</c:forEach>
 						
