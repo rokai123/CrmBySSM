@@ -18,6 +18,7 @@ import com.lukai.crm.workbench.domain.ActivityRemark;
 import com.lukai.crm.workbench.domain.Clue;
 import com.lukai.crm.workbench.domain.ClueActivityRelation;
 import com.lukai.crm.workbench.domain.ClueRemark;
+import com.lukai.crm.workbench.domain.Contacts;
 import com.lukai.crm.workbench.domain.Customer;
 import com.lukai.crm.workbench.domain.CustomerRemark;
 import com.lukai.crm.workbench.mapper.ActivityMapper;
@@ -25,6 +26,7 @@ import com.lukai.crm.workbench.mapper.ActivityRemarkMapper;
 import com.lukai.crm.workbench.mapper.ClueActivityRelationMapper;
 import com.lukai.crm.workbench.mapper.ClueMapper;
 import com.lukai.crm.workbench.mapper.ClueRemarkMapper;
+import com.lukai.crm.workbench.mapper.ContactsMapper;
 import com.lukai.crm.workbench.mapper.CustomerMapper;
 import com.lukai.crm.workbench.mapper.CustomerRemarkMapper;
 import com.lukai.crm.workbench.mapper.FunnelVOMapper;
@@ -61,6 +63,8 @@ public class Test {
 	private FunnelVOMapper funnelVOMapper;
 	@Autowired
 	private BCryptPasswordEncoder bCryptPasswordEncoder;
+	@Autowired
+	private ContactsMapper contactsMapper;
 	@org.junit.Test
 	public void dateUtilsTest() {
 		String formateDateTime = DateUtils.formateDateTime(new Date());
@@ -184,5 +188,19 @@ public class Test {
 		boolean matches = bCryptPasswordEncoder.matches("yz123", pwd);
 		System.out.println(matches);
 		
+	}
+	@org.junit.Test
+	public void LombokTest() {
+		Contacts contacts = new Contacts();
+		contacts.setAddress("asdasd");
+		System.out.println(contacts);
+	}
+	
+	@org.junit.Test
+	public void selectContactsByConditionForPageTest() {
+		HashMap<String, Object> hashMap = new HashMap<String, Object>();
+		hashMap.put("fullname", "田");
+		List<Contacts> contacts = contactsMapper.selectContactsByConditionForPage(hashMap);
+		contacts.forEach(System.out::println);
 	}
 }

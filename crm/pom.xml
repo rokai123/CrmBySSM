@@ -168,6 +168,15 @@
 		  <artifactId>spring-security-core</artifactId>
 		  <version>5.8.5</version>
 		</dependency>
+		
+		<!--Lombok-->
+		<dependency>
+		    <groupId>org.projectlombok</groupId>
+		    <artifactId>lombok</artifactId>
+		    <version>1.18.30</version>
+		    <scope>provided</scope>
+		</dependency>
+		
     </dependencies>
 
     <build>

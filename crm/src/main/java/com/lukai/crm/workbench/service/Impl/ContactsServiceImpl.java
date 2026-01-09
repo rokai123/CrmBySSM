@@ -1,6 +1,7 @@
 package com.lukai.crm.workbench.service.Impl;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,16 @@ public class ContactsServiceImpl implements ContactsService {
 	@Override
 	public List<Contacts> queryContactsByNameLike(String fullname) {
 		return contactsMapper.selectContactsByNameLike(fullname);
+	}
+
+	@Override
+	public List<Contacts> queryContactsByConditionForPage(Map<String, Object> map) {
+		return contactsMapper.selectContactsByConditionForPage(map);
+	}
+
+	@Override
+	public int queryContactsByConditionForPageCount(Map<String, Object> map) {
+		return contactsMapper.selectContactsByConditionForPageCount(map);
 	}
 	
 	

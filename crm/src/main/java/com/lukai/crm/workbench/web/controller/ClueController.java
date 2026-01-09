@@ -81,6 +81,7 @@ public class ClueController {
 		clueMap.put("beginNo", beginNo);
 		clueMap.put("pageSize", pageSize);
 		Map<String, Object> retMap= clueService.queryClueByConditionForPage(clueMap);
+		
 		return retMap;
 	}
 	/**

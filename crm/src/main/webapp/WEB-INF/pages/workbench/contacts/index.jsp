@@ -1,15 +1,25 @@
-<!DOCTYPE html>
+<%@ page contentType="text/html; charset=UTF-8" language="java" %>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%
+		String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
+                + request.getContextPath() + "/";
+ %>
 <html>
 <head>
+<base href="<%=basePath%>">
 <meta charset="UTF-8">
 
-<link href="../../jquery/bootstrap_3.3.0/css/bootstrap.min.css" type="text/css" rel="stylesheet" />
-<link href="../../jquery/bootstrap-datetimepicker-master/css/bootstrap-datetimepicker.min.css" type="text/css" rel="stylesheet" />
-
-<script type="text/javascript" src="../../jquery/jquery-1.11.1-min.js"></script>
-<script type="text/javascript" src="../../jquery/bootstrap_3.3.0/js/bootstrap.min.js"></script>
-<script type="text/javascript" src="../../jquery/bootstrap-datetimepicker-master/js/bootstrap-datetimepicker.min.js"></script>
-<script type="text/javascript" src="../../jquery/bootstrap-datetimepicker-master/locale/bootstrap-datetimepicker.zh-CN.js"></script>
+<link href="jquery/bootstrap_3.3.0/css/bootstrap.min.css" type="text/css" rel="stylesheet" />
+<link href="jquery/bootstrap-datetimepicker-master/css/bootstrap-datetimepicker.min.css" type="text/css" rel="stylesheet" />
+<link href="jquery/bs_pagination-master/css/jquery.bs_pagination.min.css" type="text/css" rel="stylesheet" />
+<script type="text/javascript" src="jquery/jquery-1.11.1-min.js"></script>
+<script type="text/javascript" src="jquery/bootstrap_3.3.0/js/bootstrap.min.js"></script>
+<!-- 時間選択のためのJSファイルの読み込み -->
+<script type="text/javascript" src="jquery/bootstrap-datetimepicker-master/js/bootstrap-datetimepicker.js"></script>
+<script type="text/javascript" src="jquery/bootstrap-datetimepicker-master/locale/bootstrap-datetimepicker.ja.js"></script>
+<!-- ページングのためのJSファイルの読み込み -->
+<script type="text/javascript" src="jquery/bs_pagination-master/js/jquery.bs_pagination.min.js"></script>
+<script type="text/javascript" src="jquery/bs_pagination-master/localization/ja.js"></script>
 
 <script type="text/javascript">
 
@@ -20,9 +30,97 @@
 			//防止下拉菜单消失
 	        e.stopPropagation();
 	    });
-		
+		queryContactsByConditionForPage(1,10)
 	});
 	
+	function queryContactsByConditionForPage(pageNo,pageSize){
+		let owner = $("#query-owner").val();
+		let fullname = $("#query-fullName").val();
+		let customerName = $("#query-customerName").val();
+		let source = $("#query-source").val();
+		let birthday = $("#query-birthday").val();
+		$.ajax({
+			url:"workbench/contacts/queryContactsByConditionForPage.do",
+			data:{
+				"owner":owner,
+				"fullname":fullname,
+				"customerName":customerName,
+				"source":source,
+				"birthday":birthday,
+				"pageNo":pageNo,
+				"pageSize":pageSize
+			},
+			type:"get",
+			dataType:"json",
+			success:function (data) {
+				let contactsList = data.contactsList;
+				let tpl = $("#contactsTemplate").html();
+				
+				let html = "";
+				$.each(contactsList,function (i,c) {
+					// 控制高亮行（示例：偶数行高亮）
+        			let rowClass = (i % 2 == 1) ? "active" : "";
+					let row = tpl
+						.replace(/{{active}}/g, rowClass)
+						.replace(/{{id}}/g, c.id)
+						.replace("{{fullname}}", c.fullname)
+						.replace("{{customerName}}", nv(c.customerName))
+						.replace("{{owner}}", c.owner)
+						.replace("{{source}}", c.source)
+						.replace("{{birthday}}", c.birthday);
+
+        			html += row;
+				})
+				
+				$("#contactsBody").html(html);
+
+				//総ページ数を計算する
+				let totalPages;
+				if(data.totalCount % pageSize == 0) {
+					totalPages = data.totalCount / pageSize;
+				} else {
+					//切り上げ関数 Math.ceil()
+					totalPages = Math.ceil(data.totalCount / pageSize);
+				}
+				
+				$("#forPagination").bs_pagination({
+					currentPage: pageNo,
+					rowsPerPage: pageSize,
+					totalPages: totalPages,
+					totalRows: data.totalCount,
+					visiblePageLinks: 10,
+					showGoToPage: true,
+					showRowsPerPage: true,
+					showRowsInfo: true,
+					onChangePage: function (event, pageObj) {
+						queryContactsByConditionForPage(pageObj.currentPage, pageObj.rowsPerPage)
+					}
+				})
+			}
+	
+		})
+	}
+	
+	/**
+	 * 空値処理用ユーティリティ関数
+	 *
+	 * 値が null / undefined / 空文字("") の場合、
+	 * 代替表示用の値 alt を返します。
+	 * alt が未指定の場合は空文字を返します。
+	 *
+	 * 用途：
+	 *  - 画面に「null」や「undefined」を表示させないため
+	 *  - 一覧画面などの空値表示を統一するため
+	 *
+	 * @param v   表示対象の値
+	 * @param alt 空値の場合の代替表示文字（省略可）
+	 * @return    画面表示用の安全な値
+	 */
+	function nv(v, alt) {
+		// null / undefined / "" 都当作空
+		if (v === null || v === undefined || v === "") return alt ?? "";
+		return v;
+	}
 </script>
 </head>
 <body>
@@ -45,9 +143,9 @@
 							<label for="create-contactsOwner" class="col-sm-2 control-label">所有者<span style="font-size: 15px; color: red;">*</span></label>
 							<div class="col-sm-10" style="width: 300px;">
 								<select class="form-control" id="create-contactsOwner">
-								  <option>zhangsan</option>
-								  <option>lisi</option>
-								  <option>wangwu</option>
+									<c:forEach var="user" items="${userList}">
+										<option value="${user.id}">${user.name}</option>
+									</c:forEach>
 								</select>
 							</div>
 							<label for="create-clueSource" class="col-sm-2 control-label">来源</label>
@@ -323,21 +421,21 @@
 				  <div class="form-group">
 				    <div class="input-group">
 				      <div class="input-group-addon">所有者</div>
-				      <input class="form-control" type="text">
+				      <input class="form-control" id="query-owner" type="text">
 				    </div>
 				  </div>
 				  
 				  <div class="form-group">
 				    <div class="input-group">
 				      <div class="input-group-addon">姓名</div>
-				      <input class="form-control" type="text">
+				      <input class="form-control" id="query-fullname" type="text">
 				    </div>
 				  </div>
 				  
 				  <div class="form-group">
 				    <div class="input-group">
 				      <div class="input-group-addon">客户名称</div>
-				      <input class="form-control" type="text">
+				      <input class="form-control" id="query-customerName" type="text">
 				    </div>
 				  </div>
 				  
@@ -346,7 +444,7 @@
 				  <div class="form-group">
 				    <div class="input-group">
 				      <div class="input-group-addon">来源</div>
-				      <select class="form-control" id="edit-clueSource">
+				      <select class="form-control" id="query-source">
 						  <option></option>
 						  <option>广告</option>
 						  <option>推销电话</option>
@@ -369,7 +467,7 @@
 				  <div class="form-group">
 				    <div class="input-group">
 				      <div class="input-group-addon">生日</div>
-				      <input class="form-control" type="text">
+				      <input class="form-control" id="query-birthday" type="text">
 				    </div>
 				  </div>
 				  
@@ -398,60 +496,30 @@
 							<td>生日</td>
 						</tr>
 					</thead>
-					<tbody>
-						<tr>
-							<td><input type="checkbox" /></td>
-							<td><a style="text-decoration: none; cursor: pointer;" onclick="window.location.href='detail.html';">李四</a></td>
-							<td>动力节点</td>
-							<td>zhangsan</td>
-							<td>广告</td>
-							<td>2000-10-10</td>
-						</tr>
-                        <tr class="active">
-                            <td><input type="checkbox" /></td>
-                            <td><a style="text-decoration: none; cursor: pointer;" onclick="window.location.href='detail.html';">李四</a></td>
-                            <td>动力节点</td>
-                            <td>zhangsan</td>
-                            <td>广告</td>
-                            <td>2000-10-10</td>
-                        </tr>
+					<tbody id="contactsBody">
+						<script type="text/template" id="contactsTemplate">
+							<tr class="{{active}}">
+								<td>
+									<input type="checkbox" value="{{id}}"/>
+								</td>
+								<td>
+									<a style="text-decoration: none; cursor: pointer;" 
+										onclick="window.location.href='workbench/contacts/detail.do?id={{id}}';">
+										{{fullname}}
+									</a>
+								</td>
+								<td>{{customerName}}</td>
+								<td>{{owner}}</td>
+								<td>{{source}}</td>
+								<td>{{birthday}}</td>
+							</tr>
+						</script>	
 					</tbody>
 				</table>
 			</div>
 			
-			<div style="height: 50px; position: relative;top: 10px;">
-				<div>
-					<button type="button" class="btn btn-default" style="cursor: default;">共<b>50</b>条记录</button>
-				</div>
-				<div class="btn-group" style="position: relative;top: -34px; left: 110px;">
-					<button type="button" class="btn btn-default" style="cursor: default;">显示</button>
-					<div class="btn-group">
-						<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-							10
-							<span class="caret"></span>
-						</button>
-						<ul class="dropdown-menu" role="menu">
-							<li><a href="#">20</a></li>
-							<li><a href="#">30</a></li>
-						</ul>
-					</div>
-					<button type="button" class="btn btn-default" style="cursor: default;">条/页</button>
-				</div>
-				<div style="position: relative;top: -88px; left: 285px;">
-					<nav>
-						<ul class="pagination">
-							<li class="disabled"><a href="#">首页</a></li>
-							<li class="disabled"><a href="#">上一页</a></li>
-							<li class="active"><a href="#">1</a></li>
-							<li><a href="#">2</a></li>
-							<li><a href="#">3</a></li>
-							<li><a href="#">4</a></li>
-							<li><a href="#">5</a></li>
-							<li><a href="#">下一页</a></li>
-							<li class="disabled"><a href="#">末页</a></li>
-						</ul>
-					</nav>
-				</div>
+			<div>
+				<div id="forPagination"></div>
 			</div>
 			
 		</div>

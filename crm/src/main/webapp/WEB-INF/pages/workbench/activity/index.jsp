@@ -411,7 +411,7 @@
 
 		        let html = "";
 		        $.each(data.activities, function(i, n) {
-		            html += "<tr class=\"active\">";
+		            html += "<tr>";
 		            html += "<td><input type=\"checkbox\" value=\"" + n.id + "\" id=\" \"/></td>";
 		            html += "<td><a style=\"text-decoration: none; cursor: pointer;\" onclick=\"window.location.href='workbench/activity/detailActivity.do?id=" + n.id + "';\">" + n.name + "</a></td>";
 		            html += "<td>" + n.owner + "</td>";
