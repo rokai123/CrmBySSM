@@ -14,7 +14,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.lukai.crm.commons.contants.Contants;
+import com.lukai.crm.settings.domain.DicValue;
 import com.lukai.crm.settings.domain.User;
+import com.lukai.crm.settings.service.DicValueService;
 import com.lukai.crm.settings.service.UserService;
 import com.lukai.crm.workbench.domain.Contacts;
 import com.lukai.crm.workbench.service.ContactsService;
@@ -26,13 +28,15 @@ public class ContactsController {
 	private UserService userService;
 	@Autowired
 	private ContactsService contactsService;
-
+	@Autowired
+	private DicValueService dicValueService;
 	
 	@RequestMapping("/workbench/contacts/toIndex.do")
 	public String toIndex(HttpSession session,Model model) {
 		User user = (User)session.getAttribute(Contants.SESSION_USER);
 		List<User> userList = userService.queryAllUsers();
-		
+		List<DicValue> sourceList = dicValueService.queryDicValueByTypeCode("source");
+		model.addAttribute("sourceList",sourceList);
 		model.addAttribute("userList", userList);
 		return "workbench/contacts/index";
 	}
@@ -44,7 +48,8 @@ public class ContactsController {
 			@RequestParam("pageNo") Integer pageNo,
 			@RequestParam("pageSize") Integer pageSize
 			) {
-			
+		System.out.println(map.get("owner"));
+		System.out.println(map.get("fullname"));
 		int beginNo = (pageNo - 1) * pageSize;
 		map.put("beginNo", beginNo);
 		map.put("pageSize", pageSize);

@@ -31,11 +31,16 @@
 	        e.stopPropagation();
 	    });
 		queryContactsByConditionForPage(1,10)
+
+		//検索ボタン
+		$("#searchBtn").on("click",function () {
+			queryContactsByConditionForPage(1,10)
+		})
 	});
 	
 	function queryContactsByConditionForPage(pageNo,pageSize){
 		let owner = $("#query-owner").val();
-		let fullname = $("#query-fullName").val();
+		let fullname = $("#query-fullname").val();
 		let customerName = $("#query-customerName").val();
 		let source = $("#query-source").val();
 		let birthday = $("#query-birthday").val();
@@ -406,7 +411,7 @@
 	<div>
 		<div style="position: relative; left: 10px; top: -10px;">
 			<div class="page-header">
-				<h3>联系人列表</h3>
+				<h3>取引先責任者一覧</h3>
 			</div>
 		</div>
 	</div>
@@ -420,21 +425,21 @@
 				  
 				  <div class="form-group">
 				    <div class="input-group">
-				      <div class="input-group-addon">所有者</div>
+				      <div class="input-group-addon">担当者</div>
 				      <input class="form-control" id="query-owner" type="text">
 				    </div>
 				  </div>
 				  
 				  <div class="form-group">
 				    <div class="input-group">
-				      <div class="input-group-addon">姓名</div>
+				      <div class="input-group-addon">氏名</div>
 				      <input class="form-control" id="query-fullname" type="text">
 				    </div>
 				  </div>
 				  
 				  <div class="form-group">
 				    <div class="input-group">
-				      <div class="input-group-addon">客户名称</div>
+				      <div class="input-group-addon">会社名</div>
 				      <input class="form-control" id="query-customerName" type="text">
 				    </div>
 				  </div>
@@ -443,35 +448,24 @@
 				  
 				  <div class="form-group">
 				    <div class="input-group">
-				      <div class="input-group-addon">来源</div>
+				      <div class="input-group-addon">リードソース</div>
 				      <select class="form-control" id="query-source">
 						  <option></option>
-						  <option>广告</option>
-						  <option>推销电话</option>
-						  <option>员工介绍</option>
-						  <option>外部介绍</option>
-						  <option>在线商场</option>
-						  <option>合作伙伴</option>
-						  <option>公开媒介</option>
-						  <option>销售邮件</option>
-						  <option>合作伙伴研讨会</option>
-						  <option>内部研讨会</option>
-						  <option>交易会</option>
-						  <option>web下载</option>
-						  <option>web调研</option>
-						  <option>聊天</option>
+						  <c:forEach items="${sourceList}" var="s">
+							<option value="${s.id}">${s.text}</option>
+						  </c:forEach>
 						</select>
 				    </div>
 				  </div>
 				  
 				  <div class="form-group">
 				    <div class="input-group">
-				      <div class="input-group-addon">生日</div>
+				      <div class="input-group-addon">誕生日</div>
 				      <input class="form-control" id="query-birthday" type="text">
 				    </div>
 				  </div>
 				  
-				  <button type="submit" class="btn btn-default">查询</button>
+				  <button type="button" id="searchBtn" class="btn btn-default">検索</button>
 				  
 				</form>
 			</div>
@@ -496,25 +490,25 @@
 							<td>生日</td>
 						</tr>
 					</thead>
-					<tbody id="contactsBody">
-						<script type="text/template" id="contactsTemplate">
-							<tr class="{{active}}">
-								<td>
-									<input type="checkbox" value="{{id}}"/>
-								</td>
-								<td>
-									<a style="text-decoration: none; cursor: pointer;" 
-										onclick="window.location.href='workbench/contacts/detail.do?id={{id}}';">
-										{{fullname}}
-									</a>
-								</td>
-								<td>{{customerName}}</td>
-								<td>{{owner}}</td>
-								<td>{{source}}</td>
-								<td>{{birthday}}</td>
-							</tr>
-						</script>	
-					</tbody>
+					<tbody id="contactsBody"></tbody>
+					<!-- 行模板（画面用テンプレート） -->
+					<script type="text/template" id="contactsTemplate">
+						<tr class="{{active}}">
+							<td>
+								<input type="checkbox" value="{{id}}"/>
+							</td>
+							<td>
+								<a style="text-decoration: none; cursor: pointer;" 
+									onclick="window.location.href='workbench/contacts/detail.do?id={{id}}';">
+									{{fullname}}
+								</a>
+							</td>
+							<td>{{customerName}}</td>
+							<td>{{owner}}</td>
+							<td>{{source}}</td>
+							<td>{{birthday}}</td>
+						</tr>
+					</script>	
 				</table>
 			</div>
 			
