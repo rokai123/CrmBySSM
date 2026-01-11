@@ -36,6 +36,8 @@ public class ContactsController {
 		User user = (User)session.getAttribute(Contants.SESSION_USER);
 		List<User> userList = userService.queryAllUsers();
 		List<DicValue> sourceList = dicValueService.queryDicValueByTypeCode("source");
+		List<DicValue> appellationList = dicValueService.queryDicValueByTypeCode("appellation");
+		model.addAttribute("appellationList", appellationList);
 		model.addAttribute("sourceList",sourceList);
 		model.addAttribute("userList", userList);
 		return "workbench/contacts/index";
