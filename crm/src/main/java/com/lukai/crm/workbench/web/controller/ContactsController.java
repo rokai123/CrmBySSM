@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.lukai.crm.commons.contants.Contants;
+import com.lukai.crm.commons.domain.ReturnObject;
 import com.lukai.crm.settings.domain.DicValue;
 import com.lukai.crm.settings.domain.User;
 import com.lukai.crm.settings.service.DicValueService;
@@ -64,4 +65,21 @@ public class ContactsController {
 		
 		return resultMap;
 	}
+	
+	@RequestMapping("/workbench/contacts/saveCreateContacts.do")
+	@ResponseBody
+	public ReturnObject saveCreateContacts(Contacts contacts,HttpSession session) {
+		User user = (User)session.getAttribute(Contants.SESSION_USER);
+		ReturnObject retObject= new ReturnObject();
+		try {
+			contactsService.saveCreateContacts(contacts, user);
+			retObject.setCode(Contants.RETURN_OBJECT_CODE_SUCCESS);
+		} catch (Exception e) {
+			e.printStackTrace();
+			retObject.setCode(Contants.RETURN_OBJECT_CODE_FAIL);
+			retObject.setMessage("システムが混雑中です、しばらくしてから再度お試しください");
+		}
+		return retObject;
+	}
+	
 }

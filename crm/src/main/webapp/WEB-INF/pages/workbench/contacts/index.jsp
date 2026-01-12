@@ -22,7 +22,8 @@
 <!-- ページングのためのJSファイルの読み込み -->
 <script type="text/javascript" src="jquery/bs_pagination-master/js/jquery.bs_pagination.min.js"></script>
 <script type="text/javascript" src="jquery/bs_pagination-master/localization/ja.js"></script>
-
+<!-- 文字入力時の候補表示（オートコンプリート）用 -->
+<script type="text/javascript" src="jquery/bs_typeahead/bootstrap3-typeahead.min.js"></script>
 <style>
   /* ====== Page background ====== */
   body {
@@ -291,7 +292,17 @@
 
 <script type="text/javascript">
   $(function(){
-
+	// ページの読み込み完了後、コンテナに対してカレンダーツール関数を呼び出す
+		$(".myDate").datetimepicker({
+		    language: "ja",          // 言語（日本語に設定）
+		    format: "yyyy-mm-dd",    // 日付フォーマット
+		    minView: "month",        // 月単位で表示
+		    initialDate: new Date(), // デフォルトで現在の日付を表示
+		    autoclose: true,         // 日付選択後にカレンダーを自動閉じる
+		    todayBtn: true,          // 「今日」ボタンを表示
+		    clearBtn: true           // 「クリア」ボタンを表示
+		});
+		
     //定制字段
     $("#definedColumns > li").click(function(e) {
       //防止下拉菜单消失
@@ -305,8 +316,90 @@
       queryContactsByConditionForPage(1,10);
     });
 
-    // (optional) initialize datetimepicker if you want
-    // $("#query-birthday").datetimepicker({language:'ja', minView:'month', format:'yyyy-mm-dd', autoclose:true});
+	$("#create-customerName").typeahead({
+		minLength: 1, // 至少输入1个字符才触发
+		showHintOnFocus: false,    // 关键：避免 focus 时弹出旧缓存（很多版本默认会弹）
+		autoSelect: false,         // 可选：避免自动选中第一条
+		source:function(query,process){
+			
+			$.ajax({
+				url:"workbench/transaction/queryCustomerNameByNameLike.do",
+				data:{
+					"name":query
+				},
+				type:"get",
+				dataType:"json",
+				success:function(data){
+					process(data);
+				}
+			})
+		}
+	})
+
+	$("#saveCreateContactsBtn").on("click",function(){
+		//收集参数
+		let owner = $("#create-contactsOwner").val();
+		let source = $("#create-clueSource").val();
+		let fullname = $("#create-surname").val();
+		let appellation = $("#create-call").val();
+		let job = $("#create-job").val();
+		let mphone = $("#create-mphone").val();
+		let email = $("#create-email").val();
+		let birth = $("#create-birth").val();
+		let customerName = $("#create-customerName").val();
+		let description = $("#create-describe").val();
+		let contactSummary = $("#create-contactSummary1").val();
+		let nextContactTime = $("#create-nextContactTime1").val();
+		let address = $("#create-address1").val();
+		//验证数据
+		if(fullname == ""){
+			alert("氏名を入力してください。");
+			return;
+		}
+		if(appellation == ""){
+			alert("敬称を入力してください。");
+			return;
+		}
+		if(customerName == ""){
+			alert("会社名を入力してください。");
+			return;
+		}
+		$.ajax({
+			url:"workbench/contacts/saveCreateContacts.do",
+			data:{
+				"owner":owner,
+				"source":source,
+				"fullname":fullname,
+				"appellation":appellation,
+				"job":job,
+				"mphone":mphone,
+				"email":email,
+				"birth":birth,
+				"customerName":customerName,
+				"description":description,
+				"contactSummary":contactSummary,
+				"nextContactTime":nextContactTime,
+				"address":address
+				},
+			type:"post",
+			dataType:"json",
+			success:function(data){
+				if(data.code == "1"){
+					//关闭模态窗口
+					$("#createContactsModal").modal("hide");
+					$("#successMsg").html("新規操作が完了しました。");
+					$("#SuccessModal").modal("show");
+					//刷新列表（局部刷新）
+					queryContactsByConditionForPage(1,10);
+				}else{
+					alert(data.message);
+				}
+			}
+			
+		})
+
+	})
+
   });
 
   function queryContactsByConditionForPage(pageNo,pageSize){
@@ -396,7 +489,28 @@
 </head>
 
 <body>
-
+	<!-- 操作成功提示模态窗口 -->
+	<div class="modal fade" id="SuccessModal" role="dialog">
+		<div class="modal-dialog modal-sm" role="document">
+			<div class="modal-content">
+				<div class="modal-header" style="border-bottom: none;">
+					<button type="button" class="close" data-dismiss="modal">
+						<span aria-hidden="true">×</span>
+					</button>
+					<h4 class="modal-title">操作完了</h4>
+				</div>
+				<div class="modal-body text-center">
+					<span class="glyphicon glyphicon-ok" style="font-size: 36px; color: #5cb85c;"></span>
+					<p style="margin-top: 15px;" id="successMsg"></p>
+				</div>
+				<div class="modal-footer" style="border-top: none; text-align: center;">
+					<button type="button" class="btn btn-success" data-dismiss="modal">
+						OK
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
   <!-- 创建联系人的模态窗口 -->
   <div class="modal fade crm-modal" id="createContactsModal" role="dialog" aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -407,7 +521,7 @@
 		  <span aria-hidden="true">×</span>
 		</button>
 
-          <h4 class="modal-title" id="myModalLabelx">新規連絡先の作成</h4>
+          <h4 class="modal-title" id="myModalLabelx">新規取引先責任者の作成</h4>
         </div>
 
         <div class="modal-body">
@@ -440,7 +554,7 @@
                 <input type="text" class="form-control" id="create-surname" placeholder="例）田中 太郎">
               </div>
 
-              <label for="create-call" class="col-sm-2 control-label">敬称</label>
+              <label for="create-call" class="col-sm-2 control-label">敬称<span class="crm-required">*</span></label>
               <div class="col-sm-10" style="width: 300px;">
                 <select class="form-control" id="create-call">
                   <option></option>
@@ -471,12 +585,12 @@
 
               <label for="create-birth" class="col-sm-2 control-label">誕生日</label>
               <div class="col-sm-10" style="width: 300px;">
-                <input type="text" class="form-control" id="create-birth" placeholder="YYYY-MM-DD">
+                <input type="text" class="form-control myDate" id="create-birth" placeholder="YYYY-MM-DD">
               </div>
             </div>
 
             <div class="form-group">
-              <label for="create-customerName" class="col-sm-2 control-label">会社名</label>
+              <label for="create-customerName" class="col-sm-2 control-label">会社名<span class="crm-required">*</span></label>
               <div class="col-sm-10" style="width: 300px;">
                 <input type="text" class="form-control" id="create-customerName" placeholder="入力補完対応：未登録の場合は新規作成">
                 <div class="crm-help">例）株式会社〇〇（未登録の場合は自動的に新規登録されます）</div>
@@ -502,7 +616,7 @@
             <div class="form-group">
               <label for="create-nextContactTime1" class="col-sm-2 control-label">次回連絡日時</label>
               <div class="col-sm-10" style="width: 300px;">
-                <input type="text" class="form-control" id="create-nextContactTime1" placeholder="YYYY-MM-DD">
+                <input type="text" class="form-control myDate" id="create-nextContactTime1" placeholder="YYYY-MM-DD">
               </div>
             </div>
 
@@ -511,7 +625,7 @@
             <div class="form-group">
               <label for="edit-address1" class="col-sm-2 control-label">住所</label>
               <div class="col-sm-10" style="width: 81%;">
-                <textarea class="form-control" rows="1" id="edit-address1" placeholder="例）東京都〇〇区..."></textarea>
+                <textarea class="form-control" rows="1" id="create-address1" placeholder="例）東京都〇〇区..."></textarea>
               </div>
             </div>
 
@@ -520,7 +634,7 @@
 
         <div class="modal-footer">
           <button type="button" class="btn btn-default" data-dismiss="modal">閉じる</button>
-          <button type="button" class="btn btn-primary" data-dismiss="modal">保存</button>
+          <button type="button" id="saveCreateContactsBtn" class="btn btn-primary">保存</button>
         </div>
 
       </div>
@@ -706,7 +820,7 @@
         <div class="form-group">
           <div class="input-group">
             <div class="input-group-addon">誕生日</div>
-            <input class="form-control" id="query-birthday" type="text" placeholder="YYYY-MM-DD">
+            <input class="form-control myDate" id="query-birthday" type="text" placeholder="YYYY-MM-DD">
           </div>
         </div>
 
