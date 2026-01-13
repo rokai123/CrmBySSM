@@ -13,4 +13,5 @@ public interface ContactsMapper {
 	List<Contacts> selectContactsByNameLike(String fullname);
 	List<Contacts> selectContactsByConditionForPage(Map<String, Object> map); 
 	int selectContactsByConditionForPageCount(Map<String, Object> map);
+	int deleteContactsByIds(String[] ids);
 }

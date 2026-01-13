@@ -60,6 +60,11 @@ public class ContactsServiceImpl implements ContactsService {
 		contacts.setCreateTime(DateUtils.formateDateTime(new Date()));
 		contactsMapper.insertContacts(contacts);
 	}
+
+	@Override
+	public int deleteContactsByIds(String[] ids) {
+		return contactsMapper.deleteContactsByIds(ids);
+	}
 	
 	
 	

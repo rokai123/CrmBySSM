@@ -82,4 +82,23 @@ public class ContactsController {
 		return retObject;
 	}
 	
+	@RequestMapping("/workbench/contacts/deleteContactsByIds.do")
+	@ResponseBody
+	public ReturnObject deleteContactsByIds(@RequestParam("id")String[] ids) {
+		ReturnObject retObject = new ReturnObject();
+		try {
+			int retInt = contactsService.deleteContactsByIds(ids);
+			if(retInt>0) {
+				retObject.setCode(Contants.RETURN_OBJECT_CODE_SUCCESS);
+			}else {
+				retObject.setCode(Contants.RETURN_OBJECT_CODE_FAIL);
+				retObject.setMessage("システムが混雑中です、しばらくしてから再度お試しください");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			retObject.setCode(Contants.RETURN_OBJECT_CODE_FAIL);
+			retObject.setMessage("システムが混雑中です、しばらくしてから再度お試しください");
+		}
+		return retObject;
+	}
 }

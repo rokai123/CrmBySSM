@@ -183,8 +183,8 @@
 								queryClueByConditionForPage($("#cluePage") .bs_pagination("getOption","currentPage"),$("#cluePage") .bs_pagination("getOption","rowsPerPage"));
 								
 							}else {
-                data.message;
-              }
+                				data.message;
+             				}
 						}
 					})
 				}

@@ -22,6 +22,230 @@
 <script type="text/javascript" src="jquery/bs_pagination-master/js/jquery.bs_pagination.min.js"></script>
 <script type="text/javascript" src="jquery/bs_pagination-master/localization/ja.js"></script>
 
+<!-- ===================== UI COOL THEME (CSS only / keep your JS & comments) ===================== -->
+<style>
+  /* Page background */
+  body{
+    background: linear-gradient(180deg, #f6f8ff 0%, #ffffff 55%, #ffffff 100%);
+  }
+
+  /* Title area */
+  .page-header{
+    margin: 12px 10px 18px;
+    padding: 18px 18px 14px;
+    border-radius: 14px;
+    color: #fff;
+    border-bottom: none !important;
+    background: linear-gradient(135deg, #4f46e5 0%, #06b6d4 100%);
+    box-shadow: 0 12px 30px rgba(0,0,0,.10);
+    position: relative;
+    overflow: hidden;
+  }
+  .page-header:before{
+    content:"";
+    position:absolute;
+    right:-60px;
+    top:-60px;
+    width:220px;
+    height:220px;
+    border-radius:50%;
+    background: rgba(255,255,255,.18);
+    pointer-events:none;
+  }
+  .page-header h3{
+    margin:0;
+    font-weight:900;
+    letter-spacing:.4px;
+  }
+
+  /* Search toolbar card */
+  .btn-toolbar[role="toolbar"]{
+    border-radius: 14px;
+    background: #fff;
+    border: 1px solid rgba(17,24,39,.06);
+    box-shadow: 0 10px 28px rgba(17,24,39,.08);
+    padding: 12px 12px 10px;
+    margin: 0 10px 14px;
+  }
+
+  /* Input groups */
+  .input-group-addon{
+    background:#f3f4f6 !important;
+    border-color:#e5e7eb !important;
+    color:#374151 !important;
+    font-weight:800;
+  }
+  .form-control{
+    border-color:#e5e7eb !important;
+    box-shadow:none !important;
+    border-radius:10px;
+  }
+  .form-control:focus{
+    border-color:#06b6d4 !important;
+    box-shadow: 0 0 0 3px rgba(6,182,212,.15) !important;
+  }
+  .btn{
+    border-radius:10px !important;
+    font-weight:800;
+  }
+
+  /* Action toolbar (buttons row) */
+  div.btn-toolbar[style*="background-color: #F7F7F7"]{
+    background: #fff !important;
+    border: 1px solid rgba(17,24,39,.06);
+    box-shadow: 0 10px 28px rgba(17,24,39,.08);
+    margin: 0 10px 14px;
+    padding: 10px 12px;
+    border-radius: 14px;
+  }
+  .btn-group .btn.btn-default{
+    border-color:#e5e7eb !important;
+  }
+
+  /* Table wrap feel */
+  table.table.table-hover{
+    background:#fff;
+    border-radius: 14px;
+    overflow:hidden;
+    border:1px solid rgba(17,24,39,.06);
+    box-shadow: 0 10px 28px rgba(17,24,39,.08);
+  }
+  table.table.table-hover>thead>tr{
+    /* 水蓝色表头 */
+    background: linear-gradient(180deg, #e0f2fe 0%, #bae6fd 100%) !important;
+    color:#0f172a !important;
+  }
+  table.table.table-hover>thead>tr>td{
+    border-bottom: 1px solid rgba(0,0,0,.08) !important;
+    font-weight:900;
+    letter-spacing:.2px;
+  }
+  table.table.table-hover>tbody>tr{
+    transition: transform .12s ease, box-shadow .12s ease, background .12s ease;
+  }
+  table.table.table-hover>tbody>tr:hover{
+    background:#f8fafc;
+    transform: translateY(-1px);
+    box-shadow: 0 8px 18px rgba(17,24,39,.06);
+  }
+  table.table.table-hover a{
+    cursor:pointer;
+  }
+
+  /* Pagination area */
+  #activityPage{
+    margin: 12px 10px 24px;
+  }
+
+  /* ===================== Modal cool theme (Bootstrap 3) ===================== */
+  #createActivityModal .modal-dialog,
+  #editActivityModal .modal-dialog,
+  #importActivityModal .modal-dialog{
+    width: 86% !important;
+    max-width: 1060px;
+  }
+
+  #createActivityModal.modal.fade .modal-dialog,
+  #editActivityModal.modal.fade .modal-dialog,
+  #importActivityModal.modal.fade .modal-dialog{
+    transform: translateY(16px) scale(.985);
+    transition: transform .18s ease-out;
+  }
+  #createActivityModal.modal.in .modal-dialog,
+  #editActivityModal.modal.in .modal-dialog,
+  #importActivityModal.modal.in .modal-dialog{
+    transform: translateY(0) scale(1);
+  }
+
+  #createActivityModal .modal-content,
+  #editActivityModal .modal-content,
+  #importActivityModal .modal-content{
+    border-radius:18px;
+    border:1px solid rgba(17,24,39,.10);
+    box-shadow: 0 22px 60px rgba(17,24,39,.18);
+    overflow:hidden;
+  }
+
+  #createActivityModal .modal-header,
+  #editActivityModal .modal-header,
+  #importActivityModal .modal-header{
+    border-bottom:none;
+    color:#fff;
+    background: linear-gradient(135deg, #4f46e5 0%, #06b6d4 100%);
+    position:relative;
+    padding: 16px 18px;
+  }
+  #createActivityModal .modal-header:before,
+  #editActivityModal .modal-header:before,
+  #importActivityModal .modal-header:before{
+    content:"";
+    position:absolute;
+    right:-70px;
+    top:-70px;
+    width:260px;
+    height:260px;
+    border-radius:50%;
+    background: rgba(255,255,255,.16);
+    pointer-events:none;
+  }
+  #createActivityModal .modal-title,
+  #editActivityModal .modal-title,
+  #importActivityModal .modal-title{
+    font-weight:900;
+    letter-spacing:.2px;
+    position:relative;
+    z-index:2;
+  }
+
+  #createActivityModal .close,
+  #editActivityModal .close,
+  #importActivityModal .close{
+    opacity:1;
+    color:#fff;
+    text-shadow:none;
+    font-size:22px;
+    width:34px;
+    height:34px;
+    line-height:30px;
+    border-radius:10px;
+    background: rgba(255,255,255,.18);
+    transition: background .12s ease;
+    position:relative;
+    z-index:5;
+    cursor:pointer;
+  }
+  #createActivityModal .close:hover,
+  #editActivityModal .close:hover,
+  #importActivityModal .close:hover{
+    background: rgba(255,255,255,.28);
+  }
+
+  #createActivityModal .modal-body,
+  #editActivityModal .modal-body,
+  #importActivityModal .modal-body{
+    background:#fff;
+    padding:18px;
+  }
+  #createActivityModal .modal-footer,
+  #editActivityModal .modal-footer,
+  #importActivityModal .modal-footer{
+    background:#f8fafc;
+    border-top:1px solid rgba(17,24,39,.06);
+    padding: 12px 18px;
+  }
+  #createActivityModal .control-label,
+  #editActivityModal .control-label,
+  #importActivityModal .control-label{
+    color:#334155;
+    font-weight:900;
+  }
+  #createActivityModal textarea.form-control,
+  #editActivityModal textarea.form-control,
+  #importActivityModal textarea.form-control{
+    border-radius:12px;
+  }
+</style>
+
 <script type="text/javascript">
 	//ページ読み込み完了で実行
 	$(function(){
@@ -716,40 +940,6 @@
 			<!-- 分页组件挂载处-->
 			<!-- ページネーションコンポーネントマウント位置 -->
 			<div id="activityPage"></div>
-			<!-- <div style="height: 50px; position: relative;top: 30px;">
-				<div>
-					<button type="button" class="btn btn-default" style="cursor: default;">共<b id="totalRowsB">50</b>条记录</button>
-				</div>
-				<div class="btn-group" style="position: relative;top: -34px; left: 110px;">
-					<button type="button" class="btn btn-default" style="cursor: default;">显示</button>
-					<div class="btn-group">
-						<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-							10
-							<span class="caret"></span>
-						</button>
-						<ul class="dropdown-menu" role="menu">
-							<li><a href="#">20</a></li>
-							<li><a href="#">30</a></li>
-						</ul>
-					</div>
-					<button type="button" class="btn btn-default" style="cursor: default;">条/页</button>
-				</div>
-				<div style="position: relative;top: -88px; left: 285px;">
-					<nav>
-						<ul class="pagination">
-							<li class="disabled"><a href="#">首页</a></li>
-							<li class="disabled"><a href="#">上一页</a></li>
-							<li class="active"><a href="#">1</a></li>
-							<li><a href="#">2</a></li>
-							<li><a href="#">3</a></li>
-							<li><a href="#">4</a></li>
-							<li><a href="#">5</a></li>
-							<li><a href="#">下一页</a></li>
-							<li class="disabled"><a href="#">末页</a></li>
-						</ul>
-					</nav>
-				</div>
-			</div> -->
 			
 		</div>
 		

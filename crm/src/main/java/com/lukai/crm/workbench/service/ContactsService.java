@@ -11,4 +11,5 @@ public interface ContactsService {
 	List<Contacts> queryContactsByConditionForPage(Map<String, Object> map);
 	int queryContactsByConditionForPageCount(Map<String, Object> map);
 	void saveCreateContacts(Contacts contacts,User user);
+	int deleteContactsByIds(String[] ids);
 }

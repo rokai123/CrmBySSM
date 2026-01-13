@@ -69,7 +69,7 @@
     	select 
     		c.id,
     		c.fullname,
-    		cus.name as customerName,
+    		cus.name as customer_name,
     		u1.name as owner,
     		dv.value as source,
     		c.birthday
@@ -130,4 +130,11 @@
     	</where>
 	</select>
 	
+	<delete id="deleteContactsByIds" parameterType="String">
+		delete from tbl_contacts
+			where id in
+			<foreach collection="array"  item="id" open="(" separator="," close=")">
+				#{id}
+			</foreach>
+	</delete>
 </mapper>

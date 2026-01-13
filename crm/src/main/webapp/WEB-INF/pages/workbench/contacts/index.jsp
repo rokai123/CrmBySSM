@@ -400,6 +400,59 @@
 
 	})
 
+  //点击全选按钮，实现所有复选框全选或取消选中
+  $("#allCheckBox").on("click",function(){
+    $("#contactsBody input[type='checkbox'][name='xzBox']").prop("checked",$(this).prop("checked"));
+  })
+
+  //点击某个复选框，实现全选按钮的选中或取消选中
+  $("#contactsBody").on("click", "input[type='checkbox'][name='xzBox']", function () {
+    // 获取列表中所有复选框
+    let allCheckBox = $("#contactsBody input[type='checkbox'][name='xzBox']");
+    // 获取列表中所有复选框中选中的个数
+    let checkedBox = $("#contactsBody input[type='checkbox'][name='xzBox']:checked");
+    if (allCheckBox.length == checkedBox.length) {
+      // 全选按钮选中
+      $("#allCheckBox").prop("checked", true);
+    } else {
+      // 全选按钮取消选中
+      $("#allCheckBox").prop("checked", false);
+    }
+  })
+
+  //批量删除
+  $("#deleteBtn").on("click",function () {
+    //获取复选框中选中的id
+    let checkedBox = $("#contactsBody input[type='checkbox'][name='xzBox']:checked");
+    if(checkedBox.length == 0){
+      alert("削除する項目を選択してください。");
+      return;
+    }
+    if(window.confirm("削除してもいいですか。")){
+      let ids = "";
+      $.each(checkedBox,function (i,c) {
+        ids += "id=" + $(c).val() + "&";
+      })
+      ids = ids.substr(0, ids.length - 1);
+      $.ajax({
+        url:"workbench/contacts/deleteContactsByIds.do",
+        data:ids,
+        type:"post",
+        dataType:"json",
+        success:function (data) {
+          if(data.code == "1"){
+            //刷新列表（局部刷新）
+            alert("削除が完了しました。")
+            queryContactsByConditionForPage(1,10);
+          }else{
+            alert(data.message);
+          }
+        }
+
+      })
+    }
+  })
+
   });
 
   function queryContactsByConditionForPage(pageNo,pageSize){
@@ -723,7 +776,7 @@
             <div class="form-group">
               <label for="edit-customerName" class="col-sm-2 control-label">会社名</label>
               <div class="col-sm-10" style="width: 300px;">
-                <input type="text" class="form-control" id="edit-customerName" placeholder="入力補完対応：未登録の場合は新規作成" value="动力节点">
+                <input type="text" class="form-control" id="edit-customerName" placeholder="入力補完対応：未登録の場合は新規作成" value="">
               </div>
             </div>
 
@@ -840,7 +893,7 @@
           <button type="button" class="btn btn-default" data-toggle="modal" data-target="#editContactsModal">
             <span class="glyphicon glyphicon-pencil"></span> 編集
           </button>
-          <button type="button" class="btn btn-danger">
+          <button type="button" id="deleteBtn" class="btn btn-danger">
             <span class="glyphicon glyphicon-trash"></span> 削除
           </button>
         </div>
@@ -854,7 +907,7 @@
         <table class="table">
           <thead>
             <tr>
-              <td style="width: 36px;"><input type="checkbox" /></td>
+              <td style="width: 36px;"><input type="checkbox" id="allCheckBox" /></td>
               <td>氏名</td>
               <td>会社名</td>
               <td>担当者</td>
@@ -868,14 +921,13 @@
           <!-- 行テンプレート -->
           <script type="text/template" id="contactsTemplate">
             <tr class="{{active}}">
-              <td><input type="checkbox" value="{{id}}"/></td>
+              <td><input type="checkbox" name="xzBox" value="{{id}}"/></td>
               <td>
-                <a class="crm-link"
-   					href="javascript:void(0)"
-   					onclick="window.location.href='workbench/contacts/detail.do?id={{id}}'; return false;">
-  					{{fullname}}
-				</a>
-
+              <a class="crm-link"
+                href="javascript:void(0)"
+                onclick="window.location.href='workbench/contacts/detail.do?id={{id}}'; return false;">
+                {{fullname}}
+				      </a>
               </td>
               <td>{{customerName}}</td>
               <td>{{owner}}</td>
