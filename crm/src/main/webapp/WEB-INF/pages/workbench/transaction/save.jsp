@@ -242,6 +242,10 @@
 			})
 			
 		});
+
+    $("#cancelBtn").on("click",function(){
+      history.back();
+    })
 	});
 </script>
 </head>
@@ -314,12 +318,7 @@
 							</tr>
 						</thead>
 						<tbody id="contactsTbody">
-							<!-- <tr>
-								<td><input type="radio" name="activity"/></td>
-								<td>李四</td>
-								<td>lisi@bjpowernode.com</td>
-								<td>12345678901</td>
-							</tr> -->
+							
 						</tbody>
 					</table>
 				</div>
@@ -332,7 +331,7 @@
 		<h3>商談作成</h3>
 	  	<div style="position: relative; top: -40px; left: 70%;">
 			<button type="button" id="saveCreateTranBtn" class="btn btn-primary">登録</button>
-			<button type="button" class="btn btn-default">キャンセル</button>
+			<button type="button" id="cancelBtn" class="btn btn-default">キャンセル</button>
 		</div>
 		<hr style="position: relative; top: -40px;">
 	</div>

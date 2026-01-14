@@ -607,7 +607,7 @@
 					<tbody>
 						<tr>
 							<td><a href="contacts/detail.html" style="text-decoration: none;">李四</a></td>
-							<td>lisi@bjpowernode.com</td>
+							<td>lisi@.com</td>
 							<td>13543645364</td>
 							<td><a href="javascript:void(0);" data-toggle="modal" data-target="#removeContactsModal" style="text-decoration: none;"><span class="glyphicon glyphicon-remove"></span>削除</a></td>
 						</tr>

@@ -44,7 +44,7 @@
 
   <Loggers>
 
-    <!-- 你的业务包：建议 INFO（需要排查时改 DEBUG） -->
+    <!-- 业务包：建议 INFO（需要排查时改 DEBUG） -->
     <Logger name="com.lukai.crm" level="INFO" additivity="false">
       <AppenderRef ref="Console"/>
       <AppenderRef ref="AppFile"/>

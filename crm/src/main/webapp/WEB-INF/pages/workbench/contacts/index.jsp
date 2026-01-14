@@ -735,7 +735,7 @@
             <div class="form-group">
               <label for="edit-surname" class="col-sm-2 control-label">氏名<span class="crm-required">*</span></label>
               <div class="col-sm-10" style="width: 300px;">
-                <input type="text" class="form-control" id="edit-surname" value="李四">
+                <input type="text" class="form-control" id="edit-surname" value="李">
               </div>
 
               <label for="edit-call" class="col-sm-2 control-label">敬称</label>
@@ -764,7 +764,7 @@
             <div class="form-group">
               <label for="edit-email" class="col-sm-2 control-label">メール</label>
               <div class="col-sm-10" style="width: 300px;">
-                <input type="text" class="form-control" id="edit-email" value="lisi@bjpowernode.com">
+                <input type="text" class="form-control" id="edit-email" value="lisi@qqqq.com">
               </div>
 
               <label for="edit-birth" class="col-sm-2 control-label">誕生日</label>
@@ -808,7 +808,7 @@
             <div class="form-group">
               <label for="edit-address2" class="col-sm-2 control-label">住所</label>
               <div class="col-sm-10" style="width: 81%;">
-                <textarea class="form-control" rows="1" id="edit-address2" placeholder="例）東京都〇〇区...">北京大兴区大族企业湾</textarea>
+                <textarea class="form-control" rows="1" id="edit-address2" placeholder="例）東京都〇〇区..."></textarea>
               </div>
             </div>
 
