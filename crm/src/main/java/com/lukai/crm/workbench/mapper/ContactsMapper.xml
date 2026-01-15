@@ -137,4 +137,49 @@
 				#{id}
 			</foreach>
 	</delete>
+	
+	<select id="selectContactsById" parameterType="String" resultMap="BaseResultMap">
+        select
+            c.id,
+	        u.id as owner,
+	        c.fullname,
+	        c.email,
+	        c.source,
+	        c.mphone,
+	        c.job,
+	        c.description,
+	        c.contact_summary,
+	        c.next_contact_time,
+	        c.address,
+	        c.birthday,
+	        u2.id as create_by,
+	        c.appellation,
+	        cus.name as customer_name
+	        from tbl_contacts c 
+	        left join tbl_customer cus on c.customer_id=cus.id
+	        left join tbl_user u on c.owner=u.id
+	        left join tbl_user u2 on c.create_by=u2.id
+        where c.id = #{id}
+    </select>
+    
+    <update id="updateContacts" parameterType="com.lukai.crm.workbench.domain.Contacts">
+    	       update tbl_contacts
+        set
+            owner = #{owner},
+            customer_id = #{customerId},
+            source = #{source},
+            fullname = #{fullname},
+            appellation = #{appellation},
+            email = #{email},
+            mphone = #{mphone},
+            job = #{job},
+            edit_by = #{editBy},
+            edit_time = #{editTime},
+            description = #{description},
+            contact_summary = #{contactSummary},
+            next_contact_time = #{nextContactTime},
+            address = #{address},
+            birthday = #{birthday}
+        where id = #{id}
+    </update>
 </mapper>

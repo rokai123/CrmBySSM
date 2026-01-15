@@ -101,4 +101,35 @@ public class ContactsController {
 		}
 		return retObject;
 	}
+	
+	@RequestMapping("/workbench/contacts/queryContactsById.do")
+	@ResponseBody
+	public Contacts queryContactsById(@RequestParam("contactsId") String id) {
+		Contacts contacts = contactsService.queryContactsById(id);
+		return contacts;
+	}
+	
+	@RequestMapping("/workbench/contacts/updateContactsById.do")
+	@ResponseBody
+	public ReturnObject updateContactsById(Contacts contacts,HttpSession session) {
+		User user = (User)session.getAttribute(Contants.SESSION_USER);
+		ReturnObject retObject = new ReturnObject();
+		
+		try {
+			int retInt = contactsService.saveEditContacts(contacts, user);
+			if (retInt>0) {
+				retObject.setCode(Contants.RETURN_OBJECT_CODE_SUCCESS);
+			}else {
+				retObject.setCode(Contants.RETURN_OBJECT_CODE_FAIL);
+				retObject.setMessage("システムが混雑中です、しばらくしてから再度お試しください");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			retObject.setCode(Contants.RETURN_OBJECT_CODE_FAIL);
+			retObject.setMessage("システムが混雑中です、しばらくしてから再度お試しください");
+		}
+		
+		
+		return retObject;
+	}
 }

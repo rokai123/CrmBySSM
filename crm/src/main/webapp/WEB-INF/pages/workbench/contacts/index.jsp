@@ -453,7 +453,148 @@
     }
   })
 
+	//实现初始化编辑功能的模态窗口
+	let originalFormData = {};//定义一个全局变量保存原始数据.保存「初始值快照」
+	$("#editContactsBtn").on("click",function () {
+    //获取复选框中选中的id
+    let checkedBox = $("#contactsBody input[type='checkbox'][name='xzBox']:checked");
+    if(checkedBox.length == 0){
+      alert("編集する項目を選択してください。");
+      return;
+    }
+    if(checkedBox.length > 1){
+      alert("編集は1つだけ選択してください。");
+			return;
+    }
+		$("#editContactsModal").modal("show");
+		$.ajax({
+      url:"workbench/contacts/queryContactsById.do",
+      data:{
+        "contactsId":$(checkedBox).val()
+      },
+      type:"get",
+      dataType:"json",
+      success:function (data) {
+        //把数据填充到模态窗口
+				$("#edit-contactsOwner").val(data.owner);
+        $("#edit-id").val(data.id);
+				$("#edit-clueSource1").val(data.source);
+				$("#edit-surname").val(data.fullname);
+        $("#edit-call").val(data.appellation);
+				$("#edit-job").val(data.job);
+				$("#edit-mphone").val(data.mphone);
+				$("#edit-email").val(data.email);
+				$("#edit-birth").val(data.birth);
+				$("#edit-customerName").val(data.customerName);
+				$("#edit-describe").val(data.description);
+				$("#edit-contactSummary").val(data.contactSummary);
+				$("#edit-nextContactTime").val(data.nextContactTime);
+				$("#edit-address").val(data.address);
+
+				originalFormData = {//保存「初始值快照」
+          "owner":$("#edit-contactsOwner").val(),
+          "source":$("#edit-clueSource1").val(),
+          "fullname":$("#edit-surname").val(),
+          "appellation":$("#edit-call").val(),
+          "job":$("#edit-job").val(),
+          "mphone":$("#edit-mphone").val(),
+					"email":$("#edit-email").val(),
+					"birth":$("#edit-birth").val(),
+					"customerName":$("#edit-customerName").val(),
+					"description":$("#edit-describe").val(),
+					"contactSummary":$("#edit-contactSummary").val(),
+					"nextContactTime":$("#edit-nextContactTime").val(),
+					"address":$("#edit-address").val()
+        }
+				
+      }
+		})
+	})
+
+	$("#updateContactsBtn").on("click",function () {
+		let id = $("#edit-id").val();
+		let owner = $("#edit-contactsOwner").val();
+		let source = $("#edit-clueSource1").val();
+		let fullname = $("#edit-surname").val();
+		let appellation = $("#edit-call").val();
+		let job = $("#edit-job").val();
+		let mphone = $("#edit-mphone").val();
+		let email = $("#edit-email").val();
+		let birth = $("#edit-birth").val();
+		let customerName = $("#edit-customerName").val();
+		let description = $("#edit-describe").val();
+		let contactSummary = $("#edit-contactSummary").val();
+		let nextContactTime = $("#edit-nextContactTime").val();
+		let address = $("#edit-address").val();
+
+		let currentFormData={
+					"owner":$("#edit-contactsOwner").val(),
+          "source":$("#edit-clueSource1").val(),
+          "fullname":$("#edit-surname").val(),
+          "appellation":$("#edit-call").val(),
+          "job":$("#edit-job").val(),
+          "mphone":$("#edit-mphone").val(),
+					"email":$("#edit-email").val(),
+					"birth":$("#edit-birth").val(),
+					"customerName":$("#edit-customerName").val(),
+					"description":$("#edit-describe").val(),
+					"contactSummary":$("#edit-contactSummary").val(),
+					"nextContactTime":$("#edit-nextContactTime").val(),
+					"address":$("#edit-address").val()
+		};
+
+		if (isSameData(originalFormData, currentFormData)) {
+        alert("変更が行われていません。");
+        return;
+    }
+		let contacts = {
+				"id":id,
+        "owner":owner,
+        "source":source,
+        "fullname":fullname,
+        "appellation":appellation,
+        "job":job,
+        "mphone":mphone,
+        "email":email,
+        "birth":birth,
+        "customerName":customerName,
+				"description":description,
+				"contactSummary":contactSummary,
+				"nextContactTime":nextContactTime,
+				"address":address
+		};
+		$.ajax({
+      url:"workbench/contacts/updateContactsById.do",
+      data:contacts,
+				type:"post",
+				dataType:"json",
+				success:function (data) {
+          if(data.code == "1"){
+            alert("更新が完了しました。");
+            $("#editContactsModal").modal("hide");
+            queryContactsByConditionForPage($("#forPagination").bs_pagination("getOption","currentPage"),$("#forPagination").bs_pagination("getOption","rowsPerPage"));
+          }else{
+            alert(data.message);
+          }
+				}
+		})
+
+
+	})
+
+
   });
+
+	//判断数据是否相同
+	function isSameData(oldData, newData) {
+    for (let key in oldData) {
+        if ((oldData[key] ?? "") !== (newData[key] ?? "")) {
+            return false;
+        }
+    }
+    return true;
+}
+
 
   function queryContactsByConditionForPage(pageNo,pageSize){
     let owner = $("#query-owner").val();
@@ -695,7 +836,7 @@
   </div>
 
   <!-- 修改联系人的模态窗口 -->
-  <div class="modal fade crm-modal" id="editContactsModal" role="dialog" aria-hidden="true">
+  <div class="modal fade crm-modal" id="editContactsModal"  role="dialog" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
 
@@ -712,10 +853,13 @@
             <div class="form-group">
               <label for="edit-contactsOwner" class="col-sm-2 control-label">所有者<span class="crm-required">*</span></label>
               <div class="col-sm-10" style="width: 300px;">
+								<input type="hidden" id="edit-id">
                 <select class="form-control" id="edit-contactsOwner">
-                  <option selected>zhangsan</option>
-                  <option>lisi</option>
-                  <option>wangwu</option>
+									<option></option>
+									<c:forEach var="u" items="${userList}">
+										<option value="${u.id}">${u.name}</option>
+                	</c:forEach>
+
                 </select>
               </div>
 
@@ -723,11 +867,9 @@
               <div class="col-sm-10" style="width: 300px;">
                 <select class="form-control" id="edit-clueSource1">
                   <option></option>
-                  <option selected>広告</option>
-                  <option>推奨（紹介）</option>
-                  <option>オンライン</option>
-                  <option>展示会</option>
-                  <option>メール</option>
+                  <c:forEach var="source" items="${sourceList}">
+                    <option value="${source.id}">${source.text}</option>
+                  </c:forEach>
                 </select>
               </div>
             </div>
@@ -735,16 +877,16 @@
             <div class="form-group">
               <label for="edit-surname" class="col-sm-2 control-label">氏名<span class="crm-required">*</span></label>
               <div class="col-sm-10" style="width: 300px;">
-                <input type="text" class="form-control" id="edit-surname" value="李">
+                <input type="text" class="form-control" id="edit-surname" value="">
               </div>
 
               <label for="edit-call" class="col-sm-2 control-label">敬称</label>
               <div class="col-sm-10" style="width: 300px;">
                 <select class="form-control" id="edit-call">
                   <option></option>
-                  <option selected>先生</option>
-                  <option>様</option>
-                  <option>さん</option>
+                  <c:forEach var="a" items="${appellationList}">
+                    <option value="${a.id}">${a.text}</option>
+                  </c:forEach>
                 </select>
               </div>
             </div>
@@ -792,14 +934,14 @@
             <div class="form-group">
               <label for="create-contactSummary" class="col-sm-2 control-label">連絡メモ</label>
               <div class="col-sm-10" style="width: 81%;">
-                <textarea class="form-control" rows="3" id="create-contactSummary"></textarea>
+                <textarea class="form-control" rows="3" id="edit-contactSummary"></textarea>
               </div>
             </div>
 
             <div class="form-group">
               <label for="create-nextContactTime" class="col-sm-2 control-label">次回連絡日時</label>
               <div class="col-sm-10" style="width: 300px;">
-                <input type="text" class="form-control" id="create-nextContactTime" placeholder="YYYY-MM-DD">
+                <input type="text" class="form-control" id="edit-nextContactTime" placeholder="YYYY-MM-DD">
               </div>
             </div>
 
@@ -808,7 +950,7 @@
             <div class="form-group">
               <label for="edit-address2" class="col-sm-2 control-label">住所</label>
               <div class="col-sm-10" style="width: 81%;">
-                <textarea class="form-control" rows="1" id="edit-address2" placeholder="例）東京都〇〇区..."></textarea>
+                <textarea class="form-control" rows="1" id="edit-address" placeholder="例）東京都〇〇区..."></textarea>
               </div>
             </div>
 
@@ -817,7 +959,7 @@
 
         <div class="modal-footer">
           <button type="button" class="btn btn-default" data-dismiss="modal">閉じる</button>
-          <button type="button" class="btn btn-primary" data-dismiss="modal">更新</button>
+          <button type="button" class="btn btn-primary" id="updateContactsBtn">更新</button>
         </div>
 
       </div>
@@ -890,7 +1032,7 @@
           <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createContactsModal">
             <span class="glyphicon glyphicon-plus"></span> 新規作成
           </button>
-          <button type="button" class="btn btn-default" data-toggle="modal" data-target="#editContactsModal">
+          <button type="button" id="editContactsBtn" class="btn btn-default">
             <span class="glyphicon glyphicon-pencil"></span> 編集
           </button>
           <button type="button" id="deleteBtn" class="btn btn-danger">

@@ -203,4 +203,10 @@ public class Test {
 		List<Contacts> contacts = contactsMapper.selectContactsByConditionForPage(hashMap);
 		contacts.forEach(System.out::println);
 	}
+	
+	@org.junit.Test
+	public void selectContactsByIdTest() {
+		Contacts contacts = contactsMapper.selectContactsById("062b009177064633800e9a390e63ccbb");
+		System.out.println(contacts);
+	}
 }

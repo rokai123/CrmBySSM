@@ -65,6 +65,34 @@ public class ContactsServiceImpl implements ContactsService {
 	public int deleteContactsByIds(String[] ids) {
 		return contactsMapper.deleteContactsByIds(ids);
 	}
+
+	@Override
+	public Contacts queryContactsById(String id) {
+		Contacts contacts = contactsMapper.selectContactsById(id);
+		return contacts;
+	}
+
+	@Override
+	public int saveEditContacts(Contacts contacts, User currentUser) {
+		String customerName = contacts.getCustomerName();
+		Customer customer = customerMapper.selectCustomerByName(customerName);
+		//不存在客户则新建
+		if (customer == null) {
+			customer = new Customer();
+			customer.setId(UUIdUtils.getUUId());
+			customer.setName(contacts.getCustomerName());
+			customer.setCreateBy(currentUser.getId());
+			customer.setCreateTime(DateUtils.formateDateTime(new Date()));
+			customer.setOwner(currentUser.getId());
+			customerMapper.insertCustomer(customer);
+		}
+		//编辑联系人
+		contacts.setCustomerId(customer.getId());
+		contacts.setEditBy(currentUser.getId());
+		contacts.setEditTime(DateUtils.formateDateTime(new Date()));
+		int retInt = contactsMapper.updateContacts(contacts);
+		return retInt;
+	}
 	
 	
 	
